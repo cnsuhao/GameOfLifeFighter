@@ -1,5 +1,4 @@
 #include "grid.h"
-
 #include <cassert>
 #include <cstdlib>
 #include <assert.h>
@@ -9,8 +8,8 @@ Grid::Grid(const int width, const int height)
 {
   #ifndef NDEBUG
   Test();
-  Create_block();
-  #endif
+  Create_blinker();
+   #endif
 }
 
 void Grid::Set(const int x, const int y, const int i)
@@ -93,6 +92,18 @@ m_grid[9][9] = 1;
 m_grid[8][8] = 1;
 m_grid[9][8] = 1;
 m_grid[8][9] = 1;
+}
+
+void Grid::Create_blinker()
+{
+int hight = GetHeight();
+int width = GetWidth();
+assert(hight > 20);
+assert(width > 20);
+
+m_grid[9][9] = 1;
+m_grid[9][8] = 1;
+m_grid[9][7] = 1;
 }
 
 void Grid::Next()

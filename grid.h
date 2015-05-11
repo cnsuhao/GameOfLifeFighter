@@ -18,6 +18,7 @@ struct Grid
   std::vector<std::vector<int>> m_grid;
   void Create_glider();
   void Create_block();
+  void Create_blinker();
 
   #ifndef NDEBUG
   static void Test() noexcept;
