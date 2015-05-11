@@ -12,6 +12,10 @@ struct Hangar
     const int height,
     const Player player
   );
+  int GetLeft() const noexcept { return m_left; }
+  int GetTop() const noexcept { return m_top; }
+  int GetWidth() const noexcept { return m_width; }
+  int GetHeight() const noexcept { return m_height; }
   Player GetPlayer() const noexcept { return m_player; }
   bool IsIn(const int x, const int y) const noexcept;
 

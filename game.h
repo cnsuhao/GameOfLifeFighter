@@ -11,6 +11,7 @@ struct Game
 
   ///Obtain the Grid its value
   int GetGrid(const int x, const int y) const;
+  const std::vector<Hangar>& GetHangars() const noexcept { return m_hangars; }
   int GetHeight() const;
   int GetWidth() const;
 

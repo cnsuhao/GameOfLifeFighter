@@ -8,14 +8,8 @@ Grid::Grid(const int width, const int height)
 {
   #ifndef NDEBUG
   Test();
-<<<<<<< HEAD
-  Create_blinker();
-   #endif
-=======
-  //Create_block();
-  Create_glider();
   #endif
->>>>>>> bf5d30f7943f30a64dc2cb7a2b5da3dd3797af39
+  Create_blinker();
 }
 
 void Grid::Set(const int x, const int y, const int i)

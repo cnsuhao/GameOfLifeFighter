@@ -1,5 +1,7 @@
 #include "qtgameoflifefighterwidget.h"
 
+#include <cassert>
+
 #include <QImage>
 #include <QPainter>
 #include <QPixmap>
@@ -47,6 +49,32 @@ QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
   delete ui;
 }
 
+void QtGameOfLifeFighterWidget::Blend(
+  QImage& image,
+  const int x, const int y,
+  const QColor color
+)
+{
+  Blend(image,x,y,color.red(),color.green(),color.blue());
+}
+
+void QtGameOfLifeFighterWidget::Blend(
+  QImage& image,
+  const int x, const int y,
+  const int r, const int g, const int b
+)
+{
+  const QColor here{image.pixel(x,y)};
+  image.setPixel(
+    x,y,
+    qRgb(
+      (here.red()   + r) / 2,
+      (here.green() + g) / 2,
+      (here.blue() + b) / 2
+    )
+  );
+}
+
 std::map<int,QColor> QtGameOfLifeFighterWidget::CreateColorMap() noexcept
 {
   std::map<int,QColor> m;
@@ -88,36 +116,40 @@ void QtGameOfLifeFighterWidget::OnTimer()
   const int height{m_pixmap.height()};
   const int width{m_pixmap.width()};
   QImage image(width,height,QImage::Format_RGB32);
+
+  //Display grid
   for (int y=0; y!=height; ++y)
   {
     for (int x=0; x!=width; ++x)
     {
       const auto i = m_game.GetGrid(x,y);
-      //Q
       image.setPixel(x,y,
         i == 0 ? qRgb(0,0,0) : qRgb(255,255,255)
       );
     }
   }
+  //Display hangars
+  for (const Hangar& hangar: m_game.GetHangars())
+  {
+    const int left{hangar.GetLeft()};
+    const int top{hangar.GetTop()};
+    const int width{hangar.GetWidth()};
+    const int height{hangar.GetHeight()};
+    const auto player = hangar.GetPlayer();
+    for (int y=0; y!=height; ++y)
+    {
+      for (int x=0; x!=width; ++x)
+      {
+        Blend(image,x+left,y+top,ToColor(player));
+      }
+    }
 
-  const QColor pixel1{image.pixel(m_x1,m_y1)};
-  const QColor pixel2{image.pixel(m_x2,m_y2)};
+  }
 
-  image.setPixel(m_x1,m_y1,
-    qRgb(
-      255,
-      pixel1.green() / 2,
-      pixel1.blue()  / 2
-    )
-  );
-  image.setPixel(
-    m_x2,m_y2,
-    qRgb(
-      pixel2.red()   / 2,
-      pixel2.green() / 2,
-      255
-    )
-  );
+  //Display players
+  Blend(image,m_x1,m_y1,ToColor(Player::player1));
+  Blend(image,m_x2,m_y2,ToColor(Player::player2));
+
 
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
@@ -130,4 +162,15 @@ void QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
     this->rect(),
     m_pixmap
   );
+}
+
+QColor QtGameOfLifeFighterWidget::ToColor(const Player player) noexcept
+{
+  switch (player)
+  {
+    case Player::player1: return qRgb(255,0,0);
+    case Player::player2: return qRgb(0,0,255);
+  }
+  assert(!"Should not get here");
+  return qRgb(0,0,0);
 }
