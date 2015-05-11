@@ -54,7 +54,7 @@ void Game::Test() noexcept
   }
   //Get and set must be symmetric
   {
-    Game g(4,3);
+    Game g(40,30);
     g.Set(1,2,42);
     assert(g.GetGrid(1,2) == 42);
   }

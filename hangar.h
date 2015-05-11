@@ -1,10 +1,14 @@
 #ifndef HANGAR_H
 #define HANGAR_H
 
-class Hangar
+#include "player.h"
+
+struct Hangar
 {
-public:
-  Hangar();
+  Hangar(
+    const int left, const int right,
+    const int width, const int height,
+    const Player player);
 };
 
 #endif // HANGAR_H

@@ -136,7 +136,7 @@ void Grid::Test() noexcept
   }
   //Get and set must be symmetric
   {
-    Grid g(4,3);
+    Grid g(30,40);
     g.Set(1,2,42);
     assert(g.Get(1,2) == 42);
   }

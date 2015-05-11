@@ -45,7 +45,9 @@ CONFIG(release, debug|release) {
 SOURCES += qtmain.cpp \
     qtgameoflifefighterwidget.cpp \
     grid.cpp \
-    game.cpp
+    game.cpp \
+    player.cpp \
+    hangar.cpp
 
 FORMS += \
     qtgameoflifefighterwidget.ui
@@ -53,5 +55,7 @@ FORMS += \
 HEADERS += \
     qtgameoflifefighterwidget.h \
     grid.h \
-    game.h
+    game.h \
+    player.h \
+    hangar.h
 
