@@ -41,7 +41,7 @@ int Grid::GetHeight() const
 
 int Grid::Return_active_neighbours(const int x, const int y)
 {
-  if(x > 1 && x < static_cast<int>(m_grid[0].size())-1 && y > 1 && y < static_cast<int>(m_grid.size())-1)
+  if(x > 0 && x < static_cast<int>(m_grid[0].size())-1 && y > 0 && y < static_cast<int>(m_grid.size())-1)
     {
     int counter = 0;
     for(int q = -1; q < 2; ++q)
