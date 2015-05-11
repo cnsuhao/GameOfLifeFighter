@@ -178,4 +178,55 @@ void Grid::Test() noexcept
     g.Set(1,2,42);
     assert(g.Get(1,2) == 42);
   }
+  //Add a block
+  {
+    Grid g(40,40);
+    g.Set(11,11,1);
+    g.Set(11,12,1);
+    g.Set(12,11,1);
+    g.Set(12,12,1);
+    g.Next();
+    assert(g.Get(11,11) == 1);
+    assert(g.Get(11,12) == 1);
+    assert(g.Get(12,11) == 1);
+    assert(g.Get(12,12) == 1);
+  }
+  //GetNeighbours: must return 4
+  /*
+   0 1 2
+  +-+-+-+
+  | |1| |0
+  +-+-+-+
+  |4|X|2|1 X == empty
+  +-+-+-+
+  | |3| |2
+  +-+-+-+
++
+  */
+  {
+    Grid g(40,40);
+    g.Set(10,10,0);
+    g.Set(11,10,1);
+    g.Set(12,10,0);
+    g.Set(10,11,1);
+    g.Set(11,11,0);
+    g.Set(12,11,1);
+    g.Set(10,12,0);
+    g.Set(11,12,1);
+    g.Set(12,12,0);
+    assert(g.Return_active_neighbours(11,11) == 4);
+  }
+  //Add a blink
+  /*
+  {
+    Grid g(40,40);
+    g.Set(11,11,1);
+    g.Set(12,11,1);
+    g.Set(13,11,1);
+    g.Next();
+    assert(g.Get(12,11) == 1);
+    assert(g.Get(12,12) == 1);
+    assert(g.Get(12,13) == 1);
+  }
+  */
 }
