@@ -4,7 +4,8 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QTimer>
-
+#include <QKeyEvent>
+#include <QDesktopWidget>
 #include "ui_qtgameoflifefighterwidget.h"
 
 QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
@@ -16,15 +17,27 @@ QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
     ui(new Ui::QtGameOfLifeFighterWidget),
     m_pixmap(width,height),
     m_grid(width,height),
-    m_color_map{}
+    m_color_map{},
+    m_keys_pressed{},
+    m_x1{width / 2},
+    m_y1{height * 1 / 4},
+    m_x2{width / 2},
+    m_y2{height * 3 / 4}
 {
   ui->setupUi(this);
   OnTimer();
+  {
+    //Put the dialog in the screen center
+    const QRect screen = QApplication::desktop()->screenGeometry();
+
+    this->setGeometry(0,0,screen.height() * 9 / 10,screen.height() * 9 / 10);
+    this->move( screen.center() - this->rect().center() );
+  }
   //Start a timer
   {
     QTimer * const timer{new QTimer(this)};
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(OnTimer()));
-    timer->setInterval(1);
+    timer->setInterval(100);
     timer->start();
   }
 }
@@ -40,9 +53,31 @@ std::map<int,QColor> QtGameOfLifeFighterWidget::CreateColorMap() noexcept
   return m;
 }
 
+void QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
+{
+  m_keys_pressed.insert(e->key());
+}
+
+void QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
+{
+  m_keys_pressed.erase(e->key());
+}
+
 void QtGameOfLifeFighterWidget::OnTimer()
 {
   m_grid.Next();
+
+  for (const auto key: m_keys_pressed)
+  {
+    switch (key)
+    {
+      case Qt::Key_A: m_x1 = (m_x1 - 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
+      case Qt::Key_D: m_x1 = (m_x1 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
+      case Qt::Key_W: m_y1 = (m_y1 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+      case Qt::Key_S: m_y1 = (m_y1 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+    }
+  }
+
   const int height{m_pixmap.height()};
   const int width{m_pixmap.width()};
   QImage image(width,height,QImage::Format_RGB32);
@@ -56,8 +91,11 @@ void QtGameOfLifeFighterWidget::OnTimer()
       );
     }
   }
+  image.setPixel(m_x1,m_y1,qRgb(255,0,0));
+  image.setPixel(m_x2,m_y2,qRgb(0,0,255));
+
   m_pixmap = QPixmap::fromImage(image);
-  update();
+  update(); //Essential
 }
 
 void QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)

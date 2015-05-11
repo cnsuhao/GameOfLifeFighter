@@ -1,6 +1,7 @@
 #ifndef QTGAMEOFLIFEWIDGET_H
 #define QTGAMEOFLIFEWIDGET_H
 
+#include <set>
 #include <map>
 #include <QWidget>
 #include <QPixmap>
@@ -28,12 +29,18 @@ public:
 
 protected:
   void paintEvent(QPaintEvent *);
+  void keyPressEvent(QKeyEvent *);
+  void keyReleaseEvent(QKeyEvent *);
 private:
   Ui::QtGameOfLifeFighterWidget *ui;
   QPixmap m_pixmap;
   Grid m_grid;
   std::map<int,QColor> m_color_map;
-
+  std::set<int> m_keys_pressed;
+  int m_x1;
+  int m_y1;
+  int m_x2;
+  int m_y2;
 private slots:
   void OnTimer();
 
