@@ -9,7 +9,7 @@ Grid::Grid(const int width, const int height)
   #ifndef NDEBUG
   Test();
   Create_glider();
-  #endif
+   #endif
 }
 
 void Grid::Set(const int x, const int y, const int i)
@@ -55,7 +55,9 @@ int Grid::Return_active_neighbours(const int x, const int y)
                 if(m_grid[y_co][x_co] == 1) {counter++;}
             }
         }
-    return counter-1;
+
+    if(m_grid[y][x] == 1) {return counter-1;}
+    else{assert(m_grid[y][x] == 0); return counter;};
     }
 
 else{return std::rand() % 8;};
