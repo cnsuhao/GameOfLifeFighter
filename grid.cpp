@@ -39,7 +39,7 @@ int Grid::GetHeight() const
   return static_cast<int>(m_grid.size());
 }
 
-int return_active_neighbours(const int x, const int y)
+int return_active_neighbours(const int /* x */, const int /* y */)
 {
 return std::rand() % 8;
 }
@@ -60,9 +60,9 @@ void Grid::Next()
   // Any dead cell with exactly three live neighbours becomes a live cell
 
   //STUB:
-  for(int i = 0; i < static_cast<int>(m_grid[0].size());)
+  for(int i = 0; i < static_cast<int>(m_grid[0].size()); ++i)
     {
-    for(int j = 0; j < static_cast<int>(m_grid.size());)
+    for(int j = 0; j < static_cast<int>(m_grid.size()); ++j)
         {
             int temp_status = m_grid[j][i];
             int temp_neighbours = return_active_neighbours(i,j);
