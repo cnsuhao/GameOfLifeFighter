@@ -51,9 +51,9 @@ int Grid::Return_active_neighbours(const int x, const int y)
               const int y_co = y+q;
               const int x_co = x+k;
               assert(y_co >= 0);
-              assert(y_co < m_grid.size());
+              assert(y_co < static_cast<int>(m_grid.size()));
               assert(x_co >= 0);
-              assert(x_co < m_grid[y_co].size());
+              assert(x_co < static_cast<int>(m_grid[y_co].size()));
             if(m_grid[y_co][x_co] == 1) {counter++;}
             }
         }

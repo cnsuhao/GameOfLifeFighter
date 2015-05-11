@@ -20,7 +20,7 @@ void Game::Set(const int x, const int y, const int i)
   m_grid.Set(x,y,i);
 }
 
-int Game::Get(const int x, const int y) const
+int Game::GetGrid(const int x, const int y) const
 {
   assert(y >= 0);
   assert(y < GetHeight());
@@ -56,7 +56,7 @@ void Game::Test() noexcept
   {
     Game g(4,3);
     g.Set(1,2,42);
-    assert(g.Get(1,2) == 42);
+    assert(g.GetGrid(1,2) == 42);
   }
 }
 #endif

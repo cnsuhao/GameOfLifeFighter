@@ -92,7 +92,8 @@ void QtGameOfLifeFighterWidget::OnTimer()
   {
     for (int x=0; x!=width; ++x)
     {
-      const auto i = m_game.Get(x,y);
+      const auto i = m_game.GetGrid(x,y);
+      //Q
       image.setPixel(x,y,
         i == 0 ? qRgb(0,0,0) : qRgb(255,255,255)
       );
