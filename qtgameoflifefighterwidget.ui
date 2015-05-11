@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PaperRockScissors</string>
+   <string>Game Of Life Fighter</string>
   </property>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

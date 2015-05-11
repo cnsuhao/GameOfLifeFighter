@@ -46,6 +46,9 @@ int Grid::GetWidth() const
 
 void Grid::Next()
 {
+  //Game Of Life here
+
+  //STUB:
   const int x{std::rand() % GetWidth()};
   const int y{std::rand() % GetHeight()};
   Set(x,y,1);
