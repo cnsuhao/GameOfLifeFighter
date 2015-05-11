@@ -1,6 +1,6 @@
 #include <iostream>
 #include "grid.h"
-
+#include <assert.h>
 
 int main()
 {

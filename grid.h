@@ -21,7 +21,8 @@ struct Grid
   void Create_blinker();
 
   #ifndef NDEBUG
-  static void Test() noexcept;
+    static void Test() noexcept;
+
   #endif
 };
 
