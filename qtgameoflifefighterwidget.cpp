@@ -75,6 +75,11 @@ void QtGameOfLifeFighterWidget::OnTimer()
       case Qt::Key_D: m_x1 = (m_x1 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
       case Qt::Key_W: m_y1 = (m_y1 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
       case Qt::Key_S: m_y1 = (m_y1 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+
+      case Qt::Key_Left : m_x2 = (m_x2 - 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
+      case Qt::Key_Right: m_x2 = (m_x2 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
+      case Qt::Key_Up   : m_y2 = (m_y2 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+      case Qt::Key_Down : m_y2 = (m_y2 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
     }
   }
 
@@ -91,6 +96,7 @@ void QtGameOfLifeFighterWidget::OnTimer()
       );
     }
   }
+
   image.setPixel(m_x1,m_y1,qRgb(255,0,0));
   image.setPixel(m_x2,m_y2,qRgb(0,0,255));
 
