@@ -3,6 +3,7 @@
 
 #include "player.h"
 #include "grid.h"
+#include "hangar.h"
 
 struct Game
 {
@@ -13,17 +14,15 @@ struct Game
   int GetHeight() const;
   int GetWidth() const;
 
-  ///Is this cell a hangar?
-  bool IsInHangar(const int x, const int y) const;
-
-  ///Is that cell a hanger of player1/player2?
-  bool IsInHangar(const int x, const int y, const Player player) const;
-
   void Set(const int x, const int y, const int i);
   void Next();
 
   private:
   Grid m_grid;
+  std::vector<Hangar> m_hangars;
+
+
+  static std::vector<Hangar> CreateInitialHangars(const int width, const int height);
 
   #ifndef NDEBUG
   static void Test() noexcept;
