@@ -75,11 +75,13 @@ void QtGameOfLifeFighterWidget::OnTimer()
       case Qt::Key_D: m_x1 = (m_x1 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
       case Qt::Key_W: m_y1 = (m_y1 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
       case Qt::Key_S: m_y1 = (m_y1 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+      case Qt::Key_Q: m_grid.Set(m_x1,m_y1,1); break;
 
-      case Qt::Key_Left : m_x2 = (m_x2 - 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
-      case Qt::Key_Right: m_x2 = (m_x2 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
-      case Qt::Key_Up   : m_y2 = (m_y2 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
-      case Qt::Key_Down : m_y2 = (m_y2 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+      case Qt::Key_J: m_x2 = (m_x2 - 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
+      case Qt::Key_L: m_x2 = (m_x2 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
+      case Qt::Key_I: m_y2 = (m_y2 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+      case Qt::Key_K: m_y2 = (m_y2 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
+      case Qt::Key_U: m_grid.Set(m_x2,m_y2,1); break;
     }
   }
 
@@ -97,8 +99,24 @@ void QtGameOfLifeFighterWidget::OnTimer()
     }
   }
 
-  image.setPixel(m_x1,m_y1,qRgb(255,0,0));
-  image.setPixel(m_x2,m_y2,qRgb(0,0,255));
+  const QColor pixel1{image.pixel(m_x1,m_y1)};
+  const QColor pixel2{image.pixel(m_x2,m_y2)};
+
+  image.setPixel(m_x1,m_y1,
+    qRgb(
+      255,
+      pixel1.green() / 2,
+      pixel1.blue()  / 2
+    )
+  );
+  image.setPixel(
+    m_x2,m_y2,
+    qRgb(
+      pixel2.red()   / 2,
+      pixel2.green() / 2,
+      255
+    )
+  );
 
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
