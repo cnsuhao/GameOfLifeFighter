@@ -4,6 +4,8 @@
 
 int main()
 {
-Grid(100,100);
+Grid mijngrid(100,100);
+mijngrid.Next();
 
 }
+
