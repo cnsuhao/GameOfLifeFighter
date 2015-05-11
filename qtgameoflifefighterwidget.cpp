@@ -15,7 +15,8 @@ QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   : QWidget(parent),
     ui(new Ui::QtGameOfLifeFighterWidget),
     m_pixmap(width,height),
-    m_grid(width,height)
+    m_grid(width,height),
+    m_color_map{}
 {
   ui->setupUi(this);
   OnTimer();
@@ -33,6 +34,12 @@ QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
   delete ui;
 }
 
+std::map<int,QColor> QtGameOfLifeFighterWidget::CreateColorMap() noexcept
+{
+  std::map<int,QColor> m;
+  return m;
+}
+
 void QtGameOfLifeFighterWidget::OnTimer()
 {
   //m_grid.Next();
@@ -44,6 +51,7 @@ void QtGameOfLifeFighterWidget::OnTimer()
   {
     for (int x=0; x!=width; ++x)
     {
+
       image.setPixel(x,y,qRgb(x,y,x+y));
     }
   }

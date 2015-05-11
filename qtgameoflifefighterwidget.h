@@ -1,15 +1,10 @@
-#ifndef QTPAPERROCKSCISSORSWIDGET_H
-#define QTPAPERROCKSCISSORSWIDGET_H
+#ifndef QTGAMEOFLIFEWIDGET_H
+#define QTGAMEOFLIFEWIDGET_H
 
+#include <map>
 #include <QWidget>
 #include <QPixmap>
-
-struct Grid
-{
-  Grid(int,int) {}
-  void Next() {}
-  int Get(int,int) { return 0; }
-};
+#include "Grid.h"
 
 namespace Ui {
   class QtGameOfLifeFighterWidget;
@@ -37,9 +32,13 @@ private:
   Ui::QtGameOfLifeFighterWidget *ui;
   QPixmap m_pixmap;
   Grid m_grid;
+  std::map<int,QColor> m_color_map;
 
 private slots:
   void OnTimer();
+
+  static std::map<int,QColor> CreateColorMap() noexcept;
+
 };
 
-#endif // QTPAPERROCKSCISSORSWIDGET_H
+#endif // QTGAMEOFLIFEWIDGET_H
