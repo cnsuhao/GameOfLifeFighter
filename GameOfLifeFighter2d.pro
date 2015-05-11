@@ -44,12 +44,12 @@ CONFIG(release, debug|release) {
 
 SOURCES += qtmain.cpp \
     qtgameoflifefighterwidget.cpp \
-    Grid.cpp
+    grid.cpp
 
 FORMS += \
     qtgameoflifefighterwidget.ui
 
 HEADERS += \
     qtgameoflifefighterwidget.h \
-    Grid.h
+    grid.h
 

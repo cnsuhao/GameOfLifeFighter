@@ -1,6 +1,7 @@
 #include "Grid.h"
 
 #include <cassert>
+#include <cstdlib>
 
 Grid::Grid(const int width, const int height)
   : m_grid(height,std::vector<int>(width,0))
@@ -30,6 +31,24 @@ int Grid::Get(const int x, const int y) const
   assert(x >= 0);
   assert(x < static_cast<int>(m_grid[y].size()));
   return m_grid[y][x];
+}
+
+int Grid::GetHeight() const
+{
+  return static_cast<int>(m_grid.size());
+}
+
+int Grid::GetWidth() const
+{
+  assert(!m_grid.empty());
+  return static_cast<int>(m_grid[0].size());
+}
+
+void Grid::Next()
+{
+  const int x{std::rand() % GetWidth()};
+  const int y{std::rand() % GetHeight()};
+  Set(x,y,1);
 }
 
 

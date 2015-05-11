@@ -6,8 +6,10 @@
 struct Grid
 {
   Grid(const int width, const int height);
-  void Set(const int x, const int y, const int i);
   int Get(const int x, const int y) const;
+  int GetHeight() const;
+  int GetWidth() const;
+  void Set(const int x, const int y, const int i);
   void Next();
 
   private:
