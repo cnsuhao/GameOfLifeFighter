@@ -27,3 +27,5 @@
 *.out
 *.app
 *.pro.user
+/GameOfLifeFighter/bin/*
+/GameOfLifeFighter/test/test/bin/*
