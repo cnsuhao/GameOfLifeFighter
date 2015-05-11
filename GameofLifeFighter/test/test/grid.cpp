@@ -105,6 +105,9 @@ void Grid::Next()
   // Any dead cell with exactly three live neighbours becomes a live cell
 
   //STUB:
+
+  std::vector<std::vector<int>> grid_temp(m_grid.size(),std::vector<int>(m_grid[0].size(),0));
+
   for(int i = 0; i < static_cast<int>(m_grid[0].size()); ++i)
     {
     for(int j = 0; j < static_cast<int>(m_grid.size()); ++j)
@@ -115,15 +118,19 @@ void Grid::Next()
             {
                 if(temp_neighbours < 2)
                     {
-                    m_grid[j][i] = 0;
+                    grid_temp[j][i] = 0;
                     }
                 else if(temp_neighbours == 2 || temp_neighbours ==  3)
                     {
-                    m_grid[j][i] = 1;
+                    grid_temp[j][i] = 1;
                     }
                 else if(temp_neighbours > 3)
                     {
-                    m_grid[j][i] = 0;
+                    grid_temp[j][i] = 0;
+                    }
+                 else
+                    {
+                    grid_temp[j][i] = m_grid[j][i];
                     }
             }
 
@@ -132,12 +139,17 @@ void Grid::Next()
                 assert(temp_status == 0);
                 if(temp_neighbours == 3)
                 {
-                m_grid[j][i] = 1;
+                grid_temp[j][i] = 1;
+                }
+                else
+                {
+                grid_temp[j][i] = m_grid[j][i];
                 }
             }
         }
     }
 
+m_grid = grid_temp;
 }
 
 void Grid::Test() noexcept
