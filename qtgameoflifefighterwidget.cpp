@@ -32,7 +32,7 @@ QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
     //Put the dialog in the screen center
     const QRect screen = QApplication::desktop()->screenGeometry();
 
-    this->setGeometry(0,0,screen.height() * 6 / 24,screen.height() * 20 / 24);
+    this->setGeometry(0,0,screen.height() * 20 / 24,screen.height() * 6 / 24);
     this->move( screen.center() - this->rect().center() );
   }
   //Start a timer

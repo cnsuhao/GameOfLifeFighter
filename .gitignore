@@ -29,3 +29,5 @@
 *.pro.user
 /GameOfLifeFighter/bin/*
 /GameOfLifeFighter/test/test/bin/*
+/Urho3D/*
+/Urho3d/*

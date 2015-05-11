@@ -19,8 +19,8 @@ class QtGameOfLifeFighterWidget : public QWidget
 
 public:
   explicit QtGameOfLifeFighterWidget(
-    const int width = 60,
-    const int height = 200,
+    const int width = 200,
+    const int height = 60,
     QWidget *parent = 0
   );
   QtGameOfLifeFighterWidget(const QtGameOfLifeFighterWidget&) = delete;
