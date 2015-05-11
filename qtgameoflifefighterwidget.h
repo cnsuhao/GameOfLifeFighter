@@ -5,7 +5,7 @@
 #include <map>
 #include <QWidget>
 #include <QPixmap>
-#include "grid.h"
+#include "game.h"
 
 namespace Ui {
   class QtGameOfLifeFighterWidget;
@@ -34,7 +34,7 @@ protected:
 private:
   Ui::QtGameOfLifeFighterWidget *ui;
   QPixmap m_pixmap;
-  Grid m_grid;
+  Game m_game;
   std::map<int,QColor> m_color_map;
   std::set<int> m_keys_pressed;
   int m_x1;

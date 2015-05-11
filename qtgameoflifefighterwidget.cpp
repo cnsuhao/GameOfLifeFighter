@@ -16,7 +16,7 @@ QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   : QWidget(parent),
     ui(new Ui::QtGameOfLifeFighterWidget),
     m_pixmap(width,height),
-    m_grid(width,height),
+    m_game(width,height),
     m_color_map{},
     m_keys_pressed{},
     m_x1{width / 2},
@@ -65,23 +65,23 @@ void QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
 
 void QtGameOfLifeFighterWidget::OnTimer()
 {
-  m_grid.Next();
+  m_game.Next();
 
   for (const auto key: m_keys_pressed)
   {
     switch (key)
     {
-      case Qt::Key_A: m_x1 = (m_x1 - 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
-      case Qt::Key_D: m_x1 = (m_x1 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
-      case Qt::Key_W: m_y1 = (m_y1 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
-      case Qt::Key_S: m_y1 = (m_y1 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
-      case Qt::Key_Q: m_grid.Set(m_x1,m_y1,1); break;
+      case Qt::Key_A: m_x1 = (m_x1 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_D: m_x1 = (m_x1 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_W: m_y1 = (m_y1 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_S: m_y1 = (m_y1 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_Q: m_game.Set(m_x1,m_y1,1); break;
 
-      case Qt::Key_J: m_x2 = (m_x2 - 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
-      case Qt::Key_L: m_x2 = (m_x2 + 1 + m_grid.GetWidth()) % m_grid.GetWidth(); break;
-      case Qt::Key_I: m_y2 = (m_y2 - 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
-      case Qt::Key_K: m_y2 = (m_y2 + 1 + m_grid.GetHeight()) % m_grid.GetHeight(); break;
-      case Qt::Key_U: m_grid.Set(m_x2,m_y2,1); break;
+      case Qt::Key_J: m_x2 = (m_x2 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_L: m_x2 = (m_x2 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_I: m_y2 = (m_y2 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_K: m_y2 = (m_y2 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_U: m_game.Set(m_x2,m_y2,1); break;
     }
   }
 
@@ -92,7 +92,7 @@ void QtGameOfLifeFighterWidget::OnTimer()
   {
     for (int x=0; x!=width; ++x)
     {
-      const auto i = m_grid.Get(x,y);
+      const auto i = m_game.Get(x,y);
       image.setPixel(x,y,
         i == 0 ? qRgb(0,0,0) : qRgb(255,255,255)
       );
