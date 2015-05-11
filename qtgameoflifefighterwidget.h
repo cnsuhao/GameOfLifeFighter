@@ -4,7 +4,7 @@
 #include <map>
 #include <QWidget>
 #include <QPixmap>
-#include "Grid.h"
+#include "grid.h"
 
 namespace Ui {
   class QtGameOfLifeFighterWidget;

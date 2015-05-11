@@ -42,8 +42,7 @@ std::map<int,QColor> QtGameOfLifeFighterWidget::CreateColorMap() noexcept
 
 void QtGameOfLifeFighterWidget::OnTimer()
 {
-  //m_grid.Next();
-
+  m_grid.Next();
   const int height{m_pixmap.height()};
   const int width{m_pixmap.width()};
   QImage image(width,height,QImage::Format_RGB32);
@@ -51,8 +50,10 @@ void QtGameOfLifeFighterWidget::OnTimer()
   {
     for (int x=0; x!=width; ++x)
     {
-
-      image.setPixel(x,y,qRgb(x,y,x+y));
+      const auto i = m_grid.Get(x,y);
+      image.setPixel(x,y,
+        i == 0 ? qRgb(0,0,0) : qRgb(255,255,255)
+      );
     }
   }
   m_pixmap = QPixmap::fromImage(image);
