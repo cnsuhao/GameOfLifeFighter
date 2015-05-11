@@ -176,4 +176,17 @@ void Grid::Test() noexcept
     g.Set(1,2,42);
     assert(g.Get(1,2) == 42);
   }
+  //Add a block
+  {
+    Grid g(40,40);
+    g.Set(11,11,11);
+    g.Set(11,12,11);
+    g.Set(12,11,11);
+    g.Set(12,12,11);
+    g.Next();
+    assert(g.Get(11,11) == 1);
+    assert(g.Get(11,12) == 1);
+    assert(g.Get(12,11) == 1);
+    assert(g.Get(12,12) == 1);
+  }
 }
