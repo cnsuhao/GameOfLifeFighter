@@ -4,11 +4,20 @@
 #include <cstdlib>
 
 Game::Game(const int width, const int height)
-  : m_grid(width,height)
+  : m_grid(width,height),
+    m_hangars{CreateInitialHangars(width,height)}
 {
   #ifndef NDEBUG
   Test();
   #endif
+}
+
+std::vector<Hangar> Game::CreateInitialHangars(const int width, const int height)
+{
+  assert(width > 0);
+  assert(height > 0);
+  std::vector<Hangar> v;
+  return v;
 }
 
 void Game::Set(const int x, const int y, const int i)

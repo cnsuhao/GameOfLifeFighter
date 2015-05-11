@@ -9,7 +9,8 @@ Grid::Grid(const int width, const int height)
 {
   #ifndef NDEBUG
   Test();
-  Create_block();
+  //Create_block();
+  Create_glider();
   #endif
 }
 
@@ -161,7 +162,7 @@ void Grid::Test() noexcept
   }
   //Get and set must be symmetric
   {
-    Grid g(4,3);
+    Grid g(60,200);
     g.Set(1,2,42);
     assert(g.Get(1,2) == 42);
   }
