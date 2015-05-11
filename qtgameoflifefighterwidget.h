@@ -41,6 +41,19 @@ private:
   int m_y1;
   int m_x2;
   int m_y2;
+
+  static void Blend(
+    QImage& image,
+    const int x, const int y,
+    const int r, const int g, const int b
+  );
+  static void Blend(
+    QImage& image,
+    const int x, const int y,
+    const QColor color
+  );
+  static QColor ToColor(const Player player) noexcept;
+
 private slots:
   void OnTimer();
 

@@ -9,7 +9,7 @@ Grid::Grid(const int width, const int height)
   #ifndef NDEBUG
   Test();
   Create_glider();
-   #endif
+  #endif
 }
 
 void Grid::Set(const int x, const int y, const int i)
