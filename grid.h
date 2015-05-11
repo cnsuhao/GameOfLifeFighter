@@ -17,6 +17,7 @@ struct Grid
   //Y-X ordered
   std::vector<std::vector<int>> m_grid;
   void Create_glider();
+  void Create_block();
 
   #ifndef NDEBUG
   static void Test() noexcept;

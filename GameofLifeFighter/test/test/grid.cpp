@@ -9,7 +9,7 @@ Grid::Grid(const int width, const int height)
 {
   #ifndef NDEBUG
   Test();
-  Create_glider();
+  Create_block();
   #endif
 }
 
@@ -80,6 +80,19 @@ m_grid[9][8] = 1;
 m_grid[9][9] = 1;
 m_grid[8][9] = 1;
 m_grid[7][8] = 1;
+}
+
+void Grid::Create_block()
+{
+int hight = GetHeight();
+int width = GetWidth();
+assert(hight > 20);
+assert(width > 20);
+
+m_grid[9][9] = 1;
+m_grid[8][8] = 1;
+m_grid[9][8] = 1;
+m_grid[8][9] = 1;
 }
 
 void Grid::Next()
