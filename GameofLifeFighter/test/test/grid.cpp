@@ -9,9 +9,8 @@ Grid::Grid(const int width, const int height)
 {
   #ifndef NDEBUG
   Test();
+  Create_glider();
   #endif
-
-
 }
 
 void Grid::Set(const int x, const int y, const int i)
@@ -51,9 +50,9 @@ int Grid::Return_active_neighbours(const int x, const int y)
               const int y_co = y+q;
               const int x_co = x+k;
               assert(y_co >= 0);
-              assert(y_co < m_grid.size());
+              assert(y_co < static_cast<int>(m_grid.size()));
               assert(x_co >= 0);
-              assert(x_co < m_grid[y_co].size());
+              assert(x_co < static_cast<int>(m_grid[y_co].size()));
             if(m_grid[y_co][x_co] == 1) {counter++;}
             }
         }
@@ -68,6 +67,19 @@ int Grid::GetWidth() const
 {
   assert(!m_grid.empty());
   return static_cast<int>(m_grid[0].size());
+}
+
+void Grid::Create_glider()
+{
+int hight = GetHeight();
+int width = GetWidth();
+assert(hight > 20);
+assert(width > 20);
+m_grid[9][7] = 1;
+m_grid[9][8] = 1;
+m_grid[9][9] = 1;
+m_grid[8][9] = 1;
+m_grid[7][8] = 1;
 }
 
 void Grid::Next()
@@ -114,7 +126,6 @@ void Grid::Next()
     }
 
 }
-
 
 void Grid::Test() noexcept
 {
