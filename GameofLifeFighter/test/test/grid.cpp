@@ -8,7 +8,7 @@ Grid::Grid(const int width, const int height)
 {
   #ifndef NDEBUG
   Test();
-  Create_blinker();
+  Create_glider();
    #endif
 }
 
@@ -46,13 +46,13 @@ int Grid::Return_active_neighbours(const int x, const int y)
         {
         for(int k = -1; k < 2; ++k)
             {
-              const int y_co = y+q;
-              const int x_co = x+k;
-              assert(y_co >= 0);
-              assert(y_co < static_cast<int>(m_grid.size()));
-              assert(x_co >= 0);
-              assert(x_co < static_cast<int>(m_grid[y_co].size()));
-            if(m_grid[y_co][x_co] == 1) {counter++;}
+                const int y_co = y+q;
+                const int x_co = x+k;
+                assert(y_co >= 0);
+                assert(y_co < static_cast<int>(m_grid.size()));
+                assert(x_co >= 0);
+                assert(x_co < static_cast<int>(m_grid[y_co].size()));
+                if(m_grid[y_co][x_co] == 1) {counter++;}
             }
         }
     return counter-1;
@@ -154,7 +154,7 @@ void Grid::Next()
                 }
                 else
                 {
-                grid_temp[j][i] = m_grid[j][i];
+                grid_temp[j][i] = 0;
                 }
             }
         }
