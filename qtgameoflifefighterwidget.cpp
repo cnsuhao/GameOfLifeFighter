@@ -35,7 +35,7 @@ QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
 
 void QtGameOfLifeFighterWidget::OnTimer()
 {
-  m_grid.Next();
+  //m_grid.Next();
 
   const int height{m_pixmap.height()};
   const int width{m_pixmap.width()};

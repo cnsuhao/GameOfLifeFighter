@@ -4,6 +4,13 @@
 #include <QWidget>
 #include <QPixmap>
 
+struct Grid
+{
+  Grid(int,int) {}
+  void Next() {}
+  int Get(int,int) { return 0; }
+};
+
 namespace Ui {
   class QtGameOfLifeFighterWidget;
 }

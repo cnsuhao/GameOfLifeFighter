@@ -1,5 +1,5 @@
 #include "Grid.h"
-
+/*
 Grid::Grid(int x; int y; int value)
 {
 x_size = x;
@@ -12,3 +12,4 @@ Grid::Set(int x; int y; int i)
 
 }
 
+*/
