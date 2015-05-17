@@ -24,8 +24,9 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
 
 void Cell::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 {
-    float cameraAngle = rootNode_->GetWorldDirection().DotProduct(rootNode_->GetWorldPosition() - masterControl_->world.camera->rootNode_->GetWorldPosition());
+    //Doesn't seem to work
+    /*float cameraAngle = rootNode_->GetWorldDirection().DotProduct(rootNode_->GetWorldPosition() - masterControl_->world.camera->GetWorldPosition());
     bool facingCamera = cameraAngle > -8.0f && cameraAngle < 8.0f;
     if (!facingCamera) rootNode_->SetEnabledRecursive(false);
-    else rootNode_->SetEnabledRecursive(true);
+    else rootNode_->SetEnabledRecursive(true);*/
 }

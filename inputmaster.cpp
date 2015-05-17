@@ -32,8 +32,8 @@ void InputMaster::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
     if (input->GetKeyDown('D')) masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f,-timeStep*(23.0f+64.0f*input->GetKeyDown(KEY_SHIFT)), 0.0f));
     if (input->GetKeyDown('A')) masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f, timeStep*(23.0f+64.0f*input->GetKeyDown(KEY_SHIFT)), 0.0f));
     //Zoom in and out
-    if (input->GetKeyDown('Q')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, timeStep*(23.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
-    if (input->GetKeyDown('E')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, -timeStep*(23.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
+    if (input->GetKeyDown('Q')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
+    if (input->GetKeyDown('E')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, -timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
 
     //Rotate camera left and right
     /*if (input->GetKeyDown('D')) masterControl_->world.camera->rigidBody_->ApplyTorque(-timeStep*(420.0f+640.0f*input->GetKeyDown(KEY_SHIFT))*Vector3::UP);

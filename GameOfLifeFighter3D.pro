@@ -1,4 +1,4 @@
-LIBS += /home/frode/Sync/Source/Urho3D/lib/libUrho3D.a \
+LIBS += Urho3D/lib/libUrho3D.a \
     -lpthread \
     -lSDL \
     -ldl \

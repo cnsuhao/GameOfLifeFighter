@@ -18,9 +18,10 @@ class CellRing : public Object
     friend class CellMaster;
     friend class Cell;
 public:
-    CellRing(Context *context, MasterControl *masterControl, CellMaster *cellMaster, int circumference);
+    CellRing(Context *context, MasterControl *masterControl, CellMaster *cellMaster, int circumference, int ringNumber);
 private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
+    int ringNumber_;
     void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
 };
