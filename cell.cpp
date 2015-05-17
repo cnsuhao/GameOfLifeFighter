@@ -4,6 +4,7 @@
 #include <Urho3D/Graphics/Material.h>
 #include "cell.h"
 #include "cellring.h"
+#include "golfcam.h"
 
 Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
     Object(context),
@@ -13,16 +14,18 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
     SubscribeToEvent(E_SCENEUPDATE, HANDLER(Cell, HandleSceneUpdate));
 
     rootNode_ = cellRing ->rootNode_->CreateChild("Cell");
-    rootNode_->SetPosition(0.0f, 0.0f, 1.0f);
-    rootNode_->Rotate(Quaternion(90.0f, 0.0f, 0.0f));
-    rootNode_->SetScale(0.4f);
+    rootNode_->SetPosition(0.0f, 0.0f, 5.5f);
+    rootNode_->Rotate(Quaternion(-90.0f, 0.0f, 0.0f));
+    rootNode_->SetScale(0.23f);
     model_ = rootNode_->CreateComponent<StaticModel>();
     model_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Cell.mdl"));
-    model_->SetMaterial(masterControl_->cache_->GetTempResource<Material>("Resources/Basic.xml"));
+    model_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Basic.xml"));
 }
 
 void Cell::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 {
-    /*float alpha = Clamp((0.1f*rootNode_->GetPosition().Length())-1.0f, 0.0f, 1.0f);
-    model_->GetMaterial(0)->SetShaderParameter("MatDiffColor", Color(1.0f, 1.0f, 1.0f, alpha));*/
+    float cameraAngle = rootNode_->GetWorldDirection().DotProduct(rootNode_->GetWorldPosition() - masterControl_->world.camera->rootNode_->GetWorldPosition());
+    bool facingCamera = cameraAngle > -8.0f && cameraAngle < 8.0f;
+    if (!facingCamera) rootNode_->SetEnabledRecursive(false);
+    else rootNode_->SetEnabledRecursive(true);
 }

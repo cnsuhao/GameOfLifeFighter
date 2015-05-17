@@ -164,16 +164,27 @@ void MasterControl::CreateScene()
     physicsWorld->SetGravity(Vector3::ZERO);
     world.scene->CreateComponent<DebugRenderer>();
 
-    //Create a point light. Enable cascaded shadows on it
-    Node* lightNode = world.scene->CreateChild("Sun");
-    lightNode->SetPosition(10.0f, 10.0f, -5.0f);
-    Light* light = lightNode->CreateComponent<Light>();
-    light->SetLightType(LIGHT_DIRECTIONAL);
-    light->SetBrightness(0.5f);
-    light->SetRange(23.0f);
-    light->SetColor(Color(0.1f, 0.5f, 1.0f));
-    light->SetCastShadows(true);
-    light->SetShadowBias(BiasParameters(0.00025f, 0.5f));
+    //Create static lights
+    Node* blueLightNode = world.scene->CreateChild("Sun");
+    blueLightNode->SetPosition(10.0f, 2.0f, 0.0f);
+    blueLightNode->LookAt(Vector3::ZERO);
+    Light* blueLight = blueLightNode->CreateComponent<Light>();
+    blueLight->SetLightType(LIGHT_DIRECTIONAL);
+    blueLight->SetBrightness(0.5f);
+    blueLight->SetRange(23.0f);
+    blueLight->SetColor(Color(0.1f, 0.5f, 1.0f));
+    blueLight->SetCastShadows(false);
+
+    Node* redLightNode = world.scene->CreateChild("Sun");
+    redLightNode->SetPosition(-10.0f, 2.0f, 0.0f);
+    redLightNode->LookAt(Vector3::ZERO);
+    Light* redLight = redLightNode->CreateComponent<Light>();
+    redLight->SetLightType(LIGHT_DIRECTIONAL);
+    redLight->SetBrightness(0.5f);
+    redLight->SetRange(23.0f);
+    redLight->SetColor(Color(1.0f, 0.5f, 0.1f));
+    redLight->SetCastShadows(false);
+
     // Finally create one model (pyramid shape) and a StaticModel to display it from scratch
         // Note: there are duplicated vertices to enable face normals. We will calculate normals programmatically
     int width = 12;

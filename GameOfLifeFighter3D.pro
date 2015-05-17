@@ -1,4 +1,4 @@
-LIBS += Urho3D/lib/libUrho3D.a \
+LIBS += /home/frode/Sync/Source/Urho3D/lib/libUrho3D.a \
     -lpthread \
     -lSDL \
     -ldl \
@@ -7,8 +7,8 @@ LIBS += Urho3D/lib/libUrho3D.a \
 DEFINES += URHO3D_COMPILE_QT
 
 INCLUDEPATH += \
-    Urho3D/include \
-    Urho3D/include/Urho3D/ThirdParty \
+    Urho3D/include/ \
+    Urho3D/include/Urho3D/ThirdParty/ \
 
 TEMPLATE = app
 CONFIG += console

@@ -29,12 +29,14 @@ public:
     SharedPtr<Viewport> viewport_;
     SharedPtr<RenderPath> effectRenderPath_;
 
+    SharedPtr<Node> rootNode_;
+
     Vector3 GetWorldPosition();
     Quaternion GetRotation();
 private:
     MasterControl* masterControl_;
     void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
-    SharedPtr<Node> rootNode_;
+
     SharedPtr<Node> camNode_;
 
     SharedPtr<RigidBody> rigidBody_;

@@ -26,7 +26,7 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl):
     masterControl_ = masterControl;
     SubscribeToEvent(E_SCENEUPDATE, HANDLER(GOLFCam, HandleSceneUpdate));
 
-    float viewRange = 20.0f;
+    float viewRange = 12.0f;
 
     //Create the camera. Limit far clip distance to match the fog
     rootNode_ = masterControl_->world.scene->CreateChild("CameraTarget");
@@ -36,7 +36,7 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl):
     camera_->SetNearClip(0.0f);
     //Set an initial position for the camera scene node above the origin
     rootNode_->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-    camNode_->SetPosition(Vector3(0.0f, 0.0f, -42.0f));
+    camNode_->SetPosition(Vector3(0.0f, 0.0f, -23.0f));
     camNode_->LookAt(Vector3::ZERO);
     rigidBody_ = rootNode_->CreateComponent<RigidBody>();
     //rigidBody_->SetAngularDamping(0.0f);
@@ -46,7 +46,7 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl):
 
     Light* light = camNode_->CreateChild("LightNode")->CreateComponent<Light>();
     light->SetColor(Color(1.0f, 1.0f, 1.0f));
-    light->SetBrightness(1.0f);
+    light->SetBrightness(0.2f);
     light->SetLightType(LIGHT_POINT);
     light->SetRange(50.0f);
 
@@ -54,7 +54,7 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl):
 
     zone_ = rootNode_->CreateComponent<Zone>();
     zone_->SetBoundingBox(BoundingBox(Vector3(-100.0f, -50.0f, -100.0f), Vector3(100.0f, 50.0f, 100.0f)));
-    zone_->SetFogColor(Color(0.5f, 0.5f, 0.5f, 1.0f));
+    zone_->SetFogColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
     zone_->SetFogStart(10.0f);
     zone_->SetFogEnd(viewRange);
 }
