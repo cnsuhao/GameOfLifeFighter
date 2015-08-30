@@ -1,3 +1,21 @@
+/* G.O.L.F.
+// Copyright (C) 2015 LucKey Productions (luckeyproductions.nl)
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #include <Urho3D/Urho3D.h>
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Scene/SceneEvents.h>
@@ -34,6 +52,7 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl):
     camera_ = camNode_->CreateComponent<Camera>();
     camera_->SetFarClip(viewRange);
     camera_->SetNearClip(0.1f);
+
     zone_ = rootNode_->CreateComponent<Zone>();
     zone_->SetBoundingBox(BoundingBox(Vector3(-100.0f, -50.0f, -100.0f), Vector3(100.0f, 50.0f, 100.0f)));
     zone_->SetFogColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
@@ -79,13 +98,13 @@ void GOLFCam::SetupViewport()
     viewport_ = viewport;
 
     //Add anti-asliasing and bloom
-    effectRenderPath_ = viewport_->GetRenderPath()->Clone();
+    /*effectRenderPath_ = viewport_->GetRenderPath()->Clone();
     effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
     effectRenderPath_->SetEnabled("FXAA3", true);
     effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/Bloom.xml"));
     effectRenderPath_->SetShaderParameter("BloomThreshold", 0.5f);
     effectRenderPath_->SetEnabled("Bloom", true);    
-    viewport_->SetRenderPath(effectRenderPath_);
+    viewport_->SetRenderPath(effectRenderPath_);*/
     renderer->SetViewport(0, viewport);
 }
 

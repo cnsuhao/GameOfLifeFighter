@@ -16,32 +16,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#include "helper.h"
 
-#include "mastercontrol.h"
-
-namespace Urho3D {
-class Drawable;
-class Node;
-class Scene;
-class Camera;
+float GOLF::Distance(const Urho3D::Vector3 from, const Urho3D::Vector3 to){
+    return (to - from).Length();
 }
 
-using namespace Urho3D;
+unsigned GOLF::IntVector2ToHash(Urho3D::IntVector2 vec) { return (Urho3D::MakeHash(vec.x_) & 0xffff) | (Urho3D::MakeHash(vec.y_) << 16); }
 
-class Cell;
-
-class CellMaster : public Object
-{
-    friend class CellRing;
-    OBJECT(CellMaster);
-public:
-    CellMaster(Context *context, MasterControl *masterControl);
-    void AddCellToMap(IntVector2 coords, Cell *cell);
-private:
-    MasterControl* masterControl_;
-    SharedPtr<Node> rootNode_;
-
-    HashMap<IntVector2, SharedPtr<Cell> > cellMap_;
-    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
-};
+Urho3D::Vector3 GOLF::Scale(const Urho3D::Vector3 lhs, const Urho3D::Vector3 rhs) {
+    return Urho3D::Vector3(lhs.x_ * rhs.x_, lhs.y_ * rhs.y_, lhs.z_ * rhs.z_);
+}

@@ -1,4 +1,4 @@
-/* G.O.L.F.
+/* GOLF
 // Copyright (C) 2015 LucKey Productions (luckeyproductions.nl)
 //
 // This program is free software; you can redistribute it and/or modify
@@ -16,32 +16,27 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#ifndef GOLF_HELPER_H
+#define GOLF_HELPER_H
 
-#include "mastercontrol.h"
+#include <Urho3D/Urho3D.h>
+#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Container/HashBase.h>
 
-namespace Urho3D {
-class Drawable;
-class Node;
-class Scene;
-class Camera;
+namespace GOLF {
+
+template <class T>
+T Cycle(T x, T min, T max){
+    return (x < min) ?
+                x + (max - min) * abs(ceil((min - x) / (max - min)))
+              : (x > max) ?
+                x - (max - min) * abs(ceil((x - max) / (max - min)))
+                  : x;
 }
 
-using namespace Urho3D;
+float Distance(const Urho3D::Vector3 from, const Urho3D::Vector3 to);
+unsigned IntVector2ToHash(Urho3D::IntVector2 vec);
+Urho3D::Vector3 Scale(const Urho3D::Vector3 lhs, const Urho3D::Vector3 rhs);
+}
 
-class Cell;
-
-class CellMaster : public Object
-{
-    friend class CellRing;
-    OBJECT(CellMaster);
-public:
-    CellMaster(Context *context, MasterControl *masterControl);
-    void AddCellToMap(IntVector2 coords, Cell *cell);
-private:
-    MasterControl* masterControl_;
-    SharedPtr<Node> rootNode_;
-
-    HashMap<IntVector2, SharedPtr<Cell> > cellMap_;
-    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
-};
+#endif // GOLF_HELPER_H

@@ -1,3 +1,21 @@
+/* G.O.L.F.
+// Copyright (C) 2015 LucKey Productions (luckeyproductions.nl)
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #include <Urho3D/Urho3D.h>
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Scene/SceneEvents.h>
@@ -32,8 +50,8 @@ void InputMaster::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
     if (input->GetKeyDown('D')) masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f,-timeStep*(23.0f+64.0f*input->GetKeyDown(KEY_SHIFT)), 0.0f));
     if (input->GetKeyDown('A')) masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f, timeStep*(23.0f+64.0f*input->GetKeyDown(KEY_SHIFT)), 0.0f));
     //Zoom in and out
-    if (input->GetKeyDown('Q')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
-    if (input->GetKeyDown('E')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, -timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
+    if (input->GetKeyDown('Q')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
+    if (input->GetKeyDown('E')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, -timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
 
     //Rotate camera left and right
     /*if (input->GetKeyDown('D')) masterControl_->world.camera->rigidBody_->ApplyTorque(-timeStep*(420.0f+640.0f*input->GetKeyDown(KEY_SHIFT))*Vector3::UP);
