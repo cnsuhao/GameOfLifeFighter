@@ -24,11 +24,13 @@
 #include <Urho3D/IO/FileSystem.h>
 
 #include "inputmaster.h"
+#include "cellmaster.h"
 #include "golfcam.h"
 
 InputMaster::InputMaster(Context* context, MasterControl* masterControl) : Object(context),
     masterControl_{masterControl},
-    input_{GetSubsystem<Input>()}
+    input_{GetSubsystem<Input>()},
+    camSpeed_{Vector2::ZERO}
 {
     //Subscribe mouse down event
     SubscribeToEvent(E_SCENEUPDATE, HANDLER(InputMaster, HandleSceneUpdate));
@@ -46,12 +48,21 @@ void InputMaster::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
     float timeStep = eventData[P_TIMESTEP].GetFloat();
 
     Input* input = GetSubsystem<Input>();
+    float accelerate = 42.0f * (1.0f + 2.0f*input->GetKeyDown(KEY_SHIFT));
     //Rotate camera left and right
-    if (input->GetKeyDown('D')) masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f,-timeStep*(23.0f+64.0f*input->GetKeyDown(KEY_SHIFT)), 0.0f));
-    if (input->GetKeyDown('A')) masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f, timeStep*(23.0f+64.0f*input->GetKeyDown(KEY_SHIFT)), 0.0f));
+    if (input->GetKeyDown('A')) camSpeed_ += Vector2::RIGHT * timeStep * accelerate;
+    if (input->GetKeyDown('D')) camSpeed_ += Vector2::LEFT * timeStep * accelerate;
+    if (input->GetKeyDown('S')) camSpeed_ += Vector2::UP * timeStep * accelerate * 0.05f;
+    if (input->GetKeyDown('W')) camSpeed_ += Vector2::DOWN * timeStep * accelerate * 0.05f;
+
+    masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f, timeStep*camSpeed_.x_, 0.0f));
+    masterControl_->cellMaster_->Rotate(camSpeed_.y_);
+
+    camSpeed_ *= 1.0f - 2.3f * timeStep;
+
     //Zoom in and out
-    if (input->GetKeyDown('Q')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
-    if (input->GetKeyDown('E')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, -timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
+//    if (input->GetKeyDown('Q')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
+//    if (input->GetKeyDown('E')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, -timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
 
     //Rotate camera left and right
     /*if (input->GetKeyDown('D')) masterControl_->world.camera->rigidBody_->ApplyTorque(-timeStep*(420.0f+640.0f*input->GetKeyDown(KEY_SHIFT))*Vector3::UP);

@@ -199,7 +199,7 @@ void MasterControl::CreateScene()
 
     //CreateFromScratchObject(Vector3::ZERO);
 
-    new CellMaster(context_, this);
+    cellMaster_ = new CellMaster(context_, this);
 
     //Set cascade splits at 10, 50, 200 world unitys, fade shadows at 80% of maximum shadow distance
     //light->SetShadowCascade(CascadeParameters(7.0f, 23.0f, 42.0f, 500.0f, 0.8f));

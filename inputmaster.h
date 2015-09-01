@@ -39,6 +39,7 @@ public:
     WeakPtr<Node> firstHit_;
 
 private:
+    Vector2 camSpeed_;
     MasterControl* const masterControl_;
     Input* const input_;
 

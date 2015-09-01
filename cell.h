@@ -34,6 +34,8 @@ class Camera;
 
 using namespace Urho3D;
 
+class CellRing;
+
 class Cell : public Object
 {
     OBJECT(Cell);
