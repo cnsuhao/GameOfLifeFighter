@@ -1,6 +1,5 @@
 LIBS += ../GameOfLifeFighter/Urho3D/lib/libUrho3D.a \
     -lpthread \
-    -lSDL \
     -ldl \
     -lGL
 
