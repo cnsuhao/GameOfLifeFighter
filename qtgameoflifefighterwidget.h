@@ -37,10 +37,6 @@ private:
   Game m_game;
   std::map<int,QColor> m_color_map;
   std::set<int> m_keys_pressed;
-  int m_x1;
-  int m_y1;
-  int m_x2;
-  int m_y2;
 
   static void Blend(
     QImage& image,

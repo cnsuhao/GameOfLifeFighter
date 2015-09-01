@@ -3,6 +3,8 @@
 
 #include "player.h"
 
+///Hangar is like a Grid without dynamics
+///Grid
 struct Hangar
 {
   Hangar(

@@ -7,7 +7,7 @@ struct Grid
 {
   Grid(const int width, const int height);
   int Get(const int x, const int y) const;
-  int GetHeight() const;
+  int GetHeight() const noexcept;
   int GetWidth() const;
   int Return_active_neighbours(const int x, const int y);
   void Set(const int x, const int y, const int i);
