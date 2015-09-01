@@ -20,11 +20,7 @@ QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
     m_pixmap(width,height),
     m_game(width,height),
     m_color_map{},
-    m_keys_pressed{},
-    m_x1{width / 2},
-    m_y1{height * 1 / 4},
-    m_x2{width / 2},
-    m_y2{height * 3 / 4}
+    m_keys_pressed{}
 {
   ui->setupUi(this);
   OnTimer();

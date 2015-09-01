@@ -6,9 +6,11 @@ LIBS += ../GameOfLifeFighter/Urho3D/lib/libUrho3D.a \
 
 DEFINES += URHO3D_COMPILE_QT
 
+QMAKE_CXXFLAGS += -std=c++11
+
 INCLUDEPATH += \
-    ../GameOfLifeFighter/Urho3D/include/ \
-    ../GameOfLifeFighter/Urho3D/include/Urho3D/ThirdParty/ \
+    ../GameOfLifeFighter/Urho3D/include \
+    ../GameOfLifeFighter/Urho3D/include/Urho3D/ThirdParty
 
 TEMPLATE = app
 CONFIG += console

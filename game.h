@@ -12,8 +12,8 @@ struct Game
   ///Obtain the Grid its value
   int GetGrid(const int x, const int y) const;
   const std::vector<Hangar>& GetHangars() const noexcept { return m_hangars; }
-  int GetHeight() const;
-  int GetWidth() const;
+  int GetHeight() const noexcept { return 60; }
+  int GetWidth() const noexcept { return 200; }
 
   void Set(const int x, const int y, const int i);
   void Next();
@@ -21,7 +21,7 @@ struct Game
   private:
   Grid m_grid;
   std::vector<Hangar> m_hangars;
-
+  std::vector<Player> m_players;
 
   static std::vector<Hangar> CreateInitialHangars(const int width, const int height);
 
