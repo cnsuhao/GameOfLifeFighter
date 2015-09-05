@@ -1,7 +1,9 @@
-#ifndef GRID_H
-#define GRID_H
+#ifndef GAMEOFLIFEFIGHTERGRID_H
+#define GAMEOFLIFEFIGHTERGRID_H
 
 #include <vector>
+
+namespace golf {
 
 struct Grid
 {
@@ -26,4 +28,6 @@ struct Grid
   #endif
 };
 
-#endif // GRID_H
+} //~namespace golf
+
+#endif // GAMEOFLIFEFIGHTERGRID_H

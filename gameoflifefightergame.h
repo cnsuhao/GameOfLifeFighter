@@ -1,9 +1,14 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAMEOFLIFEFIGHTERGAME_H
+#define GAMEOFLIFEFIGHTERGAME_H
 
-#include "player.h"
-#include "grid.h"
-#include "hangar.h"
+#include <set>
+
+#include "gameoflifefighterkey.h"
+#include "gameoflifefighterplayer.h"
+#include "gameoflifefightergrid.h"
+#include "gameoflifefighterhangar.h"
+
+namespace golf {
 
 struct Game
 {
@@ -14,7 +19,7 @@ struct Game
   const std::vector<Hangar>& GetHangars() const noexcept { return m_hangars; }
   int GetHeight() const noexcept { return 60; }
   int GetWidth() const noexcept { return 200; }
-
+  void PressKeys(const std::set<Key>& keys);
   void Set(const int x, const int y, const int i);
   void Next();
 
@@ -30,4 +35,6 @@ struct Game
   #endif
 };
 
-#endif // GAME_H
+} //~namespace golf
+
+#endif // GAMEOFLIFEFIGHTERGAME_H

@@ -5,13 +5,15 @@
 #include <map>
 #include <QWidget>
 #include <QPixmap>
-#include "game.h"
+#include "gameoflifefightergame.h"
 
 namespace Ui {
   class QtGameOfLifeFighterWidget;
 }
 
 struct QImage;
+
+namespace golf {
 
 class QtGameOfLifeFighterWidget : public QWidget
 {
@@ -33,10 +35,10 @@ protected:
   void keyReleaseEvent(QKeyEvent *);
 private:
   Ui::QtGameOfLifeFighterWidget *ui;
-  QPixmap m_pixmap;
-  Game m_game;
   std::map<int,QColor> m_color_map;
-  std::set<int> m_keys_pressed;
+  Game m_game;
+  std::set<Key> m_keys;
+  QPixmap m_pixmap;
 
   static void Blend(
     QImage& image,
@@ -56,5 +58,7 @@ private slots:
   static std::map<int,QColor> CreateColorMap() noexcept;
 
 };
+
+} //~namespace golf
 
 #endif // QTGAMEOFLIFEWIDGET_H

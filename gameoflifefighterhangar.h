@@ -1,7 +1,9 @@
-#ifndef HANGAR_H
-#define HANGAR_H
+#ifndef GAMEOFLIFEFIGHTERHANGAR_H
+#define GAMEOFLIFEFIGHTERHANGAR_H
 
-#include "player.h"
+#include "gameoflifefighterplayer.h"
+
+namespace golf {
 
 ///Hangar is like a Grid without dynamics
 ///Grid
@@ -29,4 +31,6 @@ struct Hangar
   const Player m_player;
 };
 
-#endif // HANGAR_H
+} //~namespace golf
+
+#endif // GAMEOFLIFEFIGHTERHANGAR_H

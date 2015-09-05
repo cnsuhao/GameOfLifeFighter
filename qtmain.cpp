@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
-  QtGameOfLifeFighterWidget w;
+  golf::QtGameOfLifeFighterWidget w;
   w.show();
   return a.exec();
 }

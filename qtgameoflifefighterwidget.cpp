@@ -10,17 +10,17 @@
 #include <QDesktopWidget>
 #include "ui_qtgameoflifefighterwidget.h"
 
-QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
+golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   const int width,
   const int height,
   QWidget *parent
 )
   : QWidget(parent),
     ui(new Ui::QtGameOfLifeFighterWidget),
-    m_pixmap(width,height),
-    m_game(width,height),
     m_color_map{},
-    m_keys_pressed{}
+    m_game(width,height),
+    m_keys{},
+    m_pixmap(width,height)
 {
   ui->setupUi(this);
   OnTimer();
@@ -40,12 +40,12 @@ QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   }
 }
 
-QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
+golf::QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
 {
   delete ui;
 }
 
-void QtGameOfLifeFighterWidget::Blend(
+void golf::QtGameOfLifeFighterWidget::Blend(
   QImage& image,
   const int x, const int y,
   const QColor color
@@ -54,7 +54,7 @@ void QtGameOfLifeFighterWidget::Blend(
   Blend(image,x,y,color.red(),color.green(),color.blue());
 }
 
-void QtGameOfLifeFighterWidget::Blend(
+void golf::QtGameOfLifeFighterWidget::Blend(
   QImage& image,
   const int x, const int y,
   const int r, const int g, const int b
@@ -71,44 +71,64 @@ void QtGameOfLifeFighterWidget::Blend(
   );
 }
 
-std::map<int,QColor> QtGameOfLifeFighterWidget::CreateColorMap() noexcept
+std::map<int,QColor> golf::QtGameOfLifeFighterWidget::CreateColorMap() noexcept
 {
   std::map<int,QColor> m;
   return m;
 }
 
-void QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
+void golf::QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
 {
-  m_keys_pressed.insert(e->key());
+  switch (e->key())
+  {
+    case Qt::Key_A: m_keys.insert(Key::left1); break;
+    case Qt::Key_D: m_keys.insert(Key::right1); break;
+    case Qt::Key_W: m_keys.insert(Key::up1); break;
+    case Qt::Key_S: m_keys.insert(Key::down1); break;
+    case Qt::Key_Q: m_keys.insert(Key::set_low1); break;
+    case Qt::Key_E: m_keys.insert(Key::set_high1); break;
+    case Qt::Key_Z: m_keys.insert(Key::close_hangar1); break;
+    case Qt::Key_C: m_keys.insert(Key::open_hangar1); break;
+
+    case Qt::Key_J: m_keys.insert(Key::left2); break;
+    case Qt::Key_L: m_keys.insert(Key::right2); break;
+    case Qt::Key_I: m_keys.insert(Key::up2); break;
+    case Qt::Key_K: m_keys.insert(Key::down2); break;
+    case Qt::Key_U: m_keys.insert(Key::set_low2); break;
+    case Qt::Key_O: m_keys.insert(Key::set_high2); break;
+    case Qt::Key_M: m_keys.insert(Key::close_hangar2); break;
+    case Qt::Key_Period: m_keys.insert(Key::open_hangar2); break;
+  }
 }
 
-void QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
+void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
 {
-  m_keys_pressed.erase(e->key());
+  switch (e->key())
+  {
+    case Qt::Key_A: m_keys.erase(Key::left1); break;
+    case Qt::Key_D: m_keys.erase(Key::right1); break;
+    case Qt::Key_W: m_keys.erase(Key::up1); break;
+    case Qt::Key_S: m_keys.erase(Key::down1); break;
+    case Qt::Key_Q: m_keys.erase(Key::set_low1); break;
+    case Qt::Key_E: m_keys.erase(Key::set_high1); break;
+    case Qt::Key_Z: m_keys.erase(Key::close_hangar1); break;
+    case Qt::Key_C: m_keys.erase(Key::open_hangar1); break;
+
+    case Qt::Key_J: m_keys.erase(Key::left2); break;
+    case Qt::Key_L: m_keys.erase(Key::right2); break;
+    case Qt::Key_I: m_keys.erase(Key::up2); break;
+    case Qt::Key_K: m_keys.erase(Key::down2); break;
+    case Qt::Key_U: m_keys.erase(Key::set_low2); break;
+    case Qt::Key_O: m_keys.erase(Key::set_high2); break;
+    case Qt::Key_M: m_keys.erase(Key::close_hangar2); break;
+    case Qt::Key_Period: m_keys.erase(Key::open_hangar2); break;
+  }
 }
 
-void QtGameOfLifeFighterWidget::OnTimer()
+void golf::QtGameOfLifeFighterWidget::OnTimer()
 {
   m_game.Next();
-
-  for (const auto key: m_keys_pressed)
-  {
-    switch (key)
-    {
-      case Qt::Key_A: m_x1 = (m_x1 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_D: m_x1 = (m_x1 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_W: m_y1 = (m_y1 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_S: m_y1 = (m_y1 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_Q: m_game.Set(m_x1,m_y1,1); break;
-
-      case Qt::Key_J: m_x2 = (m_x2 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_L: m_x2 = (m_x2 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_I: m_y2 = (m_y2 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_K: m_y2 = (m_y2 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_U: m_game.Set(m_x2,m_y2,1); break;
-    }
-  }
-
+  m_game.PressKeys(m_keys);
   const int height{m_pixmap.height()};
   const int width{m_pixmap.width()};
   QImage image(width,height,QImage::Format_RGB32);
@@ -143,15 +163,17 @@ void QtGameOfLifeFighterWidget::OnTimer()
   }
 
   //Display players
-  Blend(image,m_x1,m_y1,ToColor(Player::player1));
-  Blend(image,m_x2,m_y2,ToColor(Player::player2));
+  const auto players = m_game.GetPlayers();
+  assert(players.size() == 2);
+  Blend(image,players[0].GetX(),players[0].GetY(),ToColor(Player::player1));
+  Blend(image,players[1].GetX(),players[1].GetY(),ToColor(Player::player2));
 
 
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
 }
 
-void QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
+void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
 {
   QPainter painter(this);
   painter.drawPixmap(
@@ -160,7 +182,7 @@ void QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
   );
 }
 
-QColor QtGameOfLifeFighterWidget::ToColor(const Player player) noexcept
+QColor golf::QtGameOfLifeFighterWidget::ToColor(const Player player) noexcept
 {
   switch (player)
   {

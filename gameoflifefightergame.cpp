@@ -1,10 +1,10 @@
-#include "game.h"
+#include "gameoflifefightergame.h"
 
 #include <cassert>
 #include <cstdlib>
-#include "hangar.h"
+#include "gameoflifefighterhangar.h"
 
-Game::Game()
+golf::Game::Game()
   : m_grid(GetWidth(),GetHeight()),
     m_hangars{CreateInitialHangars(width,height)}
 {
@@ -19,7 +19,7 @@ Game::Game()
 
 }
 
-std::vector<Hangar> Game::CreateInitialHangars(const int width, const int height)
+std::vector<golf::Hangar> golf::Game::CreateInitialHangars(const int width, const int height)
 {
   assert(width > 0);
   assert(height > 0);
@@ -35,7 +35,7 @@ std::vector<Hangar> Game::CreateInitialHangars(const int width, const int height
   return v;
 }
 
-void Game::Set(const int x, const int y, const int i)
+void golf::Game::Set(const int x, const int y, const int i)
 {
   assert(y >= 0);
   assert(y < GetHeight());
@@ -44,7 +44,7 @@ void Game::Set(const int x, const int y, const int i)
   m_grid.Set(x,y,i);
 }
 
-int Game::GetGrid(const int x, const int y) const
+int golf::Game::GetGrid(const int x, const int y) const
 {
   assert(y >= 0);
   assert(y < GetHeight());
@@ -53,17 +53,17 @@ int Game::GetGrid(const int x, const int y) const
   return m_grid.Get(x,y);
 }
 
-int Game::GetHeight() const
+int golf::Game::GetHeight() const
 {
   return m_grid.GetHeight();
 }
 
-int Game::GetWidth() const
+int golf::Game::GetWidth() const
 {
   return m_grid.GetWidth();
 }
 
-void Game::Next()
+void golf::Game::Next()
 {
   m_grid.Next();
 
@@ -84,8 +84,30 @@ void Game::Next()
   }
 }
 
+void golf::Game::PressKeys(const std::set<Key>& keys)
+{
+  for (const auto key: keys)
+  {
+    switch (key)
+    {
+      case Qt::Key_A: m_x1 = (m_x1 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_D: m_x1 = (m_x1 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_W: m_y1 = (m_y1 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_S: m_y1 = (m_y1 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_Q: m_game.Set(m_x1,m_y1,1); break;
+
+      case Qt::Key_J: m_x2 = (m_x2 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_L: m_x2 = (m_x2 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
+      case Qt::Key_I: m_y2 = (m_y2 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_K: m_y2 = (m_y2 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
+      case Qt::Key_U: m_game.Set(m_x2,m_y2,1); break;
+    }
+  }
+
+}
+
 #ifndef NDEBUG
-void Game::Test() noexcept
+void golf::Game::Test() noexcept
 {
   {
     static bool is_tested{false};
