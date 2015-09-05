@@ -38,6 +38,7 @@ using namespace Urho3D;
 
 class GOLFCam;
 class InputMaster;
+class CellMaster;
 
 typedef struct GameWorld
 {
@@ -78,7 +79,7 @@ public:
     GameWorld world;
     SharedPtr<ResourceCache> cache_;
     SharedPtr<Graphics> graphics_;
-
+    SharedPtr<CellMaster> cellMaster_;
 
     /// Setup before engine initialization. Modifies the engine paramaters.
     virtual void Setup();

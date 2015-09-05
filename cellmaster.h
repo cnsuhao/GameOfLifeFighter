@@ -19,6 +19,10 @@
 #pragma once
 
 #include "mastercontrol.h"
+#include "cellmaster.h"
+#include "cellring.h"
+#include "cell.h"
+#include "helper.h"
 
 namespace Urho3D {
 class Drawable;
@@ -30,6 +34,7 @@ class Camera;
 using namespace Urho3D;
 
 class Cell;
+class CellRing;
 
 class CellMaster : public Object
 {
@@ -38,10 +43,11 @@ class CellMaster : public Object
 public:
     CellMaster(Context *context, MasterControl *masterControl);
     void AddCellToMap(IntVector2 coords, Cell *cell);
+    void Rotate(float angle);
 private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
 
+    Vector<CellRing*> rings_;
     HashMap<IntVector2, SharedPtr<Cell> > cellMap_;
-    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
 };

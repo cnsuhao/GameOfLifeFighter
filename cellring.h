@@ -34,6 +34,7 @@ class CellRing : public Object
 {
     OBJECT(CellRing);
     friend class CellMaster;
+    friend class InputMaster;
     friend class Cell;
 public:
     CellRing(Context *context, MasterControl *masterControl, CellMaster *cellMaster, int circumference, int ringNumber);
@@ -41,5 +42,5 @@ private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
     int ringNumber_;
-    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
+    void Rotate(float rotation);
 };
