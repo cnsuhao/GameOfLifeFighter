@@ -78,6 +78,7 @@ void golf::Grid::Next()
       const CellType status = Get(x,y);
       const int n_neighbours = CountNeighbours(x,y);
       if(status == CellType::alive)
+
       {
         if(n_neighbours < 2)
         {
