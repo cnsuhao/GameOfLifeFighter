@@ -5,9 +5,7 @@ namespace golf {
 
 enum class Cell
 {
-  up1, down1, left1, right1, set_high1, set_low1, open_hangar1, close_hangar1,
-  up2, down2, left2, right2, set_high2, set_low2, open_hangar2, close_hangar2,
-  quit
+  player1, player, empty
 };
 
 } //~namespace golf

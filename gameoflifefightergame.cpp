@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdlib>
 #include "gameoflifefighterhangar.h"
+#include "gameoflifefightertrace.h"
 
 golf::Game::Game()
   : m_grid(GetWidth(),GetHeight()),
@@ -81,8 +82,8 @@ void golf::Game::Next()
 
 void golf::Game::PressKeys(const std::set<Key>& keys)
 {
-  auto player1 = m_players[0];
-  auto player2 = m_players[1];
+  auto& player1 = m_players[0];
+  auto& player2 = m_players[1];
   for (const auto key: keys)
   {
 
@@ -90,21 +91,21 @@ void golf::Game::PressKeys(const std::set<Key>& keys)
     {
       case Key::close_hangar1: assert(!"Not yet done"); break;
       case Key::close_hangar2: assert(!"Not yet done"); break;
-      case Key::down1    : player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;
-      case Key::down2    : player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;
-      case Key::left1    : player1.SetX((player1.GetX() - 1 + GetWidth()) % GetWidth()); break;
-      case Key::left2    : player2.SetX((player2.GetX() - 1 + GetWidth()) % GetWidth()); break;
+      case Key::down1: player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;
+      case Key::down2: player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;
+      case Key::left1: player1.SetX((player1.GetX() - 1 + GetWidth()) % GetWidth()); break;
+      case Key::left2: player2.SetX((player2.GetX() - 1 + GetWidth()) % GetWidth()); break;
       case Key::open_hangar1: assert(!"Not yet done"); break;
       case Key::open_hangar2: assert(!"Not yet done"); break;
-      case Key::right1   : player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
-      case Key::right2   : player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
+      case Key::right1: player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
+      case Key::right2: player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
       case Key::set_high1: Set(player1.GetX(),player1.GetY(),1); break;
       case Key::set_high2: Set(player2.GetX(),player2.GetY(),1); break;
-      case Key::set_low1 : Set(player1.GetX(),player1.GetY(),0); break;
-      case Key::set_low2 : Set(player2.GetX(),player2.GetY(),0); break;
-      case Key::up1      : player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
-      case Key::up2      : player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
-      case Key::quit     : //Cannot handle quit here
+      case Key::set_low1: Set(player1.GetX(),player1.GetY(),0); break;
+      case Key::set_low2: Set(player2.GetX(),player2.GetY(),0); break;
+      case Key::up1: player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
+      case Key::up2: player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
+      case Key::quit: //Cannot handle quit here
         break;
     }
   }
@@ -124,6 +125,14 @@ void golf::Game::Test() noexcept
     Game g;
     g.Set(1,2,42);
     assert(g.GetGrid(1,2) == 42);
+  }
+  //A key down press should move player 2 down
+  {
+    Game game;
+    const int y_before{game.GetPlayers()[1].GetY()};
+    game.PressKeys( { Key::down2 } );
+    const int y_after{game.GetPlayers()[1].GetY()};
+    assert(y_after == y_before + 1);
   }
 }
 #endif

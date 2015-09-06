@@ -35,7 +35,6 @@ protected:
   void keyReleaseEvent(QKeyEvent *);
 private:
   Ui::QtGameOfLifeFighterWidget *ui;
-  std::map<int,QColor> m_color_map;
   Game m_game;
   std::set<Key> m_keys;
   QPixmap m_pixmap;
@@ -50,6 +49,10 @@ private:
     const int x, const int y,
     const QColor color
   );
+
+  #ifndef NDEBUG
+  void Test() noexcept;
+  #endif
 
 private slots:
   void OnTimer();
