@@ -39,7 +39,7 @@ void golf::Hangar::BuildPattern(
       SetCell(
         x + cursor_x - pattern.GetCursorX(),
         y + cursor_y - pattern.GetCursorY(),
-        CellType::alive
+        pattern.GetCell(x,y)
       );
     }
   }
