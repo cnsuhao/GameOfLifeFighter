@@ -41,6 +41,7 @@ CONFIG(release, debug|release) {
   DEFINES += NDEBUG NTRACE_BILDERBIKKEL
 }
 
+include(GameOfLifeFighterConsole.pri)
 
 SOURCES += qtmain.cpp \
     qtgameoflifefighterwidget.cpp \
@@ -53,5 +54,4 @@ HEADERS += \
     qtgameoflifefighterwidget.h \
     qtgameoflifefighterplayerindex.h
 
-include(GameOfLifeFighterConsole.pri)
 

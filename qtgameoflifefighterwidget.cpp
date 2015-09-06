@@ -51,6 +51,19 @@ golf::QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
   delete ui;
 }
 
+QColor golf::QtGameOfLifeFighterWidget::Blend(
+  const QColor a,
+  const QColor b
+)
+{
+  return qRgb(
+    (a.red() + b.red()) / 2,
+    (a.green() + b.green()) / 2,
+    (a.blue() + b.blue()) / 2
+  );
+}
+
+
 void golf::QtGameOfLifeFighterWidget::Blend(
   QImage& image,
   const int x, const int y,
@@ -137,7 +150,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
   {
     for (int x=0; x!=width; ++x)
     {
-      const auto i = m_game.GetGrid(x,y);
+      const auto i = m_game.GetCell(x,y);
       image.setPixel(x,y,
         i == CellType::empty ? qRgb(0,0,0) : qRgb(255,255,255)
       );
@@ -151,11 +164,17 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     const int width{hangar.GetWidth()};
     const int height{hangar.GetHeight()};
     const auto player_index = hangar.GetPlayerIndex();
+    //Darker if the Hangar is open
+    const auto player_color = ToColor(player_index);
+    const auto color = hangar.GetState() == HangarState::open
+      ? Blend(player_color,qRgb(0,0,0))
+      : player_color
+    ;
     for (int y=0; y!=height; ++y)
     {
       for (int x=0; x!=width; ++x)
       {
-        Blend(image,x+left,y+top,ToColor(player_index));
+        Blend(image,x+left,y+top,color);
       }
     }
 

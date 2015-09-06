@@ -53,6 +53,11 @@ private:
     const QColor color
   );
 
+  static QColor Blend(
+    const QColor a,
+    const QColor b
+  );
+
   #ifndef NDEBUG
   void Test() noexcept;
   #endif

@@ -13,6 +13,7 @@ golf::Hangar::Hangar(
   const int height,
   const PlayerIndex player_index
 ) :
+    m_grid(width,height),
     m_height{height},
     m_left{left},
     m_player_index{player_index},
@@ -27,7 +28,26 @@ void golf::Hangar::Close(
   Grid& grid
 ) noexcept
 {
-  assert(grid.GetWidth() > 0);
+  ///If the Hangar is closed, the content of the Grid will be the initial content of the Hangar and put into statis
+  if (m_state == HangarState::closed) return;
+
+  //If the Hangar is opened, the content of the Hangar will be transferred to the Grid
+  const int left{GetLeft()};
+  const int width{GetWidth()};
+  const int top{GetTop()};
+  const int height{GetHeight()};
+  for (int y=0; y!=height; ++y)
+  {
+    for (int x=0; x!=width; ++x)
+    {
+      //Transfer
+      m_grid.Set(x,y,grid.Get(left + x,top + y));
+      //Empty global grid
+      grid.Set(left + x,top + y,CellType::empty);
+    }
+  }
+  m_state = HangarState::closed;
+
 }
 
 bool golf::Hangar::IsIn(const int x, const int y) const noexcept
@@ -49,10 +69,25 @@ void golf::Hangar::Open(
   Grid& grid
 ) noexcept
 {
-  assert(grid.GetWidth() > 0);
+  if (m_state == HangarState::open) return;
 
+  //If the Hangar is opened, the content of the Hangar will be transferred to the Grid
+  const int left{GetLeft()};
+  const int width{GetWidth()};
+  const int top{GetTop()};
+  const int height{GetHeight()};
+  for (int y=0; y!=height; ++y)
+  {
+    for (int x=0; x!=width; ++x)
+    {
+      //Transfer
+      grid.Set(left + x,top + y,m_grid.Get(x,y));
+      //Empty Hangar
+      m_grid.Set(x,y,CellType::empty);
+    }
+  }
+  m_state = HangarState::open;
 }
-
 
 void golf::Hangar::SetState(
   const HangarState state,

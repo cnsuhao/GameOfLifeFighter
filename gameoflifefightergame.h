@@ -18,17 +18,29 @@ struct Game
 {
   using Hangars = std::vector<Hangar>;
   using Players = std::vector<Player>;
+  using BitFlagGrid = std::vector<std::vector<int>>;
 
   Game();
 
-  ///Obtain the Grid its value
-  CellType GetGrid(const int x, const int y) const;
+  ///Obtain the cell type from the global Grid, excluding the Hangars
+  CellType GetCell(const int x, const int y) const;
+
+
+  ///Obtain the complete y-x-ordered global Grid as bit flags
+  /// 00: empty, not hangar
+  /// 01: alive, not hangar
+  /// 10: empty, in hangar
+  /// 11: alive, in hangar
+  BitFlagGrid GetBitFlagGrid() const;
+
   const Hangars& GetHangars() const noexcept { return m_hangars; }
   int GetHeight() const noexcept { return 60; }
 
   const Players& GetPlayers() const noexcept { return m_players; }
 
   int GetWidth() const noexcept { return 200; }
+
+  bool IsHangar(const int x, const int y) const noexcept;
 
   ///Press all keys once
   void PressKeys(const std::set<Key>& keys);

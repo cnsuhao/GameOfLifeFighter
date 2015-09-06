@@ -16,6 +16,8 @@ struct Grid
   void Set(const int x, const int y, const CellType cell);
   void Next();
 
+  const std::vector<std::vector<CellType>>& GetRawGrid() const noexcept { return m_grid; }
+
   private:
   //Y-X ordered
   std::vector<std::vector<CellType>> m_grid;
