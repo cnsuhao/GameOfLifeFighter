@@ -3,11 +3,10 @@
 
 namespace golf {
 
-enum class Cell
+enum class CellType
 {
   empty = 0,
-  player1 = 1,
-  player2 = 2
+  alive = 1
 };
 
 } //~namespace golf

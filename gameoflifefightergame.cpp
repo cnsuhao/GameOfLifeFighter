@@ -41,16 +41,16 @@ golf::Game::Players golf::Game::CreateInitialPlayers(const int width, const int 
   return v;
 }
 
-void golf::Game::Set(const int x, const int y, const int i)
+void golf::Game::Set(const int x, const int y, const CellType cell)
 {
   assert(y >= 0);
   assert(y < GetHeight());
   assert(x >= 0);
   assert(x < GetWidth());
-  m_grid.Set(x,y,i);
+  m_grid.Set(x,y,cell);
 }
 
-int golf::Game::GetGrid(const int x, const int y) const
+golf::CellType golf::Game::GetGrid(const int x, const int y) const
 {
   assert(y >= 0);
   assert(y < GetHeight());
@@ -74,7 +74,7 @@ void golf::Game::Next()
     {
       for (int x=left; x!=right; ++x)
       {
-        m_grid.Set(x,y,0);
+        m_grid.Set(x,y,CellType::empty);
       }
     }
   }
@@ -99,10 +99,10 @@ void golf::Game::PressKeys(const std::set<Key>& keys)
       case Key::open_hangar2: assert(!"Not yet done"); break;
       case Key::right1: player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
       case Key::right2: player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
-      case Key::set_high1: Set(player1.GetX(),player1.GetY(),1); break;
-      case Key::set_high2: Set(player2.GetX(),player2.GetY(),1); break;
-      case Key::set_low1: Set(player1.GetX(),player1.GetY(),0); break;
-      case Key::set_low2: Set(player2.GetX(),player2.GetY(),0); break;
+      case Key::set_high1: Set(player1.GetX(),player1.GetY(),CellType::alive); break;
+      case Key::set_high2: Set(player2.GetX(),player2.GetY(),CellType::alive); break;
+      case Key::set_low1: Set(player1.GetX(),player1.GetY(),CellType::empty); break;
+      case Key::set_low2: Set(player2.GetX(),player2.GetY(),CellType::empty); break;
       case Key::up1: player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
       case Key::up2: player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
       case Key::quit: //Cannot handle quit here
@@ -123,8 +123,8 @@ void golf::Game::Test() noexcept
   //Get and set must be symmetric
   {
     Game g;
-    g.Set(1,2,42);
-    assert(g.GetGrid(1,2) == 42);
+    g.Set(1,2,CellType::alive);
+    assert(g.GetGrid(1,2) == CellType::alive);
   }
   //A key down press should move player 2 down
   {

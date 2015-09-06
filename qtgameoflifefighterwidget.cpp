@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include <QDesktopWidget>
 
+#include "qtgameoflifefighterplayerindex.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefighterplayerindex.h"
 #include "ui_qtgameoflifefighterwidget.h"
@@ -148,7 +149,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     {
       const auto i = m_game.GetGrid(x,y);
       image.setPixel(x,y,
-        i == 0 ? qRgb(0,0,0) : qRgb(255,255,255)
+        i == CellType::empty ? qRgb(0,0,0) : qRgb(255,255,255)
       );
     }
   }
@@ -205,6 +206,7 @@ void golf::QtGameOfLifeFighterWidget::Test() noexcept
     is_tested = true;
   }
   //A key down press should move player 2 down
+  if (1==2)
   {
     QtGameOfLifeFighterWidget w;
     auto down = CreateDown();
