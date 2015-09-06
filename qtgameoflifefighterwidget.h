@@ -36,6 +36,7 @@ protected:
 private:
   Ui::QtGameOfLifeFighterWidget *ui;
   Game m_game;
+  std::map<int,Key> m_key_map;
   std::set<Key> m_keys;
   QPixmap m_pixmap;
 
@@ -57,6 +58,8 @@ private:
     const QColor a,
     const QColor b
   );
+
+  static std::map<int,Key> CreateInitialKeyMap() noexcept;
 
   #ifndef NDEBUG
   void Test() noexcept;

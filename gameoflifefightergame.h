@@ -40,7 +40,6 @@ struct Game
   int GetHeight() const noexcept { return 60; }
 
   const Player& GetPlayer(const PlayerIndex player_index) const noexcept;
-  const Players& GetPlayers() const noexcept;
 
   ///Is there a Hangar at this coordinat?
   ///Returns nullptr if not

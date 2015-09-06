@@ -22,6 +22,7 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   : QWidget(parent),
     ui(new Ui::QtGameOfLifeFighterWidget),
     m_game{},
+    m_key_map{CreateInitialKeyMap()},
     m_keys{},
     m_pixmap(width,height)
 {
@@ -89,63 +90,56 @@ void golf::QtGameOfLifeFighterWidget::Blend(
   );
 }
 
+std::map<int,golf::Key> golf::QtGameOfLifeFighterWidget::CreateInitialKeyMap() noexcept
+{
+  std::map<int,Key> m;
+  m.insert( { Qt::Key_1, Key::pattern_a1}  );
+  m.insert( { Qt::Key_2, Key::pattern_b1}  );
+  m.insert( { Qt::Key_3, Key::pattern_c1}  );
+
+  m.insert( { Qt::Key_Q, Key::close_hangar1}  );
+  m.insert( { Qt::Key_W, Key::up1}  );
+  m.insert( { Qt::Key_E, Key::set_high1}  );
+
+  m.insert( { Qt::Key_A, Key::left1}  );
+  m.insert( { Qt::Key_S, Key::down1}  );
+  m.insert( { Qt::Key_D, Key::right1}  );
+
+  m.insert( { Qt::Key_Z, Key::open_hangar1}  );
+  m.insert( { Qt::Key_X, Key::down1}  );
+  m.insert( { Qt::Key_C, Key::set_low1}  );
+
+  m.insert( { Qt::Key_7, Key::pattern_a2}  );
+  m.insert( { Qt::Key_8, Key::pattern_b2}  );
+  m.insert( { Qt::Key_9, Key::pattern_c2}  );
+
+  m.insert( { Qt::Key_U, Key::close_hangar2}  );
+  m.insert( { Qt::Key_I, Key::up2}  );
+  m.insert( { Qt::Key_O, Key::set_high2}  );
+
+  m.insert( { Qt::Key_J, Key::left2}  );
+  m.insert( { Qt::Key_K, Key::down2}  );
+  m.insert( { Qt::Key_L, Key::right2}  );
+
+  m.insert( { Qt::Key_M, Key::open_hangar2}  );
+  m.insert( { Qt::Key_Comma, Key::down2}  );
+  m.insert( { Qt::Key_Period, Key::set_low2}  );
+
+  return m;
+}
+
 void golf::QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
 {
-  switch (e->key())
-  {
-    case Qt::Key_1: m_keys.insert(Key::pattern_a1); break;
-    case Qt::Key_2: m_keys.insert(Key::pattern_b1); break;
-    case Qt::Key_3: m_keys.insert(Key::pattern_c1); break;
-    case Qt::Key_7: m_keys.insert(Key::pattern_a2); break;
-    case Qt::Key_8: m_keys.insert(Key::pattern_b2); break;
-    case Qt::Key_9: m_keys.insert(Key::pattern_c2); break;
-    case Qt::Key_A: m_keys.insert(Key::left1); break;
-    case Qt::Key_D: m_keys.insert(Key::right1); break;
-    case Qt::Key_W: m_keys.insert(Key::up1); break;
-    case Qt::Key_S: m_keys.insert(Key::down1); break;
-    case Qt::Key_Q: m_keys.insert(Key::set_low1); break;
-    case Qt::Key_E: m_keys.insert(Key::set_high1); break;
-    case Qt::Key_Z: m_keys.insert(Key::close_hangar1); break;
-    case Qt::Key_C: m_keys.insert(Key::open_hangar1); break;
-    case Qt::Key_J: m_keys.insert(Key::left2); break;
-    case Qt::Key_L: m_keys.insert(Key::right2); break;
-    case Qt::Key_I: m_keys.insert(Key::up2); break;
-    case Qt::Key_K: m_keys.insert(Key::down2); break;
-    case Qt::Key_U: m_keys.insert(Key::set_low2); break;
-    case Qt::Key_O: m_keys.insert(Key::set_high2); break;
-    case Qt::Key_M: m_keys.insert(Key::close_hangar2); break;
-    case Qt::Key_Period: m_keys.insert(Key::open_hangar2); break;
-  }
+  const auto iter = m_key_map.find(e->key());
+  if (iter == std::end(m_key_map)) return;
+  m_keys.insert( (*iter).second );
 }
 
 void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
 {
-  switch (e->key())
-  {
-    case Qt::Key_1: m_keys.erase(Key::pattern_a1); break;
-    case Qt::Key_2: m_keys.erase(Key::pattern_b1); break;
-    case Qt::Key_3: m_keys.erase(Key::pattern_c1); break;
-    case Qt::Key_7: m_keys.erase(Key::pattern_a2); break;
-    case Qt::Key_8: m_keys.erase(Key::pattern_b2); break;
-    case Qt::Key_9: m_keys.erase(Key::pattern_c2); break;
-    case Qt::Key_A: m_keys.erase(Key::left1); break;
-    case Qt::Key_D: m_keys.erase(Key::right1); break;
-    case Qt::Key_W: m_keys.erase(Key::up1); break;
-    case Qt::Key_S: m_keys.erase(Key::down1); break;
-    case Qt::Key_Q: m_keys.erase(Key::set_low1); break;
-    case Qt::Key_E: m_keys.erase(Key::set_high1); break;
-    case Qt::Key_Z: m_keys.erase(Key::close_hangar1); break;
-    case Qt::Key_C: m_keys.erase(Key::open_hangar1); break;
-
-    case Qt::Key_J: m_keys.erase(Key::left2); break;
-    case Qt::Key_L: m_keys.erase(Key::right2); break;
-    case Qt::Key_I: m_keys.erase(Key::up2); break;
-    case Qt::Key_K: m_keys.erase(Key::down2); break;
-    case Qt::Key_U: m_keys.erase(Key::set_low2); break;
-    case Qt::Key_O: m_keys.erase(Key::set_high2); break;
-    case Qt::Key_M: m_keys.erase(Key::close_hangar2); break;
-    case Qt::Key_Period: m_keys.erase(Key::open_hangar2); break;
-  }
+  const auto iter = m_key_map.find(e->key());
+  if (iter == std::end(m_key_map)) return;
+  m_keys.erase( (*iter).second );
 }
 
 void golf::QtGameOfLifeFighterWidget::OnTimer()
@@ -232,6 +226,7 @@ void golf::QtGameOfLifeFighterWidget::Test() noexcept
     if (is_tested) return;
     is_tested = true;
   }
+
   //A key 'S' press should move player 1 down
   {
     QtGameOfLifeFighterWidget w;

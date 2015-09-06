@@ -138,12 +138,6 @@ const golf::Player& golf::Game::GetPlayer(const PlayerIndex player_index) const 
   }
 }
 
-const golf::Game::Players& golf::Game::GetPlayers() const noexcept
-{
-  TRACE("Prefer using GetPlayer(PlayerIndex)");
-  return m_players;
-}
-
 const golf::Hangar * golf::Game::FindHangar(const int x, const int y) const noexcept
 {
   const auto iter = std::find_if(
@@ -265,9 +259,9 @@ void golf::Game::Test() noexcept
   //A key down press should move player 2 down
   {
     Game game;
-    const int y_before{game.GetPlayers()[1].GetY()};
+    const int y_before{game.GetPlayer(PlayerIndex::player2).GetY()};
     game.PressKeys( { Key::down2 } );
-    const int y_after{game.GetPlayers()[1].GetY()};
+    const int y_after{game.GetPlayer(PlayerIndex::player2).GetY()};
     assert(y_after == y_before + 1);
   }
 }
