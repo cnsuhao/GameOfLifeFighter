@@ -5,7 +5,9 @@ namespace golf {
 
 enum class Cell
 {
-  player1, player, empty
+  empty = 0,
+  player1 = 1,
+  player2 = 2
 };
 
 } //~namespace golf
