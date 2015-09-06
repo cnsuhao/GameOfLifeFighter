@@ -89,7 +89,18 @@ void golf::Game::PressKeys(const std::set<Key>& keys)
 
     switch (key)
     {
-      case Key::close_hangar1: assert(!"Not yet done"); break;
+      case Key::close_hangar1:
+      {
+        const auto player1 = this->GetPlayers()[0];
+        const auto iter = std::find_if(
+          std::begin(m_hangars),
+          std::end(m_hangars),
+          [player1](const Hangar& hangar) { return hangar.IsIn(player1); }
+        );
+        if (iter == std::end(m_hangars)) return;
+        (*iter).SetState(HangarState::closed,m_grid);
+      }
+      break;
       case Key::close_hangar2: assert(!"Not yet done"); break;
       case Key::down1: player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;
       case Key::down2: player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;

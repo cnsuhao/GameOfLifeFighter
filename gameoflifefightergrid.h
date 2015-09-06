@@ -18,11 +18,7 @@ struct Grid
 
   private:
   //Y-X ordered
-<<<<<<< HEAD
-  std::vector<std::vector<int> > m_grid;
-=======
   std::vector<std::vector<CellType>> m_grid;
->>>>>>> c86aee26e6c75a236b7e7dc95cb047e60a469460
   void Create_glider();
   void Create_block();
   void Create_blinker();

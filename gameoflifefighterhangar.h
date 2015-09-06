@@ -2,13 +2,17 @@
 #define GAMEOFLIFEFIGHTERHANGAR_H
 
 #include "gameoflifefighterplayerindex.h"
+#include "gameoflifefighterhangarstate.h"
 
 namespace golf {
 
-///Hangar is like a Grid without dynamics
-///Grid
+struct Grid;
+struct Player;
+
+///Hangar is like a Grid without dynamics; it can be in statis (Closed) or active (Open)
 struct Hangar
 {
+  ///A Hangar has a position, size and a Player that can use it
   Hangar(
     const int left,
     const int top,
@@ -21,14 +25,31 @@ struct Hangar
   int GetWidth() const noexcept { return m_width; }
   int GetHeight() const noexcept { return m_height; }
   PlayerIndex GetPlayerIndex() const noexcept { return m_player_index; }
+
+  HangarState GetState() const noexcept { return m_state; }
+
+  ///If the Hangar is closed, the content of the Hangar will be transferred to the Grid
+  void Close(Grid& grid) noexcept;
+
+  ///Is the coordinat within the Hangar?
   bool IsIn(const int x, const int y) const noexcept;
 
+  ///Is the Player within the Hangar?
+  bool IsIn(const Player& player) const noexcept;
+
+  ///Open or close the Hangar, calls Open or Close
+  void SetState(const HangarState state,Grid& grid) noexcept;
+
+  ///If the Hangar is opened, the content of the Grid will be the initial content of the Hangar and put into statis
+  void Open(Grid& grid) noexcept;
+
   private:
+  const int m_height;
   const int m_left;
+  const PlayerIndex m_player_index;
+  HangarState m_state;
   const int m_top;
   const int m_width;
-  const int m_height;
-  const PlayerIndex m_player_index;
 };
 
 } //~namespace golf

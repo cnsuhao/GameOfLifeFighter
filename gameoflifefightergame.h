@@ -10,6 +10,10 @@
 
 namespace golf {
 
+///Game contains the game logic
+///The most important member functions are:
+///* PressKeys: process all key presses
+///* Next: go to the next game state
 struct Game
 {
   using Hangars = std::vector<Hangar>;
@@ -25,8 +29,14 @@ struct Game
   const Players& GetPlayers() const noexcept { return m_players; }
 
   int GetWidth() const noexcept { return 200; }
+
+  ///Press all keys once
   void PressKeys(const std::set<Key>& keys);
+
+  ///Change the content of a Cell
   void Set(const int x, const int y, const CellType cell);
+
+  ///Go to the next game state, make the game tick
   void Next();
 
   private:

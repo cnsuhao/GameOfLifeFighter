@@ -1,5 +1,10 @@
 #include "gameoflifefighterhangar.h"
+
+#include <cassert>
+
+#include "gameoflifefightergrid.h"
 #include "gameoflifefighterplayerindex.h"
+#include "gameoflifefighterplayer.h"
 
 golf::Hangar::Hangar(
   const int left,
@@ -8,13 +13,21 @@ golf::Hangar::Hangar(
   const int height,
   const PlayerIndex player_index
 ) :
-    m_left{left},
-    m_top{top},
-    m_width{width},
     m_height{height},
-    m_player_index{player_index}
+    m_left{left},
+    m_player_index{player_index},
+    m_state{HangarState::open},
+    m_top{top},
+    m_width{width}
 {
 
+}
+
+void golf::Hangar::Close(
+  Grid& grid
+) noexcept
+{
+  assert(grid.GetWidth() > 0);
 }
 
 bool golf::Hangar::IsIn(const int x, const int y) const noexcept
@@ -27,4 +40,29 @@ bool golf::Hangar::IsIn(const int x, const int y) const noexcept
   ;
 }
 
+bool golf::Hangar::IsIn(const Player& player) const noexcept
+{
+  return IsIn(player.GetX(), player.GetY());
+}
 
+void golf::Hangar::Open(
+  Grid& grid
+) noexcept
+{
+  assert(grid.GetWidth() > 0);
+
+}
+
+
+void golf::Hangar::SetState(
+  const HangarState state,
+  Grid& grid
+) noexcept
+{
+  switch (state)
+  {
+    case HangarState::closed: Close(grid); return;
+    case HangarState::open: Open(grid); return;
+    default: assert(!"Should not get here");
+  }
+}

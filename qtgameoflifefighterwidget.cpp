@@ -77,15 +77,8 @@ void golf::QtGameOfLifeFighterWidget::Blend(
   );
 }
 
-std::map<int,QColor> golf::QtGameOfLifeFighterWidget::CreateColorMap() noexcept
-{
-  std::map<int,QColor> m;
-  return m;
-}
-
 void golf::QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
 {
-  std::clog << e->key() << std::endl;
   switch (e->key())
   {
     case Qt::Key_A: m_keys.insert(Key::left1); break;
@@ -96,7 +89,6 @@ void golf::QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
     case Qt::Key_E: m_keys.insert(Key::set_high1); break;
     case Qt::Key_Z: m_keys.insert(Key::close_hangar1); break;
     case Qt::Key_C: m_keys.insert(Key::open_hangar1); break;
-
     case Qt::Key_J: m_keys.insert(Key::left2); break;
     case Qt::Key_L: m_keys.insert(Key::right2); break;
     case Qt::Key_I: m_keys.insert(Key::up2); break;
@@ -110,8 +102,6 @@ void golf::QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
 
 void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
 {
-  std::clog << e->key() << std::endl;
-
   switch (e->key())
   {
     case Qt::Key_A: m_keys.erase(Key::left1); break;
@@ -192,6 +182,8 @@ void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
 }
 
 QKeyEvent CreateDel() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Delete,Qt::NoModifier); }
+QKeyEvent CreateK() { return QKeyEvent(QEvent::KeyPress,Qt::Key_K,Qt::NoModifier); }
+QKeyEvent CreateS() { return QKeyEvent(QEvent::KeyPress,Qt::Key_S,Qt::NoModifier); }
 QKeyEvent CreateSpace() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Space,Qt::NoModifier); }
 QKeyEvent CreateDown() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Down,Qt::NoModifier); }
 QKeyEvent CreateControlDown() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Down,Qt::ControlModifier); }
@@ -205,17 +197,24 @@ void golf::QtGameOfLifeFighterWidget::Test() noexcept
     if (is_tested) return;
     is_tested = true;
   }
-  //A key down press should move player 2 down
-  if (1==2)
+  //A key 'S' press should move player 1 down
   {
     QtGameOfLifeFighterWidget w;
-    auto down = CreateDown();
+    auto down = CreateS();
+    const int y_before{w.m_game.GetPlayers()[0].GetY()};
+    w.keyPressEvent(&down);
+    w.OnTimer();
+    const int y_after{w.m_game.GetPlayers()[0].GetY()};
+    assert(y_after == y_before + 1);
+  }
+  //A key 'K' (arrows do not do anything) press should move player 2 down
+  {
+    QtGameOfLifeFighterWidget w;
+    auto down = CreateK();
     const int y_before{w.m_game.GetPlayers()[1].GetY()};
-    TRACE(y_before);
     w.keyPressEvent(&down);
     w.OnTimer();
     const int y_after{w.m_game.GetPlayers()[1].GetY()};
-    TRACE(y_after);
     assert(y_after == y_before + 1);
   }
 }

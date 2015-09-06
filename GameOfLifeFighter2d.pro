@@ -52,7 +52,8 @@ SOURCES += qtmain.cpp \
     gameoflifefighterplayerindex.cpp \
     gameoflifefightertrace.cpp \
     gameoflifefightercelltype.cpp \
-    qtgameoflifefighterplayerindex.cpp
+    qtgameoflifefighterplayerindex.cpp \
+    gameoflifefighterhangarstate.cpp
 
 FORMS += \
     qtgameoflifefighterwidget.ui
@@ -67,5 +68,6 @@ HEADERS += \
     gameoflifefighterplayerindex.h \
     gameoflifefightertrace.h \
     gameoflifefightercelltype.h \
-    qtgameoflifefighterplayerindex.h
+    qtgameoflifefighterplayerindex.h \
+    gameoflifefighterhangarstate.h
 

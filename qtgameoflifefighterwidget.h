@@ -39,11 +39,14 @@ private:
   std::set<Key> m_keys;
   QPixmap m_pixmap;
 
+  ///Mix the color of a QImage its pixel with a new RGB set
   static void Blend(
     QImage& image,
     const int x, const int y,
     const int r, const int g, const int b
   );
+
+  ///Mix the color of a QImage its pixel with a QColor
   static void Blend(
     QImage& image,
     const int x, const int y,
@@ -56,9 +59,6 @@ private:
 
 private slots:
   void OnTimer();
-
-  static std::map<int,QColor> CreateColorMap() noexcept;
-
 };
 
 } //~namespace golf
