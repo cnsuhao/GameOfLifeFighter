@@ -44,30 +44,14 @@ CONFIG(release, debug|release) {
 
 SOURCES += qtmain.cpp \
     qtgameoflifefighterwidget.cpp \
-    gameoflifefighterkey.cpp \
-    gameoflifefightergame.cpp \
-    gameoflifefightergrid.cpp \
-    gameoflifefighterhangar.cpp \
-    gameoflifefighterplayer.cpp \
-    gameoflifefighterplayerindex.cpp \
-    gameoflifefightertrace.cpp \
-    gameoflifefightercelltype.cpp \
-    qtgameoflifefighterplayerindex.cpp \
-    gameoflifefighterhangarstate.cpp
+    qtgameoflifefighterplayerindex.cpp
 
 FORMS += \
     qtgameoflifefighterwidget.ui
 
 HEADERS += \
     qtgameoflifefighterwidget.h \
-    gameoflifefighterkey.h \
-    gameoflifefightergame.h \
-    gameoflifefightergrid.h \
-    gameoflifefighterhangar.h \
-    gameoflifefighterplayer.h \
-    gameoflifefighterplayerindex.h \
-    gameoflifefightertrace.h \
-    gameoflifefightercelltype.h \
-    qtgameoflifefighterplayerindex.h \
-    gameoflifefighterhangarstate.h
+    qtgameoflifefighterplayerindex.h
+
+include(GameOfLifeFighterConsole.pri)
 
