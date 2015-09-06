@@ -63,7 +63,9 @@ MasterControl::MasterControl(Context *context):
     Application(context),
     cache_{GetSubsystem<ResourceCache>()},
     renderer_{GetSubsystem<Renderer>()},
-    paused_(false)
+    paused_(false),
+    stepInterval_{0.5f},
+    sinceStep_{stepInterval_}
 {
 }
 
@@ -75,9 +77,9 @@ void MasterControl::Setup()
     engineParameters_["WindowTitle"] = "G.O.L.F.";
     engineParameters_["LogName"] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"golf.log";
     engineParameters_["FullScreen"] = true;
-    engineParameters_["Headless"] = false;
-    engineParameters_["WindowWidth"] = 1920;
-    engineParameters_["WindowHeight"] = 1080;
+//    engineParameters_["Headless"] = false;
+//    engineParameters_["WindowWidth"] = 960;
+//    engineParameters_["WindowHeight"] = 600;
 }
 void MasterControl::Start()
 {
@@ -102,7 +104,7 @@ void MasterControl::Start()
     musicSource->SetSoundType(SOUND_MUSIC);
     musicSource->Play(music);
 
-//    game_ = golf::Game();
+    game_ = new golf::Game();
 }
 
 void MasterControl::SubscribeToEvents()
@@ -173,9 +175,8 @@ void MasterControl::CreateScene()
     Light* blueLight = blueLightNode->CreateComponent<Light>();
     blueLight->SetLightType(LIGHT_DIRECTIONAL);
     blueLight->SetBrightness(1.0f);
-    blueLight->SetRange(23.0f);
-    blueLight->SetColor(Color(0.05f, 0.23f, 1.0f));
-    blueLight->SetCastShadows(false);
+    blueLight->SetColor(Color(0.1f, 0.5f, 1.0f));
+//    blueLight->SetCastShadows(true);
 
     Node* redLightNode = world.scene->CreateChild("Sun");
     redLightNode->SetPosition(Vector3(-10.0f, 2.0f, 0.0f));
@@ -183,9 +184,8 @@ void MasterControl::CreateScene()
     Light* redLight = redLightNode->CreateComponent<Light>();
     redLight->SetLightType(LIGHT_DIRECTIONAL);
     redLight->SetBrightness(1.0f);
-    redLight->SetRange(23.0f);
-    redLight->SetColor(Color(1.0f, 0.23f, 0.05f));
-    redLight->SetCastShadows(false);
+    redLight->SetColor(Color(1.0f, 0.5f, 0.1f));
+//    redLight->SetCastShadows(true);
 
     cellMaster_ = new CellMaster(context_, this);
 
@@ -204,6 +204,12 @@ Color MasterControl::RandomColor()
 
 void MasterControl::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
+    sinceStep_ += eventData[Update::P_TIMESTEP].GetFloat();
+    if (sinceStep_ > stepInterval_) {
+        game_->Next();
+        cellMaster_->UpdateCells();
+        sinceStep_ -= stepInterval_;
+    }
 }
 void MasterControl::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 {
@@ -211,42 +217,3 @@ void MasterControl::HandleSceneUpdate(StringHash eventType, VariantMap &eventDat
 void MasterControl::HandlePostRenderUpdate(StringHash eventType, VariantMap &eventData)
 {
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

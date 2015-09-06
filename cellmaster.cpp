@@ -42,12 +42,6 @@ CellMaster::CellMaster(Context *context, MasterControl *masterControl):
                 newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/circumference, 0.0f), TS_PARENT);
                 rings_.Push(newRing);
     }
-
-    //For testing purposes
-    for (int i = 0; i < 1000; i++)
-    {
-        cellMap_[IntVector2(Random(200), Random(60))]->rootNode_->SetEnabled(false);
-    }
 }
 
 void CellMaster::AddCellToMap(IntVector2 coords, Cell* cell)
@@ -59,4 +53,13 @@ void CellMaster::Rotate(float angle)
 {
     for (unsigned r = 0; r < rings_.Size(); r++)
         rings_[r]->Rotate(angle);
+}
+
+void CellMaster::UpdateCells()
+{
+    Vector<IntVector2> cellKeys = cellMap_.Keys();
+    for (unsigned c = 0; c < cellKeys.Size(); c++){
+        IntVector2 coords = cellKeys.At(c);
+        cellMap_[coords]->SetType(masterControl_->game_->GetCell(coords.x_, coords.y_));
+    }
 }

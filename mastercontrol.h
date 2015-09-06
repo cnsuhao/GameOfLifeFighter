@@ -28,7 +28,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/Physics/RigidBody.h>
 
-//#include "gameoflifefightergame.h"
+#include "gameoflifefightergame.h"
 
 namespace Urho3D {
 class Drawable;
@@ -79,7 +79,7 @@ class MasterControl : public Application
 public:
     /// Constructor.
     MasterControl(Context* context);
-//    golf::Game game_;
+    golf::Game* game_;
     GameWorld world;
     SharedPtr<ResourceCache> cache_;
     SharedPtr<Graphics> graphics_;
@@ -97,8 +97,10 @@ public:
     SharedPtr<Model> CreateOctaedron();
     void CreateFromScratchObject(Vector3 position);
     Color RandomColor();
-
+    float GetStepProgress() { return sinceStep_/stepInterval_; }
 private:
+    float stepInterval_;
+    float sinceStep_;
     SharedPtr<UI> ui_;
     SharedPtr<Renderer> renderer_;
     SharedPtr<XMLFile> defaultStyle_;

@@ -45,6 +45,7 @@ public:
     CellMaster(Context *context, MasterControl *masterControl);
     void AddCellToMap(IntVector2 coords, Cell *cell);
     void Rotate(float angle);
+    void UpdateCells();
 private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
