@@ -33,8 +33,7 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   {
     //Put the dialog in the screen center
     const QRect screen = QApplication::desktop()->screenGeometry();
-
-    this->setGeometry(0,0,screen.height() * 20 / 24,screen.height() * 6 / 24);
+    this->setGeometry(0,0,screen.width() * 20 / 24,screen.height() * 8 / 24);
     this->move( screen.center() - this->rect().center() );
   }
   //Start a timer
@@ -166,7 +165,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     const auto player_index = hangar.GetPlayerIndex();
     //Darker if the Hangar is open
     const auto player_color = ToColor(player_index);
-    const auto color = hangar.GetState() == HangarState::open
+    const auto hangar_color = hangar.GetState() == HangarState::open
       ? Blend(player_color,qRgb(0,0,0))
       : player_color
     ;
@@ -174,6 +173,11 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     {
       for (int x=0; x!=width; ++x)
       {
+        auto color = hangar_color;
+        if (hangar.GetCell(x,y) == CellType::alive)
+        {
+          color = Blend(color,qRgb(255,255,255));
+        }
         Blend(image,x+left,y+top,color);
       }
     }
@@ -195,7 +199,7 @@ void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
 {
   QPainter painter(this);
   painter.drawPixmap(
-    this->rect(),
+    rect(),
     m_pixmap
   );
 }

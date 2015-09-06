@@ -25,7 +25,6 @@ struct Game
   ///Obtain the cell type from the global Grid, excluding the Hangars
   CellType GetCell(const int x, const int y) const;
 
-
   ///Obtain the complete y-x-ordered global Grid as bit flags
   /// 00: empty, not hangar
   /// 01: alive, not hangar
@@ -34,18 +33,28 @@ struct Game
   BitFlagGrid GetBitFlagGrid() const;
 
   const Hangars& GetHangars() const noexcept { return m_hangars; }
+
   int GetHeight() const noexcept { return 60; }
 
   const Players& GetPlayers() const noexcept { return m_players; }
 
+  ///Is there a Hangar at this coordinat?
+  ///Returns nullptr if not
+  ///Returns a read-only Hanger if there is one
+  const Hangar * FindHangar(const int x, const int y) const noexcept;
+        Hangar * FindHangar(const int x, const int y)       noexcept;
+
+  ///The width of the global GOL grid
   int GetWidth() const noexcept { return 200; }
 
+  ///Is this coordinat a hangar?
   bool IsHangar(const int x, const int y) const noexcept;
 
   ///Press all keys once
   void PressKeys(const std::set<Key>& keys);
 
-  ///Change the content of a Cell
+  ///Set the content of a global grid cell
+  ///When the player is building in a hangar, use Hangar::Set
   void Set(const int x, const int y, const CellType cell);
 
   ///Go to the next game state, make the game tick

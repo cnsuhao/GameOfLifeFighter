@@ -22,6 +22,8 @@ struct Hangar
     const int height,
     const PlayerIndex player
   );
+
+  CellType GetCell(const int x, const int y) const { return m_grid.Get(x,y); }
   int GetLeft() const noexcept { return m_left; }
   int GetTop() const noexcept { return m_top; }
   int GetWidth() const noexcept { return m_width; }
@@ -38,6 +40,8 @@ struct Hangar
 
   ///Is the Player within the Hangar?
   bool IsIn(const Player& player) const noexcept;
+
+  void SetCell(const int x, const int y, const CellType cell) { m_grid.Set(x,y,cell); }
 
   ///Open or close the Hangar, calls Open or Close
   void SetState(const HangarState state,Grid& global_grid) noexcept;

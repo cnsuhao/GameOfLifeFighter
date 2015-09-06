@@ -64,8 +64,8 @@ golf::Game::Players golf::Game::CreateInitialPlayers(const int width, const int 
   assert(width > 0);
   assert(height > 0);
   Players v;
-  v.push_back(Player(width / 2,height * 1 / 4));
-  v.push_back(Player(width / 2,height * 3 / 4));
+  v.push_back(Player( (width * 1 / 4) - 5,(height / 2) - 5));
+  v.push_back(Player( (width * 3 / 4) - 5,(height / 2) + 5));
   return v;
 }
 
@@ -87,13 +87,25 @@ golf::CellType golf::Game::GetCell(const int x, const int y) const
   return m_grid.Get(x,y);
 }
 
-bool golf::Game::IsHangar(const int x, const int y) const noexcept
+const golf::Hangar * golf::Game::FindHangar(const int x, const int y) const noexcept
 {
-  return std::find_if(
+  const auto iter = std::find_if(
     std::begin(m_hangars),
     std::end(m_hangars),
     [x,y](const Hangar& hangar) { return hangar.IsIn(x,y); }
-  ) != std::end(m_hangars);
+  );
+  if (iter == std::end(m_hangars)) return nullptr;
+  return &(*iter);
+}
+
+golf::Hangar * golf::Game::FindHangar(const int x, const int y) noexcept
+{
+  return const_cast<Hangar*>(const_cast<const Game *>(this)->FindHangar(x,y));
+}
+
+bool golf::Game::IsHangar(const int x, const int y) const noexcept
+{
+  return FindHangar(x,y);
 }
 
 void golf::Game::Next()
@@ -101,17 +113,21 @@ void golf::Game::Next()
   m_grid.Next();
 
   //Kill all cells within closed hangars (note: the cells within hangars are stored within Hangar
-  for (const Hangar& hangar: this->GetHangars())
+  const bool kill_all_cells_under_hangars{false};
+  if (kill_all_cells_under_hangars)
   {
-    const int left{hangar.GetLeft()};
-    const int right{hangar.GetLeft() + hangar.GetWidth()};
-    const int top{hangar.GetTop()};
-    const int bottom{hangar.GetTop() + hangar.GetHeight()};
-    for (int y=top; y!=bottom; ++y)
+    for (const Hangar& hangar: this->GetHangars())
     {
-      for (int x=left; x!=right; ++x)
+      const int left{hangar.GetLeft()};
+      const int right{hangar.GetLeft() + hangar.GetWidth()};
+      const int top{hangar.GetTop()};
+      const int bottom{hangar.GetTop() + hangar.GetHeight()};
+      for (int y=top; y!=bottom; ++y)
       {
-        m_grid.Set(x,y,CellType::empty);
+        for (int x=left; x!=right; ++x)
+        {
+          m_grid.Set(x,y,CellType::empty);
+        }
       }
     }
   }
@@ -180,10 +196,75 @@ void golf::Game::PressKeys(const std::set<Key>& keys)
       break;
       case Key::right1: player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
       case Key::right2: player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
-      case Key::set_high1: Set(player1.GetX(),player1.GetY(),CellType::alive); break;
-      case Key::set_high2: Set(player2.GetX(),player2.GetY(),CellType::alive); break;
-      case Key::set_low1: Set(player1.GetX(),player1.GetY(),CellType::empty); break;
-      case Key::set_low2: Set(player2.GetX(),player2.GetY(),CellType::empty); break;
+      case Key::set_high1:
+      {
+        if (Hangar * const hangar = FindHangar(player1.GetX(),player1.GetY()))
+        {
+          if (hangar->GetState() == HangarState::closed
+            && hangar->GetPlayerIndex() == PlayerIndex::player1
+          )
+          {
+            hangar->SetCell(
+              player1.GetX() - hangar->GetLeft(),
+              player1.GetY() - hangar->GetTop(),
+              CellType::alive
+            );
+          }
+        }
+      }
+      break;
+      case Key::set_high2:
+      {
+        if (Hangar * const hangar = FindHangar(player2.GetX(),player2.GetY()))
+        {
+          if (hangar->GetState() == HangarState::closed
+            && hangar->GetPlayerIndex() == PlayerIndex::player2
+          )
+          {
+            hangar->SetCell(
+              player2.GetX() - hangar->GetLeft(),
+              player2.GetY() - hangar->GetTop(),
+              CellType::alive
+            );
+          }
+        }
+      }
+      break;
+      case Key::set_low1:
+      {
+        if (Hangar * const hangar = FindHangar(player1.GetX(),player1.GetY()))
+        {
+          if (hangar->GetState() == HangarState::closed
+            && hangar->GetPlayerIndex() == PlayerIndex::player1
+          )
+          {
+
+            hangar->SetCell(
+              player1.GetX() - hangar->GetLeft(),
+              player1.GetY() - hangar->GetTop(),
+              CellType::empty
+            );
+          }
+        }
+      }
+      break;
+      case Key::set_low2:
+      {
+        if (Hangar * const hangar = FindHangar(player2.GetX(),player2.GetY()))
+        {
+          if (hangar->GetState() == HangarState::closed
+            && hangar->GetPlayerIndex() == PlayerIndex::player2
+          )
+          {
+            hangar->SetCell(
+              player2.GetX() - hangar->GetLeft(),
+              player2.GetY() - hangar->GetTop(),
+              CellType::empty
+            );
+          }
+        }
+      }
+      break;
       case Key::up1: player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
       case Key::up2: player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
       case Key::quit: //Cannot handle quit here
