@@ -44,11 +44,18 @@ class Cell : public Object
     friend class CellRing;
 public:
     Cell(Context *context, MasterControl *masterControl, CellRing *cellRing);
+    bool IsAlive() { return type_ == golf::CellType::alive; }
 private:
     MasterControl* masterControl_;
+    golf::CellType type_;
+    golf::CellType previousType_;
     SharedPtr<Node> rootNode_;
-    SharedPtr<StaticModel> model_;
-    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
+    SharedPtr<Node> fillNode_ ;
+    SharedPtr<StaticModel> cellModel_;
+    SharedPtr<StaticModel> fillModel_;
+    void HandleUpdate(StringHash eventType, VariantMap &eventData);
+    void SetType(golf::CellType type);
+    float CalculateScale();
 };
 
 #endif // CELL_H

@@ -98,13 +98,13 @@ void GOLFCam::SetupViewport()
     viewport_ = viewport;
 
     //Add anti-asliasing and bloom
-    /*effectRenderPath_ = viewport_->GetRenderPath()->Clone();
-    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
-    effectRenderPath_->SetEnabled("FXAA3", true);
-    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/Bloom.xml"));
-    effectRenderPath_->SetShaderParameter("BloomThreshold", 0.5f);
-    effectRenderPath_->SetEnabled("Bloom", true);    
-    viewport_->SetRenderPath(effectRenderPath_);*/
+//    effectRenderPath_ = viewport_->GetRenderPath()->Clone();
+//    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
+//    effectRenderPath_->SetEnabled("FXAA3", true);
+//    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/Bloom.xml"));
+//    effectRenderPath_->SetShaderParameter("BloomThreshold", 0.5f);
+//    effectRenderPath_->SetEnabled("Bloom", true);
+//    viewport_->SetRenderPath(effectRenderPath_);
     renderer->SetViewport(0, viewport);
 }
 
