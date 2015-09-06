@@ -1,3 +1,5 @@
+# STL-only classes
+
 SOURCES += \
     gameoflifefighterkey.cpp \
     gameoflifefightergame.cpp \
@@ -7,7 +9,8 @@ SOURCES += \
     gameoflifefighterplayerindex.cpp \
     gameoflifefightertrace.cpp \
     gameoflifefightercelltype.cpp \
-    gameoflifefighterhangarstate.cpp
+    gameoflifefighterhangarstate.cpp \
+    gameoflifefighterprefabpattern.cpp
 
 HEADERS += \
     gameoflifefighterkey.h \
@@ -18,4 +21,7 @@ HEADERS += \
     gameoflifefighterplayerindex.h \
     gameoflifefightertrace.h \
     gameoflifefightercelltype.h \
-    gameoflifefighterhangarstate.h
+    gameoflifefighterhangarstate.h \
+    gameoflifefighterprefabpattern.h
+
+

@@ -24,6 +24,27 @@ golf::Hangar::Hangar(
 
 }
 
+void golf::Hangar::BuildPattern(
+  const int cursor_x,
+  const int cursor_y,
+  const PrefabPattern& pattern
+)
+{
+  const int w = pattern.GetWidth();
+  const int h = pattern.GetHeight();
+  for (int y=0; y!=h; ++y)
+  {
+    for (int x=0; x!=w; ++x)
+    {
+      SetCell(
+        x + cursor_x - pattern.GetCursorX(),
+        y + cursor_y - pattern.GetCursorY(),
+        CellType::alive
+      );
+    }
+  }
+}
+
 void golf::Hangar::Close(
   Grid& grid
 ) noexcept

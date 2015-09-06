@@ -9,6 +9,7 @@ namespace golf {
 
 struct Grid;
 struct Player;
+struct PrefabPattern;
 
 ///Hangar is like a Grid without dynamics; it can be in stasis (Closed) or active (Open)
 ///A Hangar has a Grid of its own, where the player can build cell compositions
@@ -21,6 +22,11 @@ struct Hangar
     const int width,
     const int height,
     const PlayerIndex player
+  );
+
+  void BuildPattern(
+    const int cursor_x, const int cursor_y,
+    const PrefabPattern& pattern
   );
 
   CellType GetCell(const int x, const int y) const { return m_grid.Get(x,y); }

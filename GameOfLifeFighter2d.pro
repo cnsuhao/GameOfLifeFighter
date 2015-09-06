@@ -26,7 +26,6 @@ cross_compile {
   QMAKE_CXXFLAGS += -std=c++1y -Wall -Wextra -Weffc++
 }
 
-
 QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -42,16 +41,6 @@ CONFIG(release, debug|release) {
 }
 
 include(GameOfLifeFighterConsole.pri)
+include(GameOfLifeFighterQt.pri)
 
-SOURCES += qtmain.cpp \
-    qtgameoflifefighterwidget.cpp \
-    qtgameoflifefighterplayerindex.cpp
-
-FORMS += \
-    qtgameoflifefighterwidget.ui
-
-HEADERS += \
-    qtgameoflifefighterwidget.h \
-    qtgameoflifefighterplayerindex.h
-
-
+SOURCES += qtmain.cpp

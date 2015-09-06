@@ -15,32 +15,53 @@ golf::Game::Game()
   #endif
 }
 
-///Obtain the complete global Grid as bit flags
-/// 00: empty, not hangar
-/// 01: alive, not hangar
-/// 10: empty, in hangar
-/// 11: alive, in hangar
-golf::Game::BitFlagGrid golf::Game::GetBitFlagGrid() const
+void golf::Game::BuildOrRemove(const PlayerIndex player_index, const CellType cell_type)
 {
-  const int h{m_grid.GetHeight()};
-  const int w{m_grid.GetWidth()};
-  BitFlagGrid v(
-    h,
-    std::vector<int>(w,0)
-  );
-  assert(m_grid.GetRawGrid().size() == v.size());
-  assert(m_grid.GetRawGrid()[0].size() == v[0].size());
-  for (int y=0; y!=h; ++y)
+  const auto player = GetPlayer(player_index);
+  if (Hangar * const hangar = FindHangar(player.GetX(),player.GetY()))
   {
-    for (int x=0; x!=w; ++x)
+    if (hangar->GetState() == HangarState::closed
+      && hangar->GetPlayerIndex() == player_index
+    )
     {
-      int bit = 0;
-      bit += (m_grid.Get(x,y) == CellType::alive? 1 : 0);
-      bit += (IsHangar(x,y)                     ? 2 : 0);
-      v[y][x] = bit;
+      hangar->SetCell(
+        player.GetX() - hangar->GetLeft(),
+        player.GetY() - hangar->GetTop(),
+        cell_type
+      );
     }
   }
-  return v;
+}
+
+void golf::Game::BuildPattern(const PlayerIndex player_index, const int pattern_index)
+{
+  const auto player = GetPlayer(player_index);
+
+  //Player must be in hangar
+  if (Hangar * const hangar = FindHangar(player.GetX(),player.GetY()))
+  {
+    if (hangar->GetState() == HangarState::closed
+      && hangar->GetPlayerIndex() == player_index
+    )
+    {
+      hangar->BuildPattern(
+        player.GetX() - hangar->GetLeft(), player.GetY() - hangar->GetTop(), //Position of cursor in Hangar
+        player.GetPattern(pattern_index)
+      );
+    }
+  }
+}
+
+void golf::Game::CloseHangar(const PlayerIndex player_index)
+{
+  const auto player = this->GetPlayer(player_index);
+  const auto iter = std::find_if(
+    std::begin(m_hangars),
+    std::end(m_hangars),
+    [player](const Hangar& hangar) { return hangar.IsIn(player); }
+  );
+  if (iter == std::end(m_hangars)) return;
+  (*iter).Close(m_grid);
 }
 
 golf::Game::Hangars golf::Game::CreateInitialHangars(const int width, const int height)
@@ -69,13 +90,27 @@ golf::Game::Players golf::Game::CreateInitialPlayers(const int width, const int 
   return v;
 }
 
-void golf::Game::Set(const int x, const int y, const CellType cell)
+golf::Game::BitFlagGrid golf::Game::GetBitFlagGrid() const
 {
-  assert(y >= 0);
-  assert(y < GetHeight());
-  assert(x >= 0);
-  assert(x < GetWidth());
-  m_grid.Set(x,y,cell);
+  const int h{m_grid.GetHeight()};
+  const int w{m_grid.GetWidth()};
+  BitFlagGrid v(
+    h,
+    std::vector<int>(w,0)
+  );
+  assert(m_grid.GetRawGrid().size() == v.size());
+  assert(m_grid.GetRawGrid()[0].size() == v[0].size());
+  for (int y=0; y!=h; ++y)
+  {
+    for (int x=0; x!=w; ++x)
+    {
+      int bit = 0;
+      bit += (m_grid.Get(x,y) == CellType::alive? 1 : 0);
+      bit += (IsHangar(x,y)                     ? 2 : 0);
+      v[y][x] = bit;
+    }
+  }
+  return v;
 }
 
 golf::CellType golf::Game::GetCell(const int x, const int y) const
@@ -85,6 +120,28 @@ golf::CellType golf::Game::GetCell(const int x, const int y) const
   assert(x >= 0);
   assert(x < GetWidth());
   return m_grid.Get(x,y);
+}
+
+const golf::Player& golf::Game::GetPlayer(const PlayerIndex player_index) const noexcept
+{
+  switch (player_index)
+  {
+    case PlayerIndex::player1:
+      assert(m_players.size() >= 2);
+      return m_players[0];
+    case PlayerIndex::player2:
+      assert(m_players.size() >= 2);
+      return m_players[1];
+    default:
+      assert(!"golf::Game::GetPlayer: Unimplemented PlayerIndex");
+      throw std::logic_error("golf::Game::GetPlayer: Unimplemented PlayerIndex");
+  }
+}
+
+const golf::Game::Players& golf::Game::GetPlayers() const noexcept
+{
+  TRACE("Prefer using GetPlayer(PlayerIndex)");
+  return m_players;
 }
 
 const golf::Hangar * golf::Game::FindHangar(const int x, const int y) const noexcept
@@ -133,6 +190,18 @@ void golf::Game::Next()
   }
 }
 
+void golf::Game::OpenHangar(const PlayerIndex player_index)
+{
+  const auto player = this->GetPlayer(player_index);
+  const auto iter = std::find_if(
+    std::begin(m_hangars),
+    std::end(m_hangars),
+    [player](const Hangar& hangar) { return hangar.IsIn(player); }
+  );
+  if (iter == std::end(m_hangars)) return;
+  (*iter).Open(m_grid);
+}
+
 void golf::Game::PressKeys(const std::set<Key>& keys)
 {
   auto& player1 = m_players[0];
@@ -142,136 +211,41 @@ void golf::Game::PressKeys(const std::set<Key>& keys)
 
     switch (key)
     {
-      case Key::close_hangar1:
-      {
-        const auto player1 = this->GetPlayers()[0];
-        const auto iter = std::find_if(
-          std::begin(m_hangars),
-          std::end(m_hangars),
-          [player1](const Hangar& hangar) { return hangar.IsIn(player1); }
-        );
-        if (iter == std::end(m_hangars)) return;
-        (*iter).Close(m_grid);
-      }
-      break;
-      case Key::close_hangar2:
-      {
-        const auto player2 = this->GetPlayers()[1];
-        const auto iter = std::find_if(
-          std::begin(m_hangars),
-          std::end(m_hangars),
-          [player2](const Hangar& hangar) { return hangar.IsIn(player2); }
-        );
-        if (iter == std::end(m_hangars)) return;
-        (*iter).Close(m_grid);
-      }
-      break;
+      case Key::close_hangar1: CloseHangar(PlayerIndex::player1); break;
+      case Key::close_hangar2: CloseHangar(PlayerIndex::player2); break;
       case Key::down1: player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;
       case Key::down2: player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;
       case Key::left1: player1.SetX((player1.GetX() - 1 + GetWidth()) % GetWidth()); break;
       case Key::left2: player2.SetX((player2.GetX() - 1 + GetWidth()) % GetWidth()); break;
-      case Key::open_hangar1:
-      {
-        const auto player1 = this->GetPlayers()[0];
-        const auto iter = std::find_if(
-          std::begin(m_hangars),
-          std::end(m_hangars),
-          [player1](const Hangar& hangar) { return hangar.IsIn(player1); }
-        );
-        if (iter == std::end(m_hangars)) return;
-        (*iter).Open(m_grid);
-      }
-      break;
-      case Key::open_hangar2:
-      {
-        const auto player2 = this->GetPlayers()[1];
-        const auto iter = std::find_if(
-          std::begin(m_hangars),
-          std::end(m_hangars),
-          [player2](const Hangar& hangar) { return hangar.IsIn(player2); }
-        );
-        if (iter == std::end(m_hangars)) return;
-        (*iter).Open(m_grid);
-      }
-      break;
+      case Key::open_hangar1: OpenHangar(PlayerIndex::player1); break;
+      case Key::open_hangar2: OpenHangar(PlayerIndex::player2); break;
+      case Key::pattern_a1: BuildPattern(PlayerIndex::player1,0); break;
+      case Key::pattern_a2: BuildPattern(PlayerIndex::player2,0); break;
+      case Key::pattern_b1: BuildPattern(PlayerIndex::player1,1); break;
+      case Key::pattern_b2: BuildPattern(PlayerIndex::player2,1); break;
+      case Key::pattern_c1: BuildPattern(PlayerIndex::player1,2); break;
+      case Key::pattern_c2: BuildPattern(PlayerIndex::player2,2); break;
+      case Key::quit: break; //Cannot handle quit here
       case Key::right1: player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
       case Key::right2: player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
-      case Key::set_high1:
-      {
-        if (Hangar * const hangar = FindHangar(player1.GetX(),player1.GetY()))
-        {
-          if (hangar->GetState() == HangarState::closed
-            && hangar->GetPlayerIndex() == PlayerIndex::player1
-          )
-          {
-            hangar->SetCell(
-              player1.GetX() - hangar->GetLeft(),
-              player1.GetY() - hangar->GetTop(),
-              CellType::alive
-            );
-          }
-        }
-      }
-      break;
-      case Key::set_high2:
-      {
-        if (Hangar * const hangar = FindHangar(player2.GetX(),player2.GetY()))
-        {
-          if (hangar->GetState() == HangarState::closed
-            && hangar->GetPlayerIndex() == PlayerIndex::player2
-          )
-          {
-            hangar->SetCell(
-              player2.GetX() - hangar->GetLeft(),
-              player2.GetY() - hangar->GetTop(),
-              CellType::alive
-            );
-          }
-        }
-      }
-      break;
-      case Key::set_low1:
-      {
-        if (Hangar * const hangar = FindHangar(player1.GetX(),player1.GetY()))
-        {
-          if (hangar->GetState() == HangarState::closed
-            && hangar->GetPlayerIndex() == PlayerIndex::player1
-          )
-          {
-
-            hangar->SetCell(
-              player1.GetX() - hangar->GetLeft(),
-              player1.GetY() - hangar->GetTop(),
-              CellType::empty
-            );
-          }
-        }
-      }
-      break;
-      case Key::set_low2:
-      {
-        if (Hangar * const hangar = FindHangar(player2.GetX(),player2.GetY()))
-        {
-          if (hangar->GetState() == HangarState::closed
-            && hangar->GetPlayerIndex() == PlayerIndex::player2
-          )
-          {
-            hangar->SetCell(
-              player2.GetX() - hangar->GetLeft(),
-              player2.GetY() - hangar->GetTop(),
-              CellType::empty
-            );
-          }
-        }
-      }
-      break;
+      case Key::set_high1: BuildOrRemove(PlayerIndex::player1,CellType::alive); break;
+      case Key::set_high2: BuildOrRemove(PlayerIndex::player2,CellType::alive); break;
+      case Key::set_low1: BuildOrRemove(PlayerIndex::player1,CellType::empty); break;
+      case Key::set_low2: BuildOrRemove(PlayerIndex::player2,CellType::empty); break;
       case Key::up1: player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
       case Key::up2: player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
-      case Key::quit: //Cannot handle quit here
-        break;
     }
   }
 
+}
+
+void golf::Game::Set(const int x, const int y, const CellType cell)
+{
+  assert(y >= 0);
+  assert(y < GetHeight());
+  assert(x >= 0);
+  assert(x < GetWidth());
+  m_grid.Set(x,y,cell);
 }
 
 #ifndef NDEBUG

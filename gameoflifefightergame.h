@@ -32,11 +32,15 @@ struct Game
   /// 11: alive, in hangar
   BitFlagGrid GetBitFlagGrid() const;
 
+  ///Get a Player his/her i'th pre-fab pattern
+  const PrefabPattern& GetPattern(const PlayerIndex player_index, const int i);
+
   const Hangars& GetHangars() const noexcept { return m_hangars; }
 
   int GetHeight() const noexcept { return 60; }
 
-  const Players& GetPlayers() const noexcept { return m_players; }
+  const Player& GetPlayer(const PlayerIndex player_index) const noexcept;
+  const Players& GetPlayers() const noexcept;
 
   ///Is there a Hangar at this coordinat?
   ///Returns nullptr if not
@@ -65,8 +69,20 @@ struct Game
   Hangars m_hangars;
   Players m_players;
 
+  ///Let a player try to close a hangar
+  void CloseHangar(const PlayerIndex player_index);
+
   static Hangars CreateInitialHangars(const int width, const int height);
   static Players CreateInitialPlayers(const int width, const int height);
+
+  ///Let a player try to open a hangar
+  void OpenHangar(const PlayerIndex player_index);
+
+  ///Let a player try to build/remove
+  void BuildOrRemove(const PlayerIndex player_index, const CellType cell_type);
+
+  ///Let a player try to build a patterm
+  void BuildPattern(const PlayerIndex player_index, const int pattern_index);
 
   #ifndef NDEBUG
   static void Test() noexcept;
