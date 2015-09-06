@@ -35,6 +35,6 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
     rootNode_->Rotate(Quaternion(-90.0f, 0.0f, 0.0f));
     rootNode_->SetScale(0.23f);
     model_ = rootNode_->CreateComponent<StaticModel>();
-    model_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Cell.mdl"));
-    model_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Basic.xml"));
+    model_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Models/Cell.mdl"));
+    model_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Materials/Basic.xml"));
 }
