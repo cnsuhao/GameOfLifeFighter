@@ -16,7 +16,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#ifndef CELLRING_H
+#define CELLRING_H
 
 #include "cellmaster.h"
 #include "mastercontrol.h"
@@ -44,3 +45,5 @@ private:
     int ringNumber_;
     void Rotate(float rotation);
 };
+
+#endif // CELLRING_H

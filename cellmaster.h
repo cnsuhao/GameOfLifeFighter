@@ -16,7 +16,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#ifndef CELLMASTER_H
+#define CELLMASTER_H
 
 #include "mastercontrol.h"
 #include "cellmaster.h"
@@ -51,3 +52,5 @@ private:
     Vector<CellRing*> rings_;
     HashMap<IntVector2, SharedPtr<Cell> > cellMap_;
 };
+
+#endif // CELLMASTER_H

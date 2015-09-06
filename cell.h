@@ -16,7 +16,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#ifndef CELL_H
+#define CELL_H
 
 #include <Urho3D/Graphics/StaticModel.h>
 #include "mastercontrol.h"
@@ -49,3 +50,5 @@ private:
     SharedPtr<StaticModel> model_;
     void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
 };
+
+#endif // CELL_H

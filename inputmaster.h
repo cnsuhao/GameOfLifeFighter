@@ -16,7 +16,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#ifndef INPUTMASTER_H
+#define INPUTMASTER_H
 
 #include <Urho3D/Input/Input.h>
 
@@ -48,3 +49,5 @@ private:
     void HandleMouseDown(StringHash eventType, VariantMap &eventData);
     void HandleMouseUp(StringHash eventType, VariantMap &eventData);
 };
+
+#endif // INPUTMASTER_H

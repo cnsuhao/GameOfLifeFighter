@@ -16,7 +16,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#ifndef MASTERCONTROL_H
+#define MASTERCONTROL_H
 
 #include <Urho3D/Urho3D.h>
 #include <Urho3D/Container/HashMap.h>
@@ -26,6 +27,8 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/Physics/RigidBody.h>
+
+//#include "gameoflifefightergame.h"
 
 namespace Urho3D {
 class Drawable;
@@ -76,6 +79,7 @@ class MasterControl : public Application
 public:
     /// Constructor.
     MasterControl(Context* context);
+//    golf::Game game_;
     GameWorld world;
     SharedPtr<ResourceCache> cache_;
     SharedPtr<Graphics> graphics_;
@@ -129,33 +133,4 @@ private:
 
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif // MASTERCONTROL_H

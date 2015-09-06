@@ -24,7 +24,7 @@
 namespace Urho3D {
 template <> unsigned MakeHash(const IntVector2& value)
   {
-    return GOLF::IntVector2ToHash(value);
+    return golf::IntVector2ToHash(value);
   }
 }
 

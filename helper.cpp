@@ -18,12 +18,12 @@
 
 #include "helper.h"
 
-float GOLF::Distance(const Urho3D::Vector3 from, const Urho3D::Vector3 to){
+float golf::Distance(const Urho3D::Vector3 from, const Urho3D::Vector3 to){
     return (to - from).Length();
 }
 
-unsigned GOLF::IntVector2ToHash(Urho3D::IntVector2 vec) { return (Urho3D::MakeHash(vec.x_) & 0xffff) | (Urho3D::MakeHash(vec.y_) << 16); }
+unsigned golf::IntVector2ToHash(Urho3D::IntVector2 vec) { return (Urho3D::MakeHash(vec.x_) & 0xffff) | (Urho3D::MakeHash(vec.y_) << 16); }
 
-Urho3D::Vector3 GOLF::Scale(const Urho3D::Vector3 lhs, const Urho3D::Vector3 rhs) {
+Urho3D::Vector3 golf::Scale(const Urho3D::Vector3 lhs, const Urho3D::Vector3 rhs) {
     return Urho3D::Vector3(lhs.x_ * rhs.x_, lhs.y_ * rhs.y_, lhs.z_ * rhs.z_);
 }

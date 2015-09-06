@@ -16,7 +16,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#pragma once
+#ifndef GOLFCAM_H
+#define GOLFCAM_H
 
 #include "mastercontrol.h"
 
@@ -67,3 +68,5 @@ private:
     double forceMultiplier;
     void SetupViewport();
 };
+
+#endif // GOLFCAM_H

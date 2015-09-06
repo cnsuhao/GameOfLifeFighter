@@ -17,6 +17,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+    gameoflifefightergame.cpp \
     mastercontrol.cpp \
     inputmaster.cpp \
     golfcam.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     helper.cpp
 
 HEADERS += \
+    gameoflifefightergame.h \
     mastercontrol.h \
     inputmaster.h \
     golfcam.h \
