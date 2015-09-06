@@ -64,7 +64,7 @@ MasterControl::MasterControl(Context *context):
     cache_{GetSubsystem<ResourceCache>()},
     renderer_{GetSubsystem<Renderer>()},
     paused_(false),
-    stepInterval_{0.5f},
+    stepInterval_{0.666f},
     sinceStep_{stepInterval_}
 {
 }

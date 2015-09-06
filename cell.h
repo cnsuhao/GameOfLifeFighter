@@ -20,6 +20,7 @@
 #define CELL_H
 
 #include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Graphics/AnimatedModel.h>
 #include "mastercontrol.h"
 #include "cellring.h"
 
@@ -47,12 +48,13 @@ public:
     bool IsAlive() { return type_ == golf::CellType::alive; }
 private:
     MasterControl* masterControl_;
+    float randomizer_;
     golf::CellType type_;
     golf::CellType previousType_;
     SharedPtr<Node> rootNode_;
     SharedPtr<Node> fillNode_ ;
     SharedPtr<StaticModel> cellModel_;
-    SharedPtr<StaticModel> fillModel_;
+    SharedPtr<AnimatedModel> fillModel_;
     void HandleUpdate(StringHash eventType, VariantMap &eventData);
     void SetType(golf::CellType type);
     float CalculateScale();

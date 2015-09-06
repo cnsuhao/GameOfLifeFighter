@@ -29,7 +29,8 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
     Object(context),
     masterControl_{masterControl},
     type_{golf::CellType::empty},
-    previousType_{type_}
+    previousType_{type_},
+    randomizer_{Random()}
 {
     masterControl_ = masterControl;
 
@@ -41,7 +42,7 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
     cellModel_ = rootNode_->CreateComponent<StaticModel>();
     cellModel_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Models/Cell.mdl"));
     cellModel_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Materials/Basic.xml"));
-    fillModel_ = fillNode_->CreateComponent<StaticModel>();
+    fillModel_ = fillNode_->CreateComponent<AnimatedModel>();
     fillModel_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Models/Fill.mdl"));
     fillModel_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Materials/Fill.xml"));
 //    model_->SetCastShadows(true);
@@ -50,18 +51,25 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
 
 void Cell::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
-//    if (previousType_ != type_){
-        fillNode_->SetScale(CalculateScale());
-//    }
+    float newScale = CalculateScale();
+    if (newScale <= 0.0f){
+        if (fillNode_->IsEnabled()) {
+            fillNode_->SetEnabled(false);
+            return;
+        }
+        else return;
+    }
+    else if (!fillNode_->IsEnabled()) fillNode_->SetEnabled(true);
+
+    fillNode_->SetScale(newScale);
+    float morphWeight = golf::Cycle((3.0f+2.0f*randomizer_)*masterControl_->world.scene->GetElapsedTime() + randomizer_*2.0f, 0.0f, 2.0f);
+    morphWeight = (morphWeight + fillModel_->GetMorphWeight(0))*0.5f;
+    morphWeight = morphWeight > 1.0f ? 1.0f-(morphWeight-1.0f) : morphWeight;
+    fillModel_->SetMorphWeight(0, morphWeight);
 }
 
 void Cell::SetType(golf::CellType type)
 {
-//    if (type == previousType_ && previousType_ == golf::CellType::empty){
-//        fillNode_->SetEnabled(false);
-//    }
-//    else fillNode_->SetEnabled(true);
-
     previousType_ = type_;
     type_ = type;
 }
