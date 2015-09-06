@@ -18,7 +18,7 @@ struct Game
   Game();
 
   ///Obtain the Grid its value
-  int GetGrid(const int x, const int y) const;
+  CellType GetGrid(const int x, const int y) const;
   const Hangars& GetHangars() const noexcept { return m_hangars; }
   int GetHeight() const noexcept { return 60; }
 
@@ -26,7 +26,7 @@ struct Game
 
   int GetWidth() const noexcept { return 200; }
   void PressKeys(const std::set<Key>& keys);
-  void Set(const int x, const int y, const int i);
+  void Set(const int x, const int y, const CellType cell);
   void Next();
 
   private:
