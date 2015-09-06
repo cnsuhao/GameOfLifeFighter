@@ -36,74 +36,26 @@ int golf::Grid::GetHeight() const noexcept
   return static_cast<int>(m_grid.size());
 }
 
-int golf::Grid::Return_active_neighbours(const int x, const int y)
+int golf::Grid::CountNeighbours(const int focal_x, const int focal_y)
 {
-  if(x > 0 && x < static_cast<int>(m_grid[0].size())-1 && y > 0 && y < static_cast<int>(m_grid.size())-1)
+  int n = 0;
+  for (int dy = -1; dy != 2; ++dy)
   {
-    int counter = 0;
-    for(int q = -1; q < 2; ++q)
+    const int y_co = (focal_y + dy + GetHeight()) % GetHeight();
+    for (int dx = -1; dx != 2; ++dx)
     {
-      for(int k = -1; k < 2; ++k)
-      {
-        const int y_co = y+q;
-        const int x_co = x+k;
-        assert(y_co >= 0);
-        assert(y_co < static_cast<int>(m_grid.size()));
-        assert(x_co >= 0);
-        assert(x_co < static_cast<int>(m_grid[y_co].size()));
-        if(m_grid[y_co][x_co] == CellType::alive) {counter++;}
-      }
+      if (dx == 0 && dy == 0) continue;
+      const int x_co = (focal_x + dx + GetWidth()) % GetWidth();
+      if (Get(x_co,y_co) == CellType::alive) ++n;
     }
-
-    if(m_grid[y][x] == CellType::alive) {return counter-1;}
-    else{assert(m_grid[y][x] == CellType::empty); return counter;};
   }
-
-  else{return std::rand() % 8;};
+  return n;
 }
 
 int golf::Grid::GetWidth() const
 {
   assert(!m_grid.empty());
   return static_cast<int>(m_grid[0].size());
-}
-
-void golf::Grid::Create_glider()
-{
-  int hight = GetHeight();
-  int width = GetWidth();
-  assert(hight > 20);
-  assert(width > 20);
-  m_grid[9][7] = CellType::alive;
-  m_grid[9][8] = CellType::alive;
-  m_grid[9][9] = CellType::alive;
-  m_grid[8][9] = CellType::alive;
-  m_grid[7][8] = CellType::alive;
-}
-
-void golf::Grid::Create_block()
-{
-  int hight = GetHeight();
-  int width = GetWidth();
-  assert(hight > 20);
-  assert(width > 20);
-
-  m_grid[9][9] = CellType::alive;
-  m_grid[8][8] = CellType::alive;
-  m_grid[9][8] = CellType::alive;
-  m_grid[8][9] = CellType::alive;
-}
-
-void golf::Grid::Create_blinker()
-{
-  int hight = GetHeight();
-  int width = GetWidth();
-  assert(hight > 20);
-  assert(width > 20);
-
-  m_grid[9][9] = CellType::alive;
-  m_grid[9][8] = CellType::alive;
-  m_grid[9][7] = CellType::alive;
 }
 
 void golf::Grid::Next()
@@ -115,50 +67,52 @@ void golf::Grid::Next()
   // Any live cell with more than three live neighbours dies
   // Any dead cell with exactly three live neighbours becomes a live cell
 
-  std::vector<std::vector<CellType>> grid_temp(m_grid.size(),std::vector<CellType>(m_grid[0].size(),CellType::empty));
+  const int width{GetWidth()};
+  const int height{GetHeight()};
 
-  for(int i = 0; i < static_cast<int>(m_grid[0].size()); ++i)
+  std::vector<std::vector<CellType>> v(height,std::vector<CellType>(width,CellType::empty));
+  for(int y = 0; y != height; ++y)
   {
-    for(int j = 0; j < static_cast<int>(m_grid.size()); ++j)
+    for(int x = 0; x != width; ++x)
     {
-      CellType temp_status = m_grid[j][i];
-      int temp_neighbours = Return_active_neighbours(i,j);
-      if(temp_status == CellType::alive)
+      const CellType status = Get(x,y);
+      const int n_neighbours = CountNeighbours(x,y);
+      if(status == CellType::alive)
       {
-        if(temp_neighbours < 2)
+        if(n_neighbours < 2)
         {
-          grid_temp[j][i] = CellType::empty;
+          v[y][x] = CellType::empty;
         }
-        else if(temp_neighbours == 2 || temp_neighbours ==  3)
+        else if(n_neighbours == 2 || n_neighbours ==  3)
         {
-          grid_temp[j][i] = CellType::alive;
+          v[y][x] = CellType::alive;
         }
-        else if(temp_neighbours > 3)
+        else if(n_neighbours > 3)
         {
-          grid_temp[j][i] = CellType::empty;
+          v[y][x] = CellType::empty;
         }
         else
         {
-          grid_temp[j][i] = m_grid[j][i];
+          v[y][x] = status;
         }
       }
 
       else
       {
-        assert(temp_status == CellType::empty);
-        if(temp_neighbours == 3)
+        assert(status == CellType::empty);
+        if(n_neighbours == 3)
         {
-          grid_temp[j][i] = CellType::alive;
+          v[y][x] = CellType::alive;
         }
         else
         {
-          grid_temp[j][i] = CellType::empty;
+          v[y][x] = CellType::empty;
         }
       }
     }
   }
 
-  m_grid = grid_temp;
+  m_grid = v;
 }
 
 void golf::Grid::Test() noexcept
@@ -210,19 +164,6 @@ void golf::Grid::Test() noexcept
     g.Set(10,12,CellType::empty);
     g.Set(11,12,CellType::alive);
     g.Set(12,12,CellType::empty);
-    assert(g.Return_active_neighbours(11,11) == 4);
+    assert(g.CountNeighbours(11,11) == 4);
   }
-  //Add a blink
-  /*
-  {
-    Grid g(40,40);
-    g.Set(11,11,1);
-    g.Set(12,11,1);
-    g.Set(13,11,1);
-    g.Next();
-    assert(g.Get(12,11) == 1);
-    assert(g.Get(12,12) == 1);
-    assert(g.Get(12,13) == 1);
-  }
-  */
 }
