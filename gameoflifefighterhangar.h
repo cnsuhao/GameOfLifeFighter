@@ -1,7 +1,7 @@
 #ifndef GAMEOFLIFEFIGHTERHANGAR_H
 #define GAMEOFLIFEFIGHTERHANGAR_H
 
-#include "gameoflifefighterplayer.h"
+#include "gameoflifefighterplayerindex.h"
 
 namespace golf {
 
@@ -14,13 +14,13 @@ struct Hangar
     const int top,
     const int width,
     const int height,
-    const Player player
+    const PlayerIndex player
   );
   int GetLeft() const noexcept { return m_left; }
   int GetTop() const noexcept { return m_top; }
   int GetWidth() const noexcept { return m_width; }
   int GetHeight() const noexcept { return m_height; }
-  Player GetPlayer() const noexcept { return m_player; }
+  PlayerIndex GetPlayerIndex() const noexcept { return m_player_index; }
   bool IsIn(const int x, const int y) const noexcept;
 
   private:
@@ -28,7 +28,7 @@ struct Hangar
   const int m_top;
   const int m_width;
   const int m_height;
-  const Player m_player;
+  const PlayerIndex m_player_index;
 };
 
 } //~namespace golf

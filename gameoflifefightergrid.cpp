@@ -1,9 +1,9 @@
-#include "grid.h"
+#include "gameoflifefightergrid.h"
 #include <cassert>
 #include <cstdlib>
 #include <assert.h>
 
-Grid::Grid(const int width, const int height)
+golf::Grid::Grid(const int width, const int height)
   : m_grid(height,std::vector<int>(width,0))
 {
   #ifndef NDEBUG
@@ -11,7 +11,7 @@ Grid::Grid(const int width, const int height)
   #endif
 }
 
-void Grid::Set(const int x, const int y, const int i)
+void golf::Grid::Set(const int x, const int y, const int i)
 {
   assert(!m_grid.empty());
   assert(y >= 0);
@@ -21,7 +21,7 @@ void Grid::Set(const int x, const int y, const int i)
   m_grid[y][x] = i;
 }
 
-int Grid::Get(const int x, const int y) const
+int golf::Grid::Get(const int x, const int y) const
 {
   assert(!m_grid.empty());
   assert(y >= 0);
@@ -31,12 +31,12 @@ int Grid::Get(const int x, const int y) const
   return m_grid[y][x];
 }
 
-int Grid::GetHeight() const noexcept
+int golf::Grid::GetHeight() const noexcept
 {
   return static_cast<int>(m_grid.size());
 }
 
-int Grid::Return_active_neighbours(const int x, const int y)
+int golf::Grid::Return_active_neighbours(const int x, const int y)
 {
   if(x > 0 && x < static_cast<int>(m_grid[0].size())-1 && y > 0 && y < static_cast<int>(m_grid.size())-1)
   {
@@ -62,13 +62,13 @@ int Grid::Return_active_neighbours(const int x, const int y)
   else{return std::rand() % 8;};
 }
 
-int Grid::GetWidth() const
+int golf::Grid::GetWidth() const
 {
   assert(!m_grid.empty());
   return static_cast<int>(m_grid[0].size());
 }
 
-void Grid::Create_glider()
+void golf::Grid::Create_glider()
 {
   int hight = GetHeight();
   int width = GetWidth();
@@ -81,7 +81,7 @@ void Grid::Create_glider()
   m_grid[7][8] = 1;
 }
 
-void Grid::Create_block()
+void golf::Grid::Create_block()
 {
   int hight = GetHeight();
   int width = GetWidth();
@@ -94,7 +94,7 @@ void Grid::Create_block()
   m_grid[8][9] = 1;
 }
 
-void Grid::Create_blinker()
+void golf::Grid::Create_blinker()
 {
   int hight = GetHeight();
   int width = GetWidth();
@@ -106,7 +106,7 @@ void Grid::Create_blinker()
   m_grid[9][7] = 1;
 }
 
-void Grid::Next()
+void golf::Grid::Next()
 {
   //Game Of Life here
   //
@@ -161,7 +161,7 @@ void Grid::Next()
   m_grid = grid_temp;
 }
 
-void Grid::Test() noexcept
+void golf::Grid::Test() noexcept
 {
   {
     static bool is_tested{false};

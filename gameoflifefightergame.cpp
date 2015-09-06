@@ -6,32 +6,37 @@
 
 golf::Game::Game()
   : m_grid(GetWidth(),GetHeight()),
-    m_hangars{CreateInitialHangars(width,height)}
+    m_hangars{CreateInitialHangars(GetWidth(),GetHeight())},
+    m_players{CreateInitialPlayers(GetWidth(),GetHeight())}
 {
   #ifndef NDEBUG
   Test();
   #endif
-
-    m_x1{width / 2},
-    m_y1{height * 1 / 4},
-    m_x2{width / 2},
-    m_y2{height * 3 / 4}
-
 }
 
-std::vector<golf::Hangar> golf::Game::CreateInitialHangars(const int width, const int height)
+golf::Game::Hangars golf::Game::CreateInitialHangars(const int width, const int height)
 {
   assert(width > 0);
   assert(height > 0);
-  std::vector<Hangar> v;
-  v.push_back(Hangar(30,10,10,10,Player::player1));
-  v.push_back(Hangar(50,10,10,10,Player::player1));
-  v.push_back(Hangar(30,30,10,10,Player::player1));
-  v.push_back(Hangar(50,30,10,10,Player::player1));
-  v.push_back(Hangar(130,20,10,10,Player::player2));
-  v.push_back(Hangar(150,20,10,10,Player::player2));
-  v.push_back(Hangar(130,40,10,10,Player::player2));
-  v.push_back(Hangar(150,40,10,10,Player::player2));
+  Hangars v;
+  v.push_back(Hangar(30,10,10,10,PlayerIndex::player1));
+  v.push_back(Hangar(50,10,10,10,PlayerIndex::player1));
+  v.push_back(Hangar(30,30,10,10,PlayerIndex::player1));
+  v.push_back(Hangar(50,30,10,10,PlayerIndex::player1));
+  v.push_back(Hangar(130,20,10,10,PlayerIndex::player2));
+  v.push_back(Hangar(150,20,10,10,PlayerIndex::player2));
+  v.push_back(Hangar(130,40,10,10,PlayerIndex::player2));
+  v.push_back(Hangar(150,40,10,10,PlayerIndex::player2));
+  return v;
+}
+
+golf::Game::Players golf::Game::CreateInitialPlayers(const int width, const int height)
+{
+  assert(width > 0);
+  assert(height > 0);
+  Players v;
+  v.push_back(Player(width / 2,height * 1 / 4));
+  v.push_back(Player(width / 2,height * 3 / 4));
   return v;
 }
 
@@ -51,16 +56,6 @@ int golf::Game::GetGrid(const int x, const int y) const
   assert(x >= 0);
   assert(x < GetWidth());
   return m_grid.Get(x,y);
-}
-
-int golf::Game::GetHeight() const
-{
-  return m_grid.GetHeight();
-}
-
-int golf::Game::GetWidth() const
-{
-  return m_grid.GetWidth();
 }
 
 void golf::Game::Next()
@@ -86,21 +81,31 @@ void golf::Game::Next()
 
 void golf::Game::PressKeys(const std::set<Key>& keys)
 {
+  auto player1 = m_players[0];
+  auto player2 = m_players[1];
   for (const auto key: keys)
   {
+
     switch (key)
     {
-      case Qt::Key_A: m_x1 = (m_x1 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_D: m_x1 = (m_x1 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_W: m_y1 = (m_y1 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_S: m_y1 = (m_y1 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_Q: m_game.Set(m_x1,m_y1,1); break;
-
-      case Qt::Key_J: m_x2 = (m_x2 - 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_L: m_x2 = (m_x2 + 1 + m_game.GetWidth()) % m_game.GetWidth(); break;
-      case Qt::Key_I: m_y2 = (m_y2 - 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_K: m_y2 = (m_y2 + 1 + m_game.GetHeight()) % m_game.GetHeight(); break;
-      case Qt::Key_U: m_game.Set(m_x2,m_y2,1); break;
+      case Key::close_hangar1: assert(!"Not yet done"); break;
+      case Key::close_hangar2: assert(!"Not yet done"); break;
+      case Key::down1    : player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;
+      case Key::down2    : player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;
+      case Key::left1    : player1.SetX((player1.GetX() - 1 + GetWidth()) % GetWidth()); break;
+      case Key::left2    : player2.SetX((player2.GetX() - 1 + GetWidth()) % GetWidth()); break;
+      case Key::open_hangar1: assert(!"Not yet done"); break;
+      case Key::open_hangar2: assert(!"Not yet done"); break;
+      case Key::right1   : player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
+      case Key::right2   : player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
+      case Key::set_high1: Set(player1.GetX(),player1.GetY(),1); break;
+      case Key::set_high2: Set(player2.GetX(),player2.GetY(),1); break;
+      case Key::set_low1 : Set(player1.GetX(),player1.GetY(),0); break;
+      case Key::set_low2 : Set(player2.GetX(),player2.GetY(),0); break;
+      case Key::up1      : player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
+      case Key::up2      : player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
+      case Key::quit     : //Cannot handle quit here
+        break;
     }
   }
 
@@ -116,7 +121,7 @@ void golf::Game::Test() noexcept
   }
   //Get and set must be symmetric
   {
-    Game g(40,30);
+    Game g;
     g.Set(1,2,42);
     assert(g.GetGrid(1,2) == 42);
   }

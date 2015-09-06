@@ -1,22 +1,23 @@
-#include "hangar.h"
+#include "gameoflifefighterhangar.h"
+#include "gameoflifefighterplayerindex.h"
 
-Hangar::Hangar(
+golf::Hangar::Hangar(
   const int left,
   const int top,
   const int width,
   const int height,
-  const Player player
+  const PlayerIndex player_index
 ) :
     m_left{left},
     m_top{top},
     m_width{width},
     m_height{height},
-    m_player{player}
+    m_player_index{player_index}
 {
 
 }
 
-bool Hangar::IsIn(const int x, const int y) const noexcept
+bool golf::Hangar::IsIn(const int x, const int y) const noexcept
 {
   return
        x >= m_left

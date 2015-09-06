@@ -50,7 +50,6 @@ private:
     const int x, const int y,
     const QColor color
   );
-  static QColor ToColor(const Player player) noexcept;
 
 private slots:
   void OnTimer();

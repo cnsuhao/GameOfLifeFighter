@@ -8,6 +8,8 @@
 #include <QTimer>
 #include <QKeyEvent>
 #include <QDesktopWidget>
+
+#include "gameoflifefighterplayerindex.h"
 #include "ui_qtgameoflifefighterwidget.h"
 
 golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
@@ -18,7 +20,7 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   : QWidget(parent),
     ui(new Ui::QtGameOfLifeFighterWidget),
     m_color_map{},
-    m_game(width,height),
+    m_game{},
     m_keys{},
     m_pixmap(width,height)
 {
@@ -151,12 +153,12 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     const int top{hangar.GetTop()};
     const int width{hangar.GetWidth()};
     const int height{hangar.GetHeight()};
-    const auto player = hangar.GetPlayer();
+    const auto player_index = hangar.GetPlayerIndex();
     for (int y=0; y!=height; ++y)
     {
       for (int x=0; x!=width; ++x)
       {
-        Blend(image,x+left,y+top,ToColor(player));
+        Blend(image,x+left,y+top,ToColor(player_index));
       }
     }
 
@@ -165,8 +167,8 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
   //Display players
   const auto players = m_game.GetPlayers();
   assert(players.size() == 2);
-  Blend(image,players[0].GetX(),players[0].GetY(),ToColor(Player::player1));
-  Blend(image,players[1].GetX(),players[1].GetY(),ToColor(Player::player2));
+  Blend(image,players[0].GetX(),players[0].GetY(),ToColor(PlayerIndex::player1));
+  Blend(image,players[1].GetX(),players[1].GetY(),ToColor(PlayerIndex::player2));
 
 
   m_pixmap = QPixmap::fromImage(image);
@@ -182,13 +184,3 @@ void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
   );
 }
 
-QColor golf::QtGameOfLifeFighterWidget::ToColor(const Player player) noexcept
-{
-  switch (player)
-  {
-    case Player::player1: return qRgb(255,0,0);
-    case Player::player2: return qRgb(0,0,255);
-  }
-  assert(!"Should not get here");
-  return qRgb(0,0,0);
-}

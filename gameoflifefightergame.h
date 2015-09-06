@@ -12,12 +12,18 @@ namespace golf {
 
 struct Game
 {
-  Game(const int width, const int height);
+  using Hangars = std::vector<Hangar>;
+  using Players = std::vector<Player>;
+
+  Game();
 
   ///Obtain the Grid its value
   int GetGrid(const int x, const int y) const;
-  const std::vector<Hangar>& GetHangars() const noexcept { return m_hangars; }
+  const Hangars& GetHangars() const noexcept { return m_hangars; }
   int GetHeight() const noexcept { return 60; }
+
+  const Players& GetPlayers() const noexcept { return m_players; }
+
   int GetWidth() const noexcept { return 200; }
   void PressKeys(const std::set<Key>& keys);
   void Set(const int x, const int y, const int i);
@@ -25,10 +31,11 @@ struct Game
 
   private:
   Grid m_grid;
-  std::vector<Hangar> m_hangars;
-  std::vector<Player> m_players;
+  Hangars m_hangars;
+  Players m_players;
 
-  static std::vector<Hangar> CreateInitialHangars(const int width, const int height);
+  static Hangars CreateInitialHangars(const int width, const int height);
+  static Players CreateInitialPlayers(const int width, const int height);
 
   #ifndef NDEBUG
   static void Test() noexcept;
