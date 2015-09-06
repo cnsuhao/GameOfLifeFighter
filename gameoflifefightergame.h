@@ -7,6 +7,8 @@
 #include "gameoflifefighterplayer.h"
 #include "gameoflifefightergrid.h"
 #include "gameoflifefighterhangar.h"
+#include "gameoflifefighterheart.h"
+#include "gameoflifefightergamestate.h"
 
 namespace golf {
 
@@ -17,6 +19,7 @@ namespace golf {
 struct Game
 {
   using Hangars = std::vector<Hangar>;
+  using Hearts = std::vector<Heart>;
   using Players = std::vector<Player>;
   using BitFlagGrid = std::vector<std::vector<int>>;
 
@@ -37,7 +40,9 @@ struct Game
 
   const Hangars& GetHangars() const noexcept { return m_hangars; }
 
-  int GetHeight() const noexcept { return 60; }
+  const Hearts& GetHearts() const noexcept { return m_hearts; }
+
+  static int GetHeight() noexcept { return 60; }
 
   const Player& GetPlayer(const PlayerIndex player_index) const noexcept;
 
@@ -47,8 +52,11 @@ struct Game
   const Hangar * FindHangar(const int x, const int y) const noexcept;
         Hangar * FindHangar(const int x, const int y)       noexcept;
 
+
+  GameState GetGameState() const noexcept { return m_game_state; }
+
   ///The width of the global GOL grid
-  int GetWidth() const noexcept { return 200; }
+  static int GetWidth() noexcept { return 200; }
 
   ///Is this coordinat a hangar?
   bool IsHangar(const int x, const int y) const noexcept;
@@ -64,15 +72,18 @@ struct Game
   void Next();
 
   private:
+  GameState m_game_state;
   Grid m_grid;
   Hangars m_hangars;
+  Hearts m_hearts;
   Players m_players;
 
   ///Let a player try to close a hangar
   void CloseHangar(const PlayerIndex player_index);
 
-  static Hangars CreateInitialHangars(const int width, const int height);
-  static Players CreateInitialPlayers(const int width, const int height);
+  static Hangars CreateInitialHangars();
+  static Hearts CreateInitialHearts();
+  static Players CreateInitialPlayers();
 
   ///Let a player try to open a hangar
   void OpenHangar(const PlayerIndex player_index);

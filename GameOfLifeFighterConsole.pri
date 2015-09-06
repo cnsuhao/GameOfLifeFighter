@@ -10,7 +10,9 @@ SOURCES += \
     gameoflifefightertrace.cpp \
     gameoflifefightercelltype.cpp \
     gameoflifefighterhangarstate.cpp \
-    gameoflifefighterprefabpattern.cpp
+    gameoflifefighterprefabpattern.cpp \
+    gameoflifefighterheart.cpp \
+    gameoflifefightergamestate.cpp
 
 HEADERS += \
     gameoflifefighterkey.h \
@@ -22,6 +24,8 @@ HEADERS += \
     gameoflifefightertrace.h \
     gameoflifefightercelltype.h \
     gameoflifefighterhangarstate.h \
-    gameoflifefighterprefabpattern.h
+    gameoflifefighterprefabpattern.h \
+    gameoflifefighterheart.h \
+    gameoflifefightergamestate.h
 
 

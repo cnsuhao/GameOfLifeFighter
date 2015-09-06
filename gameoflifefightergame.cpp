@@ -6,13 +6,28 @@
 #include "gameoflifefightertrace.h"
 
 golf::Game::Game()
-  : m_grid(GetWidth(),GetHeight()),
-    m_hangars{CreateInitialHangars(GetWidth(),GetHeight())},
-    m_players{CreateInitialPlayers(GetWidth(),GetHeight())}
+  :
+    m_game_state{GameState::playing},
+    m_grid(GetWidth(),GetHeight()),
+    m_hangars{CreateInitialHangars()},
+    m_hearts{CreateInitialHearts()},
+    m_players{CreateInitialPlayers()}
 {
   #ifndef NDEBUG
   Test();
   #endif
+
+  for (const auto& heart: m_hearts)
+  {
+    const int left{heart.GetLeft()};
+    const int top{heart.GetTop()};
+    const int width{heart.GetWidth()};
+    const int height{heart.GetHeight()};
+    m_grid.Set( 0 + (left + (width / 2)), 0 + (top + (height / 2)),CellType::alive);
+    m_grid.Set( 0 + (left + (width / 2)),-1 + (top + (height / 2)),CellType::alive);
+    m_grid.Set(-1 + (left + (width / 2)), 0 + (top + (height / 2)),CellType::alive);
+    m_grid.Set(-1 + (left + (width / 2)),-1 + (top + (height / 2)),CellType::alive);
+  }
 }
 
 void golf::Game::BuildOrRemove(const PlayerIndex player_index, const CellType cell_type)
@@ -64,10 +79,8 @@ void golf::Game::CloseHangar(const PlayerIndex player_index)
   (*iter).Close(m_grid);
 }
 
-golf::Game::Hangars golf::Game::CreateInitialHangars(const int width, const int height)
+golf::Game::Hangars golf::Game::CreateInitialHangars()
 {
-  assert(width > 0);
-  assert(height > 0);
   Hangars v;
   v.push_back(Hangar(30,10,10,10,PlayerIndex::player1));
   v.push_back(Hangar(50,10,10,10,PlayerIndex::player1));
@@ -80,10 +93,18 @@ golf::Game::Hangars golf::Game::CreateInitialHangars(const int width, const int 
   return v;
 }
 
-golf::Game::Players golf::Game::CreateInitialPlayers(const int width, const int height)
+golf::Game::Hearts golf::Game::CreateInitialHearts()
 {
-  assert(width > 0);
-  assert(height > 0);
+  Hearts v;
+  v.push_back(Heart(40,20,10,10,PlayerIndex::player1));
+  v.push_back(Heart(140,30,10,10,PlayerIndex::player2));
+  return v;
+}
+
+golf::Game::Players golf::Game::CreateInitialPlayers()
+{
+  const int width{Game::GetWidth()};
+  const int height{Game::GetHeight()};
   Players v;
   v.push_back(Player( (width * 1 / 4) - 5,(height / 2) - 5));
   v.push_back(Player( (width * 3 / 4) - 5,(height / 2) + 5));
@@ -161,7 +182,18 @@ bool golf::Game::IsHangar(const int x, const int y) const noexcept
 
 void golf::Game::Next()
 {
+  if (m_game_state != GameState::playing) return;
+
   m_grid.Next();
+
+  for (const auto heart: m_hearts)
+  {
+    if (heart.IsEmpty(m_grid))
+    {
+      if (heart.GetPlayerIndex() == PlayerIndex::player1) { m_game_state = GameState::player1_won; }
+      if (heart.GetPlayerIndex() == PlayerIndex::player2) { m_game_state = GameState::player2_won; }
+    }
+  }
 
   //Kill all cells within closed hangars (note: the cells within hangars are stored within Hangar
   const bool kill_all_cells_under_hangars{false};

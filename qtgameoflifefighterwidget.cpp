@@ -190,6 +190,26 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
 
   }
 
+  //Display hearts
+  for (const Heart& heart: m_game.GetHearts())
+  {
+    const int left{heart.GetLeft()};
+    const int top{heart.GetTop()};
+    const int width{heart.GetWidth()};
+    const int height{heart.GetHeight()};
+    const auto player_index = heart.GetPlayerIndex();
+    //Darker if the Hangar is open
+    const auto hangar_color = ToColor(player_index);
+    for (int y=0; y!=height; ++y)
+    {
+      for (int x=0; x!=width; ++x)
+      {
+        Blend(image,x+left,y+top,hangar_color);
+      }
+    }
+
+  }
+
   //Display players
   for (const auto player_index: { PlayerIndex::player1, PlayerIndex::player2 } )
   {
