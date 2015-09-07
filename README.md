@@ -18,30 +18,30 @@ There are two versions:
 
 Player 1:
 
-1: Pre-fab pattern 1
-2: Pre-fab pattern 2
-3: Pre-fab pattern 3
-Q: Close hangar
-W: Move up
-E: Build
-A: Move left
-S: Move down
-D: Move right
-Z: Open hangar
-X: [has no function]
-C: Remove (the opposite of build)
+ * `1`: Pre-fab pattern 1
+ * `2`: Pre-fab pattern 2
+ * `3`: Pre-fab pattern 3
+ * `Q`: Close hangar
+ * `W`: Move up
+ * `E`: Build
+ * `A`: Move left
+ * `S`: Move down
+ * `D`: Move right
+ * `Z`: Open hangar
+ * `X`: [has no function]
+ * `C`: Remove (the opposite of build)
 
 Player 2:
 
-7: Pre-fab pattern 1
-8: Pre-fab pattern 2
-9: Pre-fab pattern 3
-U: Close hangar
-I: Move up
-O: Build
-J: Move left
-K: Move down
-L: Move right
-M: Open hangar
-, (comma): [has no function]
-. (period, dot): Remove (the opposite of build)
+ * `7`: Pre-fab pattern 1
+ * `8`: Pre-fab pattern 2
+ * `9`: Pre-fab pattern 3
+ * `U`: Close hangar
+ * `I`: Move up
+ * `O`: Build
+ * `J`: Move left
+ * `K`: Move down
+ * `L`: Move right
+ * `M`: Open hangar
+ * `,` (comma): [has no function]
+ * `.` (period, dot): Remove (the opposite of build)
