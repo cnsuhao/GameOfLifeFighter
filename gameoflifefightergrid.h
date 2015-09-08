@@ -9,12 +9,14 @@ namespace golf {
 struct Grid
 {
   Grid(const int width, const int height);
+
+  int CountNeighbours(const int x, const int y);
   CellType Get(const int x, const int y) const;
   int GetHeight() const noexcept;
   int GetWidth() const;
-  int CountNeighbours(const int x, const int y);
-  void Set(const int x, const int y, const CellType cell);
   void Next();
+  void Set(const int x, const int y, const CellType cell);
+  void Toggle(const int x, const int y);
 
   const std::vector<std::vector<CellType>>& GetRawGrid() const noexcept { return m_grid; }
 

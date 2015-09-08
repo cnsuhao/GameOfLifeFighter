@@ -9,6 +9,8 @@ enum class CellType
   alive = 1
 };
 
+CellType GetOther(const CellType c);
+
 } //~namespace golf
 
 #endif // GAMEOFLIFEFIGHTERCELL_H

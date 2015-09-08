@@ -55,6 +55,12 @@ struct Hangar
   ///If the Hangar is opened, the content of the Hangar will be transferred to the Grid
   void Open(Grid& global_grid) noexcept;
 
+  ///Build/remove a cell
+  void ToggleCell(const int x, const int y);
+
+  ///Open or close the hangar
+  void ToggleStasis(Grid& global_grid) noexcept;
+
   private:
   Grid m_grid;
   const int m_height;

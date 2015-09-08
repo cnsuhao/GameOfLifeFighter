@@ -1,6 +1,7 @@
 #include "gameoflifefighterhangar.h"
 
 #include <cassert>
+#include <stdexcept>
 
 #include "gameoflifefightergrid.h"
 #include "gameoflifefighterplayerindex.h"
@@ -120,5 +121,22 @@ void golf::Hangar::SetState(
     case HangarState::closed: Close(grid); return;
     case HangarState::open: Open(grid); return;
     default: assert(!"Should not get here");
+  }
+}
+
+void golf::Hangar::ToggleCell(const int x, const int y)
+{
+  m_grid.Toggle(x,y);
+}
+
+void golf::Hangar::ToggleStasis(Grid& global_grid) noexcept
+{
+  switch (m_state)
+  {
+    case HangarState::open: Close(global_grid); break;
+    case HangarState::closed: Open(global_grid); break;
+    default:
+      assert(!"golf::Hangar::Toggle: unimplemented HangarState");
+      throw std::logic_error("golf::Hangar::Toggle: unimplemented HangarState");
   }
 }

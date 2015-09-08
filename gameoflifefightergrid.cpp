@@ -21,6 +21,11 @@ void golf::Grid::Set(const int x, const int y, const CellType cell)
   m_grid[y][x] = cell;
 }
 
+void golf::Grid::Toggle(const int x, const int y)
+{
+  Set(x,y,GetOther(Get(x,y)));
+}
+
 golf::CellType golf::Grid::Get(const int x, const int y) const
 {
   assert(!m_grid.empty());

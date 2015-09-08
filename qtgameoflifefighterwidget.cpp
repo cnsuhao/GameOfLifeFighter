@@ -97,33 +97,33 @@ std::map<int,golf::Key> golf::QtGameOfLifeFighterWidget::CreateInitialKeyMap() n
   m.insert( { Qt::Key_2, Key::pattern_b1}  );
   m.insert( { Qt::Key_3, Key::pattern_c1}  );
 
-  m.insert( { Qt::Key_Q, Key::close_hangar1}  );
+  m.insert( { Qt::Key_Q, Key::toggle_hangar1}  );
   m.insert( { Qt::Key_W, Key::up1}  );
-  m.insert( { Qt::Key_E, Key::set_high1}  );
+  m.insert( { Qt::Key_E, Key::toggle_cell1}  );
 
   m.insert( { Qt::Key_A, Key::left1}  );
   m.insert( { Qt::Key_S, Key::down1}  );
   m.insert( { Qt::Key_D, Key::right1}  );
 
-  m.insert( { Qt::Key_Z, Key::open_hangar1}  );
+  m.insert( { Qt::Key_Z, Key::toggle_hangar1}  );
   m.insert( { Qt::Key_X, Key::down1}  );
-  m.insert( { Qt::Key_C, Key::set_low1}  );
+  m.insert( { Qt::Key_C, Key::toggle_cell1}  );
 
   m.insert( { Qt::Key_7, Key::pattern_a2}  );
   m.insert( { Qt::Key_8, Key::pattern_b2}  );
   m.insert( { Qt::Key_9, Key::pattern_c2}  );
 
-  m.insert( { Qt::Key_U, Key::close_hangar2}  );
+  m.insert( { Qt::Key_U, Key::toggle_hangar2}  );
   m.insert( { Qt::Key_I, Key::up2}  );
-  m.insert( { Qt::Key_O, Key::set_high2}  );
+  m.insert( { Qt::Key_O, Key::toggle_cell2}  );
 
   m.insert( { Qt::Key_J, Key::left2}  );
   m.insert( { Qt::Key_K, Key::down2}  );
   m.insert( { Qt::Key_L, Key::right2}  );
 
-  m.insert( { Qt::Key_M, Key::open_hangar2}  );
+  m.insert( { Qt::Key_M, Key::toggle_hangar2}  );
   m.insert( { Qt::Key_Comma, Key::down2}  );
-  m.insert( { Qt::Key_Period, Key::set_low2}  );
+  m.insert( { Qt::Key_Period, Key::toggle_cell2}  );
 
   return m;
 }

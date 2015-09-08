@@ -89,7 +89,11 @@ struct Game
   void OpenHangar(const PlayerIndex player_index);
 
   ///Let a player try to build/remove
-  void BuildOrRemove(const PlayerIndex player_index, const CellType cell_type);
+  void ToggleCell(const PlayerIndex player_index);
+
+  ///Let a player try to open a hangar
+  void ToggleHangar(const PlayerIndex player_index);
+
 
   ///Let a player try to build a patterm
   void BuildPattern(const PlayerIndex player_index, const int pattern_index);
