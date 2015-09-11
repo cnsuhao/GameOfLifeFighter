@@ -27,6 +27,8 @@ struct Game
   Game(const GameType game_type = GameType::free_fight);
 
   bool CanBuild(const PlayerIndex player_index) const noexcept;
+  bool CanBuildHere(const PlayerIndex player_index, const int x, const int y) const noexcept;
+  bool CanBuildPattern(const PlayerIndex player_index, const int pattern_index) const noexcept;
 
   ///Obtain the cell type from the global Grid, excluding the Hangars
   CellType GetCell(const int x, const int y) const;
@@ -39,7 +41,7 @@ struct Game
   BitFlagGrid GetBitFlagGrid() const;
 
   ///Get a Player his/her i'th pre-fab pattern
-  const PrefabPattern& GetPattern(const PlayerIndex player_index, const int i);
+  const PrefabPattern& GetPattern(const PlayerIndex player_index, const int pattern_index) const;
 
   const Hangars& GetHangars() const noexcept { return m_hangars; }
 

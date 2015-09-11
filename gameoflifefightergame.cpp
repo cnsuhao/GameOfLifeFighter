@@ -34,13 +34,41 @@ golf::Game::Game(const GameType game_type)
 bool golf::Game::CanBuild(const PlayerIndex player_index) const noexcept
 {
   const auto player = GetPlayer(player_index);
-  const Hangar * const hangar = FindHangar(player.GetX(),player.GetY());
+  return CanBuildHere(
+    player_index,
+    player.GetX(),
+    player.GetY()
+  );
+}
+
+bool golf::Game::CanBuildHere(const PlayerIndex player_index, const int x, const int y) const noexcept
+{
+  const Hangar * const hangar = FindHangar(x,y);
   if (!hangar) return false;
   if (hangar->GetState() == HangarState::open) return false;
   if (hangar->GetPlayerIndex() != player_index) return false;
-  if (IsHeart(player.GetX(),player.GetY())) return false;
+  if (IsHeart(x,y)) return false;
   return true;
 }
+
+bool golf::Game::CanBuildPattern(const PlayerIndex player_index, const int pattern_index) const noexcept
+{
+  if (!CanBuild(player_index)) return false;
+
+  const auto player = GetPlayer(player_index);
+  //Pattern can be built if the four corners are within a hangar and outside of the heart
+  const auto pattern = GetPattern(player_index,pattern_index);
+  const auto left = player.GetX() - pattern.GetCursorX();
+  const auto right = player.GetX() - pattern.GetCursorX() + pattern.GetWidth() - 1;
+  const auto top = player.GetY() - pattern.GetCursorY();
+  const auto bottom = player.GetY() - pattern.GetCursorY() + pattern.GetHeight() - 1;
+  if (!CanBuildHere(player_index,left,top)) return false;
+  if (!CanBuildHere(player_index,left,bottom)) return false;
+  if (!CanBuildHere(player_index,right,top)) return false;
+  if (!CanBuildHere(player_index,right,bottom)) return false;
+  return true;
+}
+
 
 void golf::Game::ToggleCell(const PlayerIndex player_index)
 {
@@ -57,6 +85,8 @@ void golf::Game::ToggleCell(const PlayerIndex player_index)
 
 void golf::Game::BuildPattern(const PlayerIndex player_index, const int pattern_index)
 {
+  if (!CanBuildPattern(player_index,pattern_index)) return;
+
   const auto player = GetPlayer(player_index);
 
   //Player must be in hangar
@@ -174,6 +204,11 @@ golf::Game::BitFlagGrid golf::Game::GetBitFlagGrid() const
     }
   }
   return v;
+}
+
+const golf::PrefabPattern& golf::Game::GetPattern(const PlayerIndex player_index, const int pattern_index) const
+{
+  return GetPlayer(player_index).GetPattern(pattern_index);
 }
 
 golf::CellType golf::Game::GetCell(const int x, const int y) const
