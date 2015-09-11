@@ -12,7 +12,8 @@ golf::Hangar::Hangar(
   const int top,
   const int width,
   const int height,
-  const PlayerIndex player_index
+  const PlayerIndex player_index,
+  const bool do_transfer_up
 ) :
     m_grid(width,height),
     m_height{height},
@@ -20,7 +21,8 @@ golf::Hangar::Hangar(
     m_player_index{player_index},
     m_state{HangarState::open},
     m_top{top},
-    m_width{width}
+    m_width{width},
+    m_do_transfer_up{do_transfer_up}
 {
 
 }
@@ -53,23 +55,30 @@ void golf::Hangar::Close(
   ///If the Hangar is closed, the content of the Grid will be the initial content of the Hangar and put into statis
   if (m_state == HangarState::closed) return;
 
-  //If the Hangar is opened, the content of the Hangar will be transferred to the Grid
-  const int left{GetLeft()};
-  const int width{GetWidth()};
-  const int top{GetTop()};
-  const int height{GetHeight()};
-  for (int y=0; y!=height; ++y)
-  {
-    for (int x=0; x!=width; ++x)
-    {
-      //Transfer
-      m_grid.Set(x,y,grid.Get(left + x,top + y));
-      //Empty global grid
-      grid.Set(left + x,top + y,CellType::empty);
-    }
-  }
   m_state = HangarState::closed;
 
+  if (m_do_transfer_up)
+  {
+    //If the Hangar is opened, the content of the Hangar will be transferred to the Grid
+    const int left{GetLeft()};
+    const int width{GetWidth()};
+    const int top{GetTop()};
+    const int height{GetHeight()};
+    for (int y=0; y!=height; ++y)
+    {
+      for (int x=0; x!=width; ++x)
+      {
+        //Transfer
+        m_grid.Set(x,y,grid.Get(left + x,top + y));
+        //Empty global grid
+        grid.Set(left + x,top + y,CellType::empty);
+      }
+    }
+  }
+  else
+  {
+    //Nothing happens
+  }
 }
 
 bool golf::Hangar::IsIn(const int x, const int y) const noexcept
@@ -92,8 +101,9 @@ void golf::Hangar::Open(
 ) noexcept
 {
   if (m_state == HangarState::open) return;
+  m_state = HangarState::open;
 
-  //If the Hangar is opened, the content of the Hangar will be transferred to the Grid
+  //Copy both empty and alive cells
   const int left{GetLeft()};
   const int width{GetWidth()};
   const int top{GetTop()};
@@ -102,13 +112,23 @@ void golf::Hangar::Open(
   {
     for (int x=0; x!=width; ++x)
     {
-      //Transfer
-      grid.Set(left + x,top + y,m_grid.Get(x,y));
-      //Empty Hangar
+      //When transfer goes up, copy both alive and dead cells
+      if (m_do_transfer_up)
+      {
+        grid.Set(left + x,top + y,m_grid.Get(x,y));
+      }
+      else
+      {
+        //When transfer does not go up, only copy alive cells down
+        if (m_grid.Get(x,y) == CellType::alive)
+        {
+          grid.Set(left + x,top + y,m_grid.Get(x,y));
+        }
+      }
+      //Always empty Hangar
       m_grid.Set(x,y,CellType::empty);
     }
   }
-  m_state = HangarState::open;
 }
 
 void golf::Hangar::SetState(

@@ -44,3 +44,4 @@ include(GameOfLifeFighterConsole.pri)
 include(GameOfLifeFighterQt.pri)
 
 SOURCES += qtmain.cpp
+

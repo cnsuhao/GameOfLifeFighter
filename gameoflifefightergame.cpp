@@ -5,13 +5,14 @@
 #include "gameoflifefighterhangar.h"
 #include "gameoflifefightertrace.h"
 
-golf::Game::Game()
+golf::Game::Game(const GameType game_type)
   :
     m_game_state{GameState::playing},
+    m_game_type{game_type},
     m_grid(GetWidth(),GetHeight()),
-    m_hangars{CreateInitialHangars()},
-    m_hearts{CreateInitialHearts()},
-    m_players{CreateInitialPlayers()}
+    m_hangars{CreateInitialHangars(game_type)},
+    m_hearts{CreateInitialHearts(game_type)},
+    m_players{CreateInitialPlayers(game_type)}
 {
   #ifndef NDEBUG
   Test();
@@ -30,21 +31,28 @@ golf::Game::Game()
   }
 }
 
-void golf::Game::ToggleCell(const PlayerIndex player_index)
+bool golf::Game::CanBuild(const PlayerIndex player_index) const noexcept
 {
   const auto player = GetPlayer(player_index);
-  if (Hangar * const hangar = FindHangar(player.GetX(),player.GetY()))
-  {
-    if (hangar->GetState() == HangarState::closed
-      && hangar->GetPlayerIndex() == player_index
-    )
-    {
-      hangar->ToggleCell(
-        player.GetX() - hangar->GetLeft(),
-        player.GetY() - hangar->GetTop()
-      );
-    }
-  }
+  const Hangar * const hangar = FindHangar(player.GetX(),player.GetY());
+  if (!hangar) return false;
+  if (hangar->GetState() == HangarState::open) return false;
+  if (hangar->GetPlayerIndex() != player_index) return false;
+  if (IsHeart(player.GetX(),player.GetY())) return false;
+  return true;
+}
+
+void golf::Game::ToggleCell(const PlayerIndex player_index)
+{
+  if (!CanBuild(player_index)) return;
+
+  const auto player = GetPlayer(player_index);
+  Hangar * const hangar = FindHangar(player.GetX(),player.GetY());
+  assert(hangar);
+  hangar->ToggleCell(
+    player.GetX() - hangar->GetLeft(),
+    player.GetY() - hangar->GetTop()
+  );
 }
 
 void golf::Game::BuildPattern(const PlayerIndex player_index, const int pattern_index)
@@ -52,18 +60,12 @@ void golf::Game::BuildPattern(const PlayerIndex player_index, const int pattern_
   const auto player = GetPlayer(player_index);
 
   //Player must be in hangar
-  if (Hangar * const hangar = FindHangar(player.GetX(),player.GetY()))
-  {
-    if (hangar->GetState() == HangarState::closed
-      && hangar->GetPlayerIndex() == player_index
-    )
-    {
-      hangar->BuildPattern(
-        player.GetX() - hangar->GetLeft(), player.GetY() - hangar->GetTop(), //Position of cursor in Hangar
-        player.GetPattern(pattern_index)
-      );
-    }
-  }
+  Hangar * const hangar = FindHangar(player.GetX(),player.GetY());
+  assert(hangar);
+  hangar->BuildPattern(
+    player.GetX() - hangar->GetLeft(), player.GetY() - hangar->GetTop(), //Position of cursor in Hangar
+    player.GetPattern(pattern_index)
+  );
 }
 
 void golf::Game::CloseHangar(const PlayerIndex player_index)
@@ -78,35 +80,76 @@ void golf::Game::CloseHangar(const PlayerIndex player_index)
   (*iter).Close(m_grid);
 }
 
-golf::Game::Hangars golf::Game::CreateInitialHangars()
+golf::Game::Hangars golf::Game::CreateInitialHangars(const GameType game_type)
 {
   Hangars v;
-  v.push_back(Hangar(30,10,10,10,PlayerIndex::player1));
-  v.push_back(Hangar(50,10,10,10,PlayerIndex::player1));
-  v.push_back(Hangar(30,30,10,10,PlayerIndex::player1));
-  v.push_back(Hangar(50,30,10,10,PlayerIndex::player1));
-  v.push_back(Hangar(130,20,10,10,PlayerIndex::player2));
-  v.push_back(Hangar(150,20,10,10,PlayerIndex::player2));
-  v.push_back(Hangar(130,40,10,10,PlayerIndex::player2));
-  v.push_back(Hangar(150,40,10,10,PlayerIndex::player2));
+
+
+  switch (game_type)
+  {
+    case GameType::classic:
+    {
+      const bool do_transfer_up = true;
+      v.push_back(Hangar(30,10,10,10,PlayerIndex::player1,do_transfer_up));
+      v.push_back(Hangar(50,10,10,10,PlayerIndex::player1,do_transfer_up));
+      v.push_back(Hangar(30,30,10,10,PlayerIndex::player1,do_transfer_up));
+      v.push_back(Hangar(50,30,10,10,PlayerIndex::player1,do_transfer_up));
+      v.push_back(Hangar(130,20,10,10,PlayerIndex::player2,do_transfer_up));
+      v.push_back(Hangar(150,20,10,10,PlayerIndex::player2,do_transfer_up));
+      v.push_back(Hangar(130,40,10,10,PlayerIndex::player2,do_transfer_up));
+      v.push_back(Hangar(150,40,10,10,PlayerIndex::player2,do_transfer_up));
+    }
+    break;
+    case GameType::free_fight:
+    {
+      const bool do_transfer_up = false;
+      v.push_back(Hangar(  0,0,100,60,PlayerIndex::player1,do_transfer_up));
+      v.push_back(Hangar(100,0,100,60,PlayerIndex::player2,do_transfer_up));
+    }
+    break;
+  }
   return v;
 }
 
-golf::Game::Hearts golf::Game::CreateInitialHearts()
+golf::Game::Hearts golf::Game::CreateInitialHearts(const GameType game_type)
 {
   Hearts v;
-  v.push_back(Heart(40,20,10,10,PlayerIndex::player1));
-  v.push_back(Heart(140,30,10,10,PlayerIndex::player2));
+  switch (game_type)
+  {
+    case GameType::classic:
+    {
+      v.push_back(Heart(40,20,10,10,PlayerIndex::player1));
+      v.push_back(Heart(140,30,10,10,PlayerIndex::player2));
+    }
+    break;
+    case GameType::free_fight:
+    {
+      v.push_back(Heart(45,25,10,10,PlayerIndex::player1));
+      v.push_back(Heart(145,25,10,10,PlayerIndex::player2));
+    }
+    break;
+  }
   return v;
 }
 
-golf::Game::Players golf::Game::CreateInitialPlayers()
+golf::Game::Players golf::Game::CreateInitialPlayers(const GameType game_type)
 {
-  const int width{Game::GetWidth()};
-  const int height{Game::GetHeight()};
   Players v;
-  v.push_back(Player( (width * 1 / 4) - 5,(height / 2) - 5));
-  v.push_back(Player( (width * 3 / 4) - 5,(height / 2) + 5));
+  switch (game_type)
+  {
+    case GameType::classic:
+    {
+      v.push_back(Player( 45,25));
+      v.push_back(Player(145,35));
+    }
+    break;
+    case GameType::free_fight:
+    {
+      v.push_back(Player( 50,30));
+      v.push_back(Player(150,30));
+    }
+    break;
+  }
   return v;
 }
 
@@ -174,14 +217,41 @@ golf::Hangar * golf::Game::FindHangar(const int x, const int y) noexcept
   return const_cast<Hangar*>(const_cast<const Game *>(this)->FindHangar(x,y));
 }
 
+const golf::Heart * golf::Game::FindHeart(const int x, const int y) const noexcept
+{
+  const auto iter = std::find_if(
+    std::begin(m_hearts),
+    std::end(m_hearts),
+    [x,y](const Heart& heart) { return heart.IsIn(x,y); }
+  );
+  if (iter == std::end(m_hearts)) return nullptr;
+  return &(*iter);
+}
+
+golf::Heart * golf::Game::FindHeart(const int x, const int y) noexcept
+{
+  return const_cast<Heart*>(const_cast<const Game *>(this)->FindHeart(x,y));
+}
+
 bool golf::Game::IsHangar(const int x, const int y) const noexcept
 {
   return FindHangar(x,y);
 }
 
+bool golf::Game::IsHeart(const int x, const int y) const noexcept
+{
+  return FindHeart(x,y);
+}
+
 void golf::Game::Next()
 {
   if (m_game_state != GameState::playing) return;
+
+  //In free fight mode, a Hangar cannot be open for more than one turn
+  if (m_game_type == GameType::free_fight)
+  {
+    for (auto& hangar: m_hangars) { hangar.Close(m_grid); }
+  }
 
   m_grid.Next();
 
@@ -229,11 +299,11 @@ void golf::Game::OpenHangar(const PlayerIndex player_index)
 
 void golf::Game::PressKeys(const std::set<Key>& keys)
 {
+  if (m_game_state != GameState::playing) return;
   auto& player1 = m_players[0];
   auto& player2 = m_players[1];
   for (const auto key: keys)
   {
-
     switch (key)
     {
       case Key::down1: player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;

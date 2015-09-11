@@ -21,7 +21,8 @@ struct Hangar
     const int top,
     const int width,
     const int height,
-    const PlayerIndex player
+    const PlayerIndex player,
+    const bool do_transfer_up
   );
 
   void BuildPattern(
@@ -68,6 +69,9 @@ struct Hangar
   const PlayerIndex m_player_index;
   HangarState m_state;
   const int m_top;
+
+  ///When the Hangar goes to stasis, will it pick up the cells from the main grid?
+  const bool m_do_transfer_up;
   const int m_width;
 };
 
