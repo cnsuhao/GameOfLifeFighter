@@ -332,7 +332,7 @@ void golf::Game::OpenHangar(const PlayerIndex player_index)
   (*iter).Open(m_grid);
 }
 
-void golf::Game::PressKeys(const std::set<Key>& keys)
+void golf::Game::PressKeys(std::set<Key>& keys)
 {
   if (m_game_state != GameState::playing) return;
   auto& player1 = m_players[0];
@@ -345,14 +345,14 @@ void golf::Game::PressKeys(const std::set<Key>& keys)
       case Key::down2: player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;
       case Key::left1: player1.SetX((player1.GetX() - 1 + GetWidth()) % GetWidth()); break;
       case Key::left2: player2.SetX((player2.GetX() - 1 + GetWidth()) % GetWidth()); break;
-      case Key::toggle_hangar1: ToggleHangar(PlayerIndex::player1); break;
-      case Key::toggle_hangar2: ToggleHangar(PlayerIndex::player2); break;
-      case Key::pattern_a1: BuildPattern(PlayerIndex::player1,0); break;
-      case Key::pattern_a2: BuildPattern(PlayerIndex::player2,0); break;
-      case Key::pattern_b1: BuildPattern(PlayerIndex::player1,1); break;
-      case Key::pattern_b2: BuildPattern(PlayerIndex::player2,1); break;
-      case Key::pattern_c1: BuildPattern(PlayerIndex::player1,2); break;
-      case Key::pattern_c2: BuildPattern(PlayerIndex::player2,2); break;
+      case Key::toggle_hangar1: ToggleHangar(PlayerIndex::player1); keys.erase(Key::toggle_hangar1); break;
+      case Key::toggle_hangar2: ToggleHangar(PlayerIndex::player2); keys.erase(Key::toggle_hangar2); break;
+      case Key::pattern_a1: BuildPattern(PlayerIndex::player1,0); keys.erase(Key::pattern_a1); break;
+      case Key::pattern_a2: BuildPattern(PlayerIndex::player2,0); keys.erase(Key::pattern_a2); break;
+      case Key::pattern_b1: BuildPattern(PlayerIndex::player1,1); keys.erase(Key::pattern_b1); break;
+      case Key::pattern_b2: BuildPattern(PlayerIndex::player2,1); keys.erase(Key::pattern_b2); break;
+      case Key::pattern_c1: BuildPattern(PlayerIndex::player1,2); keys.erase(Key::pattern_c1); break;
+      case Key::pattern_c2: BuildPattern(PlayerIndex::player2,2); keys.erase(Key::pattern_c2); break;
       case Key::quit: break; //Cannot handle quit here
       case Key::right1: player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
       case Key::right2: player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
@@ -392,7 +392,8 @@ void golf::Game::Test() noexcept
   {
     Game game;
     const int y_before{game.GetPlayer(PlayerIndex::player2).GetY()};
-    game.PressKeys( { Key::down2 } );
+    std::set<Key> keys = { Key::down2 };
+    game.PressKeys(keys);
     const int y_after{game.GetPlayer(PlayerIndex::player2).GetY()};
     assert(y_after == y_before + 1);
   }

@@ -76,8 +76,8 @@ struct Game
   bool IsHeart(const int x, const int y) const noexcept;
 
   ///Press all keys once
-  //Players can move throughout the complete field, but only build on their half of it
-  void PressKeys(const std::set<Key>& keys);
+  ///Some keys are only to be pressed once, like building pattern
+  void PressKeys(std::set<Key>& keys);
 
   ///Set the content of a global grid cell
   ///When the player is building in a hangar, use Hangar::Set
