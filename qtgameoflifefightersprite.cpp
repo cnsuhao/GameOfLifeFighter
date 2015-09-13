@@ -79,30 +79,37 @@ QImage golf::QtSprite::Create(
     switch (hangar_of)
     {
       case 0: qtcolor = Qt::black; break;
-      case 1: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player1)); break;
-      case 2: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player2)); break;
+      case 1:
+        qtcolor = QtHelper().Blend(qRgb(0,0,0),ToColor(PlayerIndex::player1));
+        qtcolor = QtHelper().Blend(qRgb(0,0,0),qtcolor);
+      break;
+      //case 1: qtcolor = ToColor(PlayerIndex::player1); break;
+      case 2:
+        qtcolor = QtHelper().Blend(qRgb(0,0,128),ToColor(PlayerIndex::player2));
+        qtcolor = QtHelper().Blend(qRgb(0,0,128),qtcolor);
+        break;
+      //case 2: qtcolor = ToColor(PlayerIndex::player2); break; //Blue is always less bright
     }
     for (int x=0; x!=width; ++x)
     {
       image.setPixel(x,0,qtcolor.rgb());
-      //image.setPixel(x,1,qtcolor.rgb());
-      image.setPixel(x,height - 1,qtcolor.rgb());
+      //image.setPixel(x,height - 1,qtcolor.rgb());
     }
     for (int y=0; y!=height; ++y)
     {
       image.setPixel(0,y,qtcolor.rgb());
-      //image.setPixel(1,y,qtcolor.rgb());
-      image.setPixel(width - 1,y,qtcolor.rgb());
+      //image.setPixel(width - 1,y,qtcolor.rgb());
     }
   }
 
+  //Draw player
   if (selected_by != 0)
   {
     QColor qtcolor = Qt::black;
     switch (selected_by)
     {
-      case 1: qtcolor = ToColor(PlayerIndex::player1); break;
-      case 2: qtcolor = ToColor(PlayerIndex::player2); break;
+      case 1: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player1)); break;
+      case 2: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player2)); break;
       default: assert(!"Should not get here");
     }
     image.setPixel((width / 2)-0,(height / 2)-0,qtcolor.rgb());
@@ -118,8 +125,10 @@ QImage golf::QtSprite::Create(
     switch (hangar_of)
     {
       case 0: qtcolor = Qt::darkGray; break;
-      case 1: qtcolor = ToColor(PlayerIndex::player1); break;
-      case 2: qtcolor = ToColor(PlayerIndex::player2); break;
+      case 1: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player1)); break;
+      //case 1: qtcolor = ToColor(PlayerIndex::player1); break;
+      case 2: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player2)); break;
+      //case 2: qtcolor = ToColor(PlayerIndex::player2); break;
     }
     const int offset = 0;
     for (int x=offset; x!=width-1-offset; ++x)
