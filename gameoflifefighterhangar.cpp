@@ -15,14 +15,14 @@ golf::Hangar::Hangar(
   const PlayerIndex player_index,
   const bool do_transfer_up
 ) :
+    m_do_transfer_up{do_transfer_up},
     m_grid(width,height),
     m_height{height},
     m_left{left},
     m_player_index{player_index},
     m_state{HangarState::open},
     m_top{top},
-    m_width{width},
-    m_do_transfer_up{do_transfer_up}
+    m_width{width}
 {
 
 }

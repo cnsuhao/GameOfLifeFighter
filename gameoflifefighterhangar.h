@@ -63,6 +63,8 @@ struct Hangar
   void ToggleStasis(Grid& global_grid) noexcept;
 
   private:
+  ///When the Hangar goes to stasis, will it pick up the cells from the main grid?
+  const bool m_do_transfer_up;
   Grid m_grid;
   const int m_height;
   const int m_left;
@@ -70,8 +72,6 @@ struct Hangar
   HangarState m_state;
   const int m_top;
 
-  ///When the Hangar goes to stasis, will it pick up the cells from the main grid?
-  const bool m_do_transfer_up;
   const int m_width;
 };
 
