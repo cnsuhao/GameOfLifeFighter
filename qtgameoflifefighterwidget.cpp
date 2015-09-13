@@ -26,7 +26,7 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
     m_game{},
     m_key_map{CreateInitialKeyMap()},
     m_keys{},
-    m_pixmap(width,height)
+    m_pixmap(width * QtSprite().GetWidth(),height * QtSprite().GetHeight())
 {
   #ifndef NDEBUG
   Test();
@@ -101,14 +101,36 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
 {
   m_game.Next();
   m_game.PressKeys(m_keys);
-  const int height{m_pixmap.height()};
-  const int width{m_pixmap.width()};
-  QImage image(width,height,QImage::Format_RGB32);
+  const int grid_rows{m_game.GetHeight()};
+  const int grid_cols{m_game.GetWidth()};
+  QImage image(
+    grid_cols * QtSprite().GetWidth(),
+    grid_rows * QtSprite().GetHeight(),
+    QImage::Format_RGB32
+  );
+
+  assert(!"TODO");
+  /*
+  const auto grid = m_game.GetCellStateGrid();
+  for (int y=0; y!=grid_rows; ++y)
+  {
+    const auto& grid_row = grid[y];
+    for (int x=0; x!=grid_cols; ++x)
+    {
+      const int selected_by = cell % 4;
+      QtHelper().DrawImage(image,QtSprite().Create(
+        selected_by
+      image.setPixel(x,y,
+        i == CellType::empty ? qRgb(0,0,0) : qRgb(255,255,255)
+      );
+    }
+  }
+  */
 
   //Display grid
-  for (int y=0; y!=height; ++y)
+  for (int y=0; y!=grid_rows; ++y)
   {
-    for (int x=0; x!=width; ++x)
+    for (int x=0; x!=grid_cols; ++x)
     {
       const auto i = m_game.GetCell(x,y);
       image.setPixel(x,y,

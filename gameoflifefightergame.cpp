@@ -185,13 +185,13 @@ golf::Game::Players golf::Game::CreateInitialPlayers(const GameType game_type)
   return v;
 }
 
-golf::Game::BitFlagGrid golf::Game::GetBitFlagGrid() const
+golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
 {
   const int h{m_grid.GetHeight()};
   const int w{m_grid.GetWidth()};
-  BitFlagGrid v(
+  CellStateGrid v(
     h,
-    std::vector<int>(w,0)
+    std::vector<CellState>(w,CellState(0,0,0,0,CellType::empty))
   );
   assert(m_grid.GetRawGrid().size() == v.size());
   assert(m_grid.GetRawGrid()[0].size() == v[0].size());
@@ -199,10 +199,11 @@ golf::Game::BitFlagGrid golf::Game::GetBitFlagGrid() const
   {
     for (int x=0; x!=w; ++x)
     {
-      int bit = 0;
-      bit += (m_grid.Get(x,y) == CellType::alive? 1 : 0);
-      bit += (IsHangar(x,y)                     ? 2 : 0);
-      v[y][x] = bit;
+
+      //int bit = 0;
+      //bit += (m_grid.Get(x,y) == CellType::alive? 1 : 0);
+      //bit += (IsHangar(x,y)                     ? 2 : 0);
+      v[y][x] = CellState(0,0,0,0,m_grid.Get(x,y));
     }
   }
   return v;

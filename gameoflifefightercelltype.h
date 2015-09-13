@@ -3,7 +3,7 @@
 
 namespace golf {
 
-enum class CellType
+enum CellType
 {
   empty = 0,
   alive = 1

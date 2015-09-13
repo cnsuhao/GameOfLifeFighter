@@ -15,8 +15,6 @@ golf::QtSprite::QtSprite()
 }
 
 QImage golf::QtSprite::Create(
-  const int width,
-  const int height,
   const int selected_by,   //0: no-one, 1: player1, 2: player2
   const int hangar_of,     //0: no-one, 1: player1, 2: player2
   const int heart_of,      //0: no-one, 1: player1, 2: player2
@@ -24,6 +22,8 @@ QImage golf::QtSprite::Create(
   const CellType cell_type
 ) const
 {
+  const int width{GetWidth()};
+  const int height{GetHeight()};
   QImage image(width,height,QImage::Format_RGB32);
   assert(height == 6);
   assert(width  == 6);
@@ -119,15 +119,13 @@ void golf::QtSprite::Test() noexcept
   }
 
   //Check if all pictures are different
-  const int width = 6;
-  const int height = 6;
   std::vector<QImage> v;
   for (int selected_by = 0; selected_by <= 2; ++selected_by)
     for (int hangar_of = 0; hangar_of <= 2; ++hangar_of)
       for (int heart_of = 0; heart_of <= 2; ++heart_of)
         for (bool is_building: { true, false} )
           for (CellType cell_type: { CellType::empty, CellType::alive} )
-            v.push_back(QtSprite().Create(width,height,selected_by,hangar_of,heart_of,is_building,cell_type));
+            v.push_back(QtSprite().Create(selected_by,hangar_of,heart_of,is_building,cell_type));
 
 
   const int sz{static_cast<int>(v.size())};

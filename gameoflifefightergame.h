@@ -8,6 +8,7 @@
 #include "gameoflifefightergrid.h"
 #include "gameoflifefighterhangar.h"
 #include "gameoflifefighterheart.h"
+#include "gameoflifefightercellstate.h"
 #include "gameoflifefightergamestate.h"
 #include "gameoflifefightergametype.h"
 
@@ -22,7 +23,7 @@ struct Game
   using Hangars = std::vector<Hangar>;
   using Hearts = std::vector<Heart>;
   using Players = std::vector<Player>;
-  using BitFlagGrid = std::vector<std::vector<int>>;
+  using CellStateGrid = std::vector<std::vector<CellState>>;
 
   Game(const GameType game_type = GameType::free_fight);
 
@@ -33,12 +34,8 @@ struct Game
   ///Obtain the cell type from the global Grid, excluding the Hangars
   CellType GetCell(const int x, const int y) const;
 
-  ///Obtain the complete y-x-ordered global Grid as bit flags
-  /// 00: empty, not hangar
-  /// 01: alive, not hangar
-  /// 10: empty, in hangar
-  /// 11: alive, in hangar
-  BitFlagGrid GetBitFlagGrid() const;
+  ///Obtain the complete y-x-ordered global Grid as CellStates (just a little more complex than bit flags)
+  CellStateGrid GetCellStateGrid() const;
 
   ///Get a Player his/her i'th pre-fab pattern
   const PrefabPattern& GetPattern(const PlayerIndex player_index, const int pattern_index) const;
