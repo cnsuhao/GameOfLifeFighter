@@ -19,6 +19,7 @@
 #ifndef GOLFCAM_H
 #define GOLFCAM_H
 
+#include "urho3dhelper.h"
 #include "mastercontrol.h"
 
 namespace Urho3D {
@@ -39,7 +40,7 @@ class GOLFCam : public Object
     friend class MasterControl;
     friend class InputMaster;
 public:
-    GOLFCam(Context *context, MasterControl* masterControl);
+    GOLFCam(Context *context, MasterControl* masterControl, golf::PlayerIndex player);
 
     virtual void Start();
     virtual void Stop();
@@ -58,6 +59,7 @@ private:
 
     SharedPtr<Node> camNode_;
 
+    golf::PlayerIndex player_;
     SharedPtr<RigidBody> rigidBody_;
     Zone* zone_;
     double yaw_;

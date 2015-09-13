@@ -16,13 +16,6 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <Urho3D/Urho3D.h>
-#include <Urho3D/Scene/Node.h>
-#include <Urho3D/Scene/SceneEvents.h>
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Graphics/OctreeQuery.h>
-#include <Urho3D/IO/FileSystem.h>
-
 #include "inputmaster.h"
 #include "cellmaster.h"
 #include "golfcam.h"
@@ -55,21 +48,15 @@ void InputMaster::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
     if (input->GetKeyDown('S')) camSpeed_ += Vector2::UP * timeStep * accelerate * 0.05f;
     if (input->GetKeyDown('W')) camSpeed_ += Vector2::DOWN * timeStep * accelerate * 0.05f;
 
-    masterControl_->world.camera->rootNode_->Rotate(Quaternion(0.0f, timeStep*camSpeed_.x_, 0.0f));
+    if (input->GetJoystickByIndex(0)){
+        camSpeed_ += Vector2::LEFT * input->GetJoystickByIndex(0)->GetAxisPosition(2) * 2.0f +
+                Vector2::DOWN * input->GetJoystickByIndex(0)->GetAxisPosition(3) * 0.23f;
+    }
+
+    masterControl_->world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)]->rootNode_->Rotate(Quaternion(0.0f, timeStep*camSpeed_.x_, 0.0f));
     masterControl_->cellMaster_->Rotate(camSpeed_.y_);
 
     camSpeed_ *= 1.0f - 2.3f * timeStep;
-
-    //Zoom in and out
-//    if (input->GetKeyDown('Q')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
-//    if (input->GetKeyDown('E')) masterControl_->world.camera->camNode_->Translate(Vector3(0.0f, 0.0f, -timeStep*(5.0f+32.0f*input->GetKeyDown(KEY_SHIFT))));
-
-    //Rotate camera left and right
-    /*if (input->GetKeyDown('D')) masterControl_->world.camera->rigidBody_->ApplyTorque(-timeStep*(420.0f+640.0f*input->GetKeyDown(KEY_SHIFT))*Vector3::UP);
-    if (input->GetKeyDown('A')) masterControl_->world.camera->rigidBody_->ApplyTorque( timeStep*(420.0f+640.0f*input->GetKeyDown(KEY_SHIFT))*Vector3::UP);*/
-    //Zoom in and out
-    //if (input->GetKeyDown('W')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, timeStep*(23.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
-    //if (input->GetKeyDown('S')) masterControl_->world.camera->camNode_->Translate(0.0f, 0.0f, -timeStep*(23.0f+32.0f*input->GetKeyDown(KEY_SHIFT)));
 }
 
 void InputMaster::HandleMouseDown(StringHash eventType, VariantMap &eventData)

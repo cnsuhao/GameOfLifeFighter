@@ -19,8 +19,7 @@
 #ifndef INPUTMASTER_H
 #define INPUTMASTER_H
 
-#include <Urho3D/Input/Input.h>
-
+#include "urho3dhelper.h"
 #include "mastercontrol.h"
 
 namespace Urho3D {

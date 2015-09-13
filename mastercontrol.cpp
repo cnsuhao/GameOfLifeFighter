@@ -16,46 +16,17 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <Urho3D/Urho3D.h>
-#include <Urho3D/Engine/Engine.h>
-#include <Urho3D/Engine/Console.h>
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Graphics/DebugRenderer.h>
-#include <Urho3D/Engine/DebugHud.h>
-#include <Urho3D/DebugNew.h>
-#include <Urho3D/UI/Text.h>
-#include <Urho3D/UI/Font.h>
-#include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Scene/ValueAnimation.h>
-#include <Urho3D/Physics/PhysicsWorld.h>
-#include <Urho3D/Physics/CollisionShape.h>
-#include <Urho3D/Graphics/Geometry.h>
-#include <Urho3D/Graphics/VertexBuffer.h>
-#include <Urho3D/Graphics/IndexBuffer.h>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Graphics/Light.h>
-#include <Urho3D/Graphics/Camera.h>
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Technique.h>
-#include <Urho3D/Graphics/RenderPath.h>
-#include <Urho3D/IO/FileSystem.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Resource/XMLFile.h>
-#include <Urho3D/Resource/Resource.h>
-#include <Urho3D/Audio/Sound.h>
-#include <Urho3D/Audio/SoundSource.h>
-
-#include <Urho3D/IO/Log.h>
-#include <Urho3D/Scene/SceneEvents.h>
-#include <Urho3D/Core/CoreEvents.h>
-#include <Urho3D/Graphics/Octree.h>
-#include <Urho3D/Graphics/OctreeQuery.h>
-
 #include "mastercontrol.h"
 #include "golfcam.h"
 #include "inputmaster.h"
 #include "cellmaster.h"
+
+//namespace Urho3D {
+//template <> unsigned MakeHash(const golf::PlayerIndex& index)
+//{
+//    return golf::PlayerIndexToHash(index);
+//}
+//}
 
 DEFINE_APPLICATION_MAIN(MasterControl);
 
@@ -67,6 +38,8 @@ MasterControl::MasterControl(Context *context):
     stepInterval_{0.666f},
     sinceStep_{stepInterval_}
 {
+    human_[static_cast<int>(golf::PlayerIndex::player1)] = true;
+    human_[static_cast<int>(golf::PlayerIndex::player2)] = true;
 }
 
 
@@ -99,7 +72,7 @@ void MasterControl::Start()
 
     Sound* music = cache_->GetResource<Sound>("Resources/Music/GameOfDeath.ogg");
     music->SetLooped(true);
-    Node* musicNode = world.scene->CreateChild("Music");
+    Node* musicNode = world_.scene_->CreateChild("Music");
     SoundSource* musicSource = musicNode->CreateComponent<SoundSource>();
     musicSource->SetSoundType(SOUND_MUSIC);
     musicSource->Play(music);
@@ -143,12 +116,12 @@ void MasterControl::CreateUI()
     UI* ui = GetSubsystem<UI>();
 
     //Create a Cursor UI element because we want to be able to hide and show it at will. When hidden, the mouse cursor will control the camera
-    world.cursor.uiCursor = new Cursor(context_);
-    world.cursor.uiCursor->SetVisible(true);
-    ui->SetCursor(world.cursor.uiCursor);
+    world_.cursor_.uiCursor_ = new Cursor(context_);
+    world_.cursor_.uiCursor_->SetVisible(true);
+    ui->SetCursor(world_.cursor_.uiCursor_);
 
     //Set starting position of the cursor at the rendering window center
-    world.cursor.uiCursor->SetPosition(graphics_->GetWidth()/2, graphics_->GetHeight()/2);
+    world_.cursor_.uiCursor_->SetPosition(graphics_->GetWidth()/2, graphics_->GetHeight()/2);
 
     //Construct new Text object, set string to display and font to use
     Text* instructionText = ui->GetRoot()->CreateChild<Text>();
@@ -160,16 +133,16 @@ void MasterControl::CreateUI()
 
 void MasterControl::CreateScene()
 {
-    world.scene = new Scene(context_);
+    world_.scene_ = new Scene(context_);
 
     //Create octree, use default volume (-1000, -1000, -1000) to (1000,1000,1000)
-    world.scene->CreateComponent<Octree>();
-    PhysicsWorld* physicsWorld = world.scene->CreateComponent<PhysicsWorld>();
+    world_.scene_->CreateComponent<Octree>();
+    PhysicsWorld* physicsWorld = world_.scene_->CreateComponent<PhysicsWorld>();
     physicsWorld->SetGravity(Vector3::ZERO);
-    world.scene->CreateComponent<DebugRenderer>();
+    world_.scene_->CreateComponent<DebugRenderer>();
 
     //Create static lights
-    Node* blueLightNode = world.scene->CreateChild("Sun");
+    Node* blueLightNode = world_.scene_->CreateChild("Sun");
     blueLightNode->SetPosition(Vector3(10.0f, 2.0f, 0.0f));
     blueLightNode->LookAt(Vector3::ZERO);
     Light* blueLight = blueLightNode->CreateComponent<Light>();
@@ -178,7 +151,7 @@ void MasterControl::CreateScene()
     blueLight->SetColor(Color(0.1f, 0.5f, 1.0f));
 //    blueLight->SetCastShadows(true);
 
-    Node* redLightNode = world.scene->CreateChild("Sun");
+    Node* redLightNode = world_.scene_->CreateChild("Sun");
     redLightNode->SetPosition(Vector3(-10.0f, 2.0f, 0.0f));
     redLightNode->LookAt(Vector3::ZERO);
     Light* redLight = redLightNode->CreateComponent<Light>();
@@ -190,7 +163,28 @@ void MasterControl::CreateScene()
     cellMaster_ = new CellMaster(context_, this);
 
     //Create camera
-    world.camera = new GOLFCam(context_, this);
+    world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)] = new GOLFCam(context_, this, golf::PlayerIndex::player1);
+//    world_.cameras_[static_cast<int>(golf::PlayerIndex::player2)] = new GOLFCam(context_, this, golf::PlayerIndex::player2);
+
+//    int numViewports = Clamp(GetNumHumans(),1,4);
+//    renderer_->SetNumViewports(numViewports);
+//    // Set up the front camera viewport
+//    if (GetNumHumans()){
+//        for (int p = 0; p < human_.Size(); p++){
+//            int playerIndex = static_cast<int>(p);
+//            int cameraIndex = 0;
+//            int viewportWidth = graphics_->GetWidth() / (1 + (GetNumHumans() > 1));
+//            int viewportHeight = graphics_->GetHeight() / (1 + (GetNumHumans() > 2));
+//            if (human_[playerIndex]){
+//                SharedPtr<Viewport> player1Viewport(new Viewport(context_, world_.scene_, world_.cameras_[playerIndex]->camera_, IntRect(viewportWidth*(cameraIndex%2),viewportHeight*(cameraIndex>2), viewportWidth, viewportHeight)));
+//                renderer_->SetViewport(0, player1Viewport);
+//                cameraIndex++;
+//            }
+//        }
+//    } else {
+//        SharedPtr<Viewport> viewport(new Viewport(context_, world_.scene_, world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)]->camera_,IntRect(0,0, graphics_->GetWidth(), graphics_->GetHeight())));
+//        renderer_->SetViewport(0, viewport);
+//    }
 }
 
 Color MasterControl::RandomColor()
@@ -200,6 +194,15 @@ Color MasterControl::RandomColor()
     float green = Clamp(color-1.0f, 0.0f, 1.0f)/100.0f;
     float blue = Clamp(color-2.0f, 0.0f, 1.0f)/100.0f;
     return Color(red, green, blue);
+}
+
+int MasterControl::GetNumHumans() const
+{
+    int numHumans = 0;
+    for (int p = 0; p < human_.Size(); p++){
+        if (human_[p]) numHumans++;
+    }
+    return numHumans;
 }
 
 void MasterControl::HandleUpdate(StringHash eventType, VariantMap &eventData)

@@ -25,7 +25,8 @@ SOURCES += \
     cell.cpp \
     cellmaster.cpp \
     cellring.cpp \
-    helper.cpp
+    helper.cpp \
+    urho3dhelper.cpp
 
 HEADERS += \
     mastercontrol.h \
@@ -33,5 +34,6 @@ HEADERS += \
     golfcam.h \
     cell.h \
     cellmaster.h \
-    cellring.h
+    cellring.h \
+    urho3dhelper.h
     helper.h

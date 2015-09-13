@@ -16,8 +16,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Scene/SceneEvents.h>
+
 #include "cellmaster.h"
 
 
@@ -32,7 +31,7 @@ CellMaster::CellMaster(Context *context, MasterControl *masterControl):
     Object(context),
     masterControl_{masterControl}
 {
-    rootNode_ = masterControl_->world.scene->CreateChild("CellMaster");
+    rootNode_ = masterControl_->world_.scene_->CreateChild("CellMaster");
     rootNode_->SetPosition(Vector3::ZERO);
 
     int circumference = 200;

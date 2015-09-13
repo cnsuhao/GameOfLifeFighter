@@ -16,11 +16,6 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Scene/SceneEvents.h>
-#include <Urho3D/Core/CoreEvents.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Graphics/Material.h>
 #include "cell.h"
 #include "cellring.h"
 #include "golfcam.h"
@@ -62,7 +57,7 @@ void Cell::HandleUpdate(StringHash eventType, VariantMap &eventData)
     else if (!fillNode_->IsEnabled()) fillNode_->SetEnabled(true);
 
     fillNode_->SetScale(newScale);
-    float morphWeight = golf::Cycle((3.0f+2.0f*randomizer_)*masterControl_->world.scene->GetElapsedTime() + randomizer_*2.0f, 0.0f, 2.0f);
+    float morphWeight = golf::Cycle((3.0f+2.0f*randomizer_)*masterControl_->world_.scene_->GetElapsedTime() + randomizer_*2.0f, 0.0f, 2.0f);
     morphWeight = (morphWeight + fillModel_->GetMorphWeight(0))*0.5f;
     morphWeight = morphWeight > 1.0f ? 1.0f-(morphWeight-1.0f) : morphWeight;
     fillModel_->SetMorphWeight(0, morphWeight);

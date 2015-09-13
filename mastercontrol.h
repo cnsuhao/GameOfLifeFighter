@@ -20,15 +20,8 @@
 #define MASTERCONTROL_H
 
 #include <Urho3D/Urho3D.h>
-#include <Urho3D/Container/HashMap.h>
-#include <Urho3D/Engine/Application.h>
-#include <Urho3D/Graphics/Viewport.h>
-#include <Urho3D/Graphics/Renderer.h>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/UI/UI.h>
-#include <Urho3D/Physics/RigidBody.h>
 
-#include "gameoflifefightergame.h"
+#include "urho3dhelper.h"
 
 namespace Urho3D {
 class Drawable;
@@ -45,15 +38,15 @@ class CellMaster;
 
 typedef struct GameWorld
 {
-    SharedPtr<GOLFCam> camera;
-    SharedPtr<Scene> scene;
-    SharedPtr<Node> backgroundNode;
-    SharedPtr<Node> voidNode;
+    HashMap<int, GOLFCam*> cameras_;
+    SharedPtr<Scene> scene_;
+    SharedPtr<Node> backgroundNode_;
+    SharedPtr<Node> voidNode_;
     struct {
-        SharedPtr<Node> sceneCursor;
-        SharedPtr<Cursor> uiCursor;
-        PODVector<RayQueryResult> hitResults;
-    } cursor;
+        SharedPtr<Node> sceneCursor_;
+        SharedPtr<Cursor> uiCursor_;
+        PODVector<RayQueryResult> hitResults_;
+    } cursor_;
 } GameWorld;
 
 typedef struct HitInfo
@@ -73,23 +66,19 @@ StringHash const N_SLOT = StringHash("Slot");
 
 class MasterControl : public Application
 {
-    /// Enable type information.
     OBJECT(MasterControl);
     friend class InputMaster;
 public:
-    /// Constructor.
     MasterControl(Context* context);
     golf::Game* game_;
-    GameWorld world;
+    GameWorld world_;
     SharedPtr<ResourceCache> cache_;
     SharedPtr<Graphics> graphics_;
     SharedPtr<CellMaster> cellMaster_;
+    Renderer* renderer_;
 
-    /// Setup before engine initialization. Modifies the engine paramaters.
     virtual void Setup();
-    /// Setup after engine initialization.
     virtual void Start();
-    /// Cleanup after the main loop. Called by Application.
     virtual void Stop();
     void Exit();
     SharedPtr<Model> CreatePyramid();
@@ -98,41 +87,30 @@ public:
     void CreateFromScratchObject(Vector3 position);
     Color RandomColor();
     float GetStepProgress() { return sinceStep_/stepInterval_; }
+    int GetNumHumans() const;
 private:
     float stepInterval_;
     float sinceStep_;
     SharedPtr<UI> ui_;
-    SharedPtr<Renderer> renderer_;
     SharedPtr<XMLFile> defaultStyle_;
+    HashMap<int, bool> human_;
 
-    /// Set custom window title and icon
     void SetWindowTitleAndIcon();
-    /// Create console and debug HUD
     void CreateConsoleAndDebugHud();
 
-    /// Construct the scene content.
     void CreateScene();
-    /// Construct user interface elements.
     void CreateUI();
-    /// Subscribe to application-wide logic update and post-render update events.
     void SubscribeToEvents();
 
-    /// Handle scene update event to control camera's pitch and yaw.
     void HandleSceneUpdate(StringHash eventType, VariantMap& eventData);
-    /// Handle the logic update event.
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
-    /// Handle the post-render update event.
     void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
 
-    /// Create a mushroom object at position.
     void CreatePlatform(const Vector3 pos);
     void UpdateCursor(double timeStep);
-    /// Utility function to raycast to the cursor position. Return true if hit.
     bool CursorRayCast(double maxDistance, PODVector<RayQueryResult> &hitResults);
 
-    /// Pause flag
     bool paused_;
-
 };
 
 #endif // MASTERCONTROL_H

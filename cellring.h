@@ -20,7 +20,8 @@
 #define CELLRING_H
 
 #include "cellmaster.h"
-#include "mastercontrol.h"
+
+#include "urho3dhelper.h"
 
 namespace Urho3D {
 class Drawable;
