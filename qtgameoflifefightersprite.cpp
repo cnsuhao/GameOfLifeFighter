@@ -73,21 +73,13 @@ QImage golf::QtSprite::Create(
 
   //Draw mono-color selection border
   {
-    QColor qtcolor1 = Qt::black;
-    switch (selected_by)
-    {
-      case 0: qtcolor1 = Qt::black; break;
-      case 1: qtcolor1 = ToColor(PlayerIndex::player1); break;
-      case 2: qtcolor1 = ToColor(PlayerIndex::player2); break;
-    }
-    QColor qtcolor2 = Qt::black;
+    QColor qtcolor = Qt::black;
     switch (hangar_of)
     {
-      case 0: qtcolor2 = Qt::black; break;
-      case 1: qtcolor2 = ToColor(PlayerIndex::player1); break;
-      case 2: qtcolor2 = ToColor(PlayerIndex::player2); break;
+      case 0: qtcolor = Qt::black; break;
+      case 1: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player1)); break;
+      case 2: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player2)); break;
     }
-    QColor qtcolor = QtHelper().Blend(qtcolor1,qtcolor2);
     for (int x=0; x!=width; ++x)
     {
       image.setPixel(x,0,qtcolor.rgb());
@@ -102,6 +94,21 @@ QImage golf::QtSprite::Create(
     }
   }
 
+  if (selected_by != 0)
+  {
+    QColor qtcolor = Qt::black;
+    switch (selected_by)
+    {
+      case 1: qtcolor = ToColor(PlayerIndex::player1); break;
+      case 2: qtcolor = ToColor(PlayerIndex::player2); break;
+      default: assert(!"Should not get here");
+    }
+    image.setPixel((width / 2)-0,(height / 2)-0,qtcolor.rgb());
+    image.setPixel((width / 2)-0,(height / 2)-1,qtcolor.rgb());
+    image.setPixel((width / 2)-1,(height / 2)-0,qtcolor.rgb());
+    image.setPixel((width / 2)-1,(height / 2)-1,qtcolor.rgb());
+  }
+
   //Draw mono-color of building
   if (is_building)
   {
@@ -112,10 +119,17 @@ QImage golf::QtSprite::Create(
       case 1: qtcolor = ToColor(PlayerIndex::player1); break;
       case 2: qtcolor = ToColor(PlayerIndex::player2); break;
     }
-    image.setPixel(1,4,qtcolor.rgb());
-    image.setPixel(2,2,qtcolor.rgb());
-    image.setPixel(3,3,qtcolor.rgb());
-    image.setPixel(4,1,qtcolor.rgb());
+    const int offset = 0;
+    for (int x=offset; x!=width-1-offset; ++x)
+    {
+      image.setPixel(x,offset,qtcolor.rgb());
+      image.setPixel(x,height-1-offset,qtcolor.rgb());
+    }
+    for (int y=offset; y!=height-1-offset; ++y)
+    {
+      image.setPixel(offset,y,qtcolor.rgb());
+      image.setPixel(width-offset-1,y,qtcolor.rgb());
+    }
   }
   return image;
 }
