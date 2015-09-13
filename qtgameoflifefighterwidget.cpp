@@ -36,7 +36,8 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   {
     //Put the dialog in the screen center
     const QRect screen = QApplication::desktop()->screenGeometry();
-    this->setGeometry(0,0,screen.width() * 20 / 24,screen.height() * 8 / 24);
+    //this->setGeometry(0,0,screen.width() * 20 / 24,screen.height() * 8 / 24);
+    this->setGeometry(0,0,m_pixmap.width(),m_pixmap.height());
     this->move( screen.center() - this->rect().center() );
   }
   //Start a timer
@@ -106,7 +107,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
   QImage image(
     grid_cols * QtSprite().GetWidth(),
     grid_rows * QtSprite().GetHeight(),
-    QImage::Format_RGB32
+    QImage::Format_ARGB32
   );
 
   const auto grid = m_game.GetCellStateGrid();

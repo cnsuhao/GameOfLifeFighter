@@ -6,6 +6,7 @@
 
 #include "qtgameoflifefighterplayerindex.h"
 #include "qtgameoflifefighterhelper.h"
+#include "gameoflifefightercellstate.h"
 
 golf::QtSprite::QtSprite()
 {
@@ -35,7 +36,7 @@ QImage golf::QtSprite::Create(
 {
   const int width{GetWidth()};
   const int height{GetHeight()};
-  QImage image(width,height,QImage::Format_RGB32);
+  QImage image(width,height,QImage::Format_ARGB32);
   assert(height == 6);
   assert(width  == 6);
 
@@ -83,21 +84,21 @@ QImage golf::QtSprite::Create(
     switch (hangar_of)
     {
       case 0: qtcolor2 = Qt::black; break;
-      case 1: qtcolor2 = Qt::lightGray; break;
-      case 2: qtcolor2 = Qt::gray; break;
+      case 1: qtcolor2 = ToColor(PlayerIndex::player1); break;
+      case 2: qtcolor2 = ToColor(PlayerIndex::player2); break;
     }
     QColor qtcolor = QtHelper().Blend(qtcolor1,qtcolor2);
     for (int x=0; x!=width; ++x)
     {
       image.setPixel(x,0,qtcolor.rgb());
-      image.setPixel(x,1,qtcolor.rgb());
-      image.setPixel(x,height - 1,qtcolor.rgb());
+      //image.setPixel(x,1,qtcolor.rgb());
+      //image.setPixel(x,height - 1,qtcolor.rgb());
     }
     for (int y=0; y!=height; ++y)
     {
       image.setPixel(0,y,qtcolor.rgb());
-      image.setPixel(1,y,qtcolor.rgb());
-      image.setPixel(width - 1,y,qtcolor.rgb());
+      //image.setPixel(1,y,qtcolor.rgb());
+      //image.setPixel(width - 1,y,qtcolor.rgb());
     }
   }
 
@@ -105,7 +106,7 @@ QImage golf::QtSprite::Create(
   if (is_building)
   {
     QColor qtcolor = Qt::white;
-    switch (selected_by)
+    switch (hangar_of)
     {
       case 0: qtcolor = Qt::darkGray; break;
       case 1: qtcolor = ToColor(PlayerIndex::player1); break;
@@ -130,27 +131,41 @@ void golf::QtSprite::Test() noexcept
   }
 
   //Check if all pictures are different
-  std::vector<QImage> v;
-  for (int selected_by = 0; selected_by <= 2; ++selected_by)
-    for (int hangar_of = 0; hangar_of <= 2; ++hangar_of)
-      for (int heart_of = 0; heart_of <= 2; ++heart_of)
-        for (bool is_building: { true, false} )
-          for (CellType cell_type: { CellType::empty, CellType::alive} )
-            v.push_back(QtSprite().Create(selected_by,hangar_of,heart_of,is_building,cell_type));
-
-
-  const int sz{static_cast<int>(v.size())};
-  for (int i=0; i!=sz; ++i)
+  /*
   {
-    for (int j=0; j!=sz; ++j)
+    std::vector<QImage> v;
+    for (const auto cell_state: GetAllCellStates())
     {
-      if (i==j) continue;
-      if (v[i] == v[j])
-      {
-        std::clog << i << "," << j << std::endl;
-      }
-      assert(v[i] != v[j]);
+      v.push_back(QtSprite().Create(cell_state));
     }
+
+    const int sz{static_cast<int>(v.size())};
+    for (int i=0; i!=sz; ++i)
+    {
+      for (int j=0; j!=sz; ++j)
+      {
+        if (i==j) continue;
+        assert(v[i] != v[j]);
+      }
+    }
+  }
+  */
+  //Create one pixmap with all pictures
+  {
+    std::vector<QImage> v;
+    for (const auto cell_state: GetAllCellStates())
+    {
+      v.push_back(QtSprite().Create(cell_state));
+    }
+    const int sz{static_cast<int>(v.size())};
+    QImage qimage{QtHelper().CreateImage(6,6 * sz)};
+    for (int i=0; i!=sz; ++i)
+    {
+      assert(i >= 0);
+      assert(i < static_cast<int>(v.size()));
+      QtHelper().DrawImage(qimage,v[i],0,i * 6);
+    }
+    qimage.save("sprites.png");
   }
 }
 #endif
