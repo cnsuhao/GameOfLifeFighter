@@ -26,7 +26,8 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
     m_game{},
     m_key_map{CreateInitialKeyMap()},
     m_keys{},
-    m_pixmap(width * QtSprite().GetWidth(),height * QtSprite().GetHeight())
+    m_pixmap(width * QtSprite().GetWidth(),height * QtSprite().GetHeight()),
+    m_tick{0}
 {
   #ifndef NDEBUG
   Test();
@@ -100,7 +101,11 @@ void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
 
 void golf::QtGameOfLifeFighterWidget::OnTimer()
 {
-  m_game.Next();
+  ++m_tick;
+  if (m_tick % 3 == 0)
+  {
+    m_game.Next();
+  }
   m_game.PressKeys(m_keys);
   const int grid_rows{m_game.GetHeight()};
   const int grid_cols{m_game.GetWidth()};

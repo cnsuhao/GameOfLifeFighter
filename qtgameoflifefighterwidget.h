@@ -40,6 +40,8 @@ private:
   std::set<Key> m_keys;
   QPixmap m_pixmap;
 
+  ///The number of ticks the game is running
+  int m_tick;
 
   static std::map<int,Key> CreateInitialKeyMap() noexcept;
 

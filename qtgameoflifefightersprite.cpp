@@ -42,23 +42,25 @@ QImage golf::QtSprite::Create(
 
   //Is alive
   {
-    QColor qtcolor = Qt::white;
+    QColor qtcolor = Qt::black;
     if (cell_type == CellType::alive)
     {
+      qtcolor = Qt::white;
       switch (heart_of)
       {
-        case 0: qtcolor = Qt::white; break;
-        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),Qt::white); break;
-        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),Qt::white); break;
+        case 0: break;
+        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
+        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
       }
     }
     else
     {
+      qtcolor = Qt::black;
       switch (heart_of)
       {
-        case 0: qtcolor = Qt::black; break;
-        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),Qt::black); break;
-        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),Qt::black); break;
+        case 0: break;
+        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
+        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
       }
     }
     for (int y=1;y!=6; ++y)
@@ -84,13 +86,13 @@ QImage golf::QtSprite::Create(
     {
       image.setPixel(x,0,qtcolor.rgb());
       //image.setPixel(x,1,qtcolor.rgb());
-      //image.setPixel(x,height - 1,qtcolor.rgb());
+      image.setPixel(x,height - 1,qtcolor.rgb());
     }
     for (int y=0; y!=height; ++y)
     {
       image.setPixel(0,y,qtcolor.rgb());
       //image.setPixel(1,y,qtcolor.rgb());
-      //image.setPixel(width - 1,y,qtcolor.rgb());
+      image.setPixel(width - 1,y,qtcolor.rgb());
     }
   }
 
@@ -143,27 +145,6 @@ void golf::QtSprite::Test() noexcept
     if (is_tested) return;
     is_tested = true;
   }
-
-  //Check if all pictures are different
-  /*
-  {
-    std::vector<QImage> v;
-    for (const auto cell_state: GetAllCellStates())
-    {
-      v.push_back(QtSprite().Create(cell_state));
-    }
-
-    const int sz{static_cast<int>(v.size())};
-    for (int i=0; i!=sz; ++i)
-    {
-      for (int j=0; j!=sz; ++j)
-      {
-        if (i==j) continue;
-        assert(v[i] != v[j]);
-      }
-    }
-  }
-  */
   //Create one pixmap with all pictures
   {
     std::vector<QImage> v;
