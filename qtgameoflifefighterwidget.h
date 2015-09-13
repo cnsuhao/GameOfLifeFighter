@@ -40,24 +40,6 @@ private:
   std::set<Key> m_keys;
   QPixmap m_pixmap;
 
-  ///Mix the color of a QImage its pixel with a new RGB set
-  static void Blend(
-    QImage& image,
-    const int x, const int y,
-    const int r, const int g, const int b
-  );
-
-  ///Mix the color of a QImage its pixel with a QColor
-  static void Blend(
-    QImage& image,
-    const int x, const int y,
-    const QColor color
-  );
-
-  static QColor Blend(
-    const QColor a,
-    const QColor b
-  );
 
   static std::map<int,Key> CreateInitialKeyMap() noexcept;
 

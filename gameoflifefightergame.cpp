@@ -1,7 +1,9 @@
 #include "gameoflifefightergame.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
+
 #include "gameoflifefighterhangar.h"
 #include "gameoflifefightertrace.h"
 

@@ -10,6 +10,8 @@
 #include <QDesktopWidget>
 
 #include "qtgameoflifefighterplayerindex.h"
+#include "qtgameoflifefighterhelper.h"
+#include "qtgameoflifefightersprite.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefighterplayerindex.h"
 #include "ui_qtgameoflifefighterwidget.h"
@@ -41,7 +43,7 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   {
     QTimer * const timer{new QTimer(this)};
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(OnTimer()));
-    timer->setInterval(100);
+    timer->setInterval(20);
     timer->start();
   }
 }
@@ -49,45 +51,6 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
 golf::QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
 {
   delete ui;
-}
-
-QColor golf::QtGameOfLifeFighterWidget::Blend(
-  const QColor a,
-  const QColor b
-)
-{
-  return qRgb(
-    (a.red() + b.red()) / 2,
-    (a.green() + b.green()) / 2,
-    (a.blue() + b.blue()) / 2
-  );
-}
-
-
-void golf::QtGameOfLifeFighterWidget::Blend(
-  QImage& image,
-  const int x, const int y,
-  const QColor color
-)
-{
-  Blend(image,x,y,color.red(),color.green(),color.blue());
-}
-
-void golf::QtGameOfLifeFighterWidget::Blend(
-  QImage& image,
-  const int x, const int y,
-  const int r, const int g, const int b
-)
-{
-  const QColor here{image.pixel(x,y)};
-  image.setPixel(
-    x,y,
-    qRgb(
-      (here.red()   + r) / 2,
-      (here.green() + g) / 2,
-      (here.blue() + b) / 2
-    )
-  );
 }
 
 std::map<int,golf::Key> golf::QtGameOfLifeFighterWidget::CreateInitialKeyMap() noexcept
@@ -164,7 +127,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     //Darker if the Hangar is open
     const auto player_color = ToColor(player_index);
     const auto hangar_color = hangar.GetState() == HangarState::open
-      ? Blend(player_color,qRgb(0,0,0))
+      ? QtHelper().Blend(player_color,qRgb(0,0,0))
       : player_color
     ;
     for (int y=0; y!=height; ++y)
@@ -174,9 +137,9 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
         auto color = hangar_color;
         if (hangar.GetCell(x,y) == CellType::alive)
         {
-          color = Blend(color,qRgb(255,255,255));
+          color = QtHelper().Blend(color,qRgb(255,255,255));
         }
-        Blend(image,x+left,y+top,color);
+        QtHelper().Blend(image,x+left,y+top,color);
       }
     }
 
@@ -196,7 +159,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     {
       for (int x=0; x!=width; ++x)
       {
-        Blend(image,x+left,y+top,hangar_color);
+       QtHelper().Blend(image,x+left,y+top,hangar_color);
       }
     }
 
@@ -206,7 +169,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
   for (const auto player_index: { PlayerIndex::player1, PlayerIndex::player2 } )
   {
     const auto player = m_game.GetPlayer(player_index);
-    Blend(image,player.GetX(),player.GetY(),ToColor(player_index));
+    QtHelper().Blend(image,player.GetX(),player.GetY(),ToColor(player_index));
   }
 
   m_pixmap = QPixmap::fromImage(image);
@@ -238,7 +201,8 @@ void golf::QtGameOfLifeFighterWidget::Test() noexcept
     if (is_tested) return;
     is_tested = true;
   }
-
+  QtHelper();
+  QtSprite();
   //A key 'S' press should move player 1 down
   {
     QtGameOfLifeFighterWidget w;
