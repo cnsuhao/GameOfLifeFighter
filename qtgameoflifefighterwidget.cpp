@@ -109,91 +109,21 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     QImage::Format_RGB32
   );
 
-  assert(!"TODO");
-  /*
   const auto grid = m_game.GetCellStateGrid();
   for (int y=0; y!=grid_rows; ++y)
   {
     const auto& grid_row = grid[y];
     for (int x=0; x!=grid_cols; ++x)
     {
-      const int selected_by = cell % 4;
-      QtHelper().DrawImage(image,QtSprite().Create(
-        selected_by
-      image.setPixel(x,y,
-        i == CellType::empty ? qRgb(0,0,0) : qRgb(255,255,255)
+      QtHelper().DrawImage(
+        image,
+        QtSprite().Create(grid_row[x]),
+        x * QtSprite().GetWidth(),
+        y * QtSprite().GetHeight()
       );
+
     }
   }
-  */
-
-  //Display grid
-  for (int y=0; y!=grid_rows; ++y)
-  {
-    for (int x=0; x!=grid_cols; ++x)
-    {
-      const auto i = m_game.GetCell(x,y);
-      image.setPixel(x,y,
-        i == CellType::empty ? qRgb(0,0,0) : qRgb(255,255,255)
-      );
-    }
-  }
-  //Display hangars
-  for (const Hangar& hangar: m_game.GetHangars())
-  {
-    const int left{hangar.GetLeft()};
-    const int top{hangar.GetTop()};
-    const int width{hangar.GetWidth()};
-    const int height{hangar.GetHeight()};
-    const auto player_index = hangar.GetPlayerIndex();
-    //Darker if the Hangar is open
-    const auto player_color = ToColor(player_index);
-    const auto hangar_color = hangar.GetState() == HangarState::open
-      ? QtHelper().Blend(player_color,qRgb(0,0,0))
-      : player_color
-    ;
-    for (int y=0; y!=height; ++y)
-    {
-      for (int x=0; x!=width; ++x)
-      {
-        auto color = hangar_color;
-        if (hangar.GetCell(x,y) == CellType::alive)
-        {
-          color = QtHelper().Blend(color,qRgb(255,255,255));
-        }
-        QtHelper().Blend(image,x+left,y+top,color);
-      }
-    }
-
-  }
-
-  //Display hearts
-  for (const Heart& heart: m_game.GetHearts())
-  {
-    const int left{heart.GetLeft()};
-    const int top{heart.GetTop()};
-    const int width{heart.GetWidth()};
-    const int height{heart.GetHeight()};
-    const auto player_index = heart.GetPlayerIndex();
-    //Darker if the Hangar is open
-    const auto hangar_color = ToColor(player_index);
-    for (int y=0; y!=height; ++y)
-    {
-      for (int x=0; x!=width; ++x)
-      {
-       QtHelper().Blend(image,x+left,y+top,hangar_color);
-      }
-    }
-
-  }
-
-  //Display players
-  for (const auto player_index: { PlayerIndex::player1, PlayerIndex::player2 } )
-  {
-    const auto player = m_game.GetPlayer(player_index);
-    QtHelper().Blend(image,player.GetX(),player.GetY(),ToColor(player_index));
-  }
-
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
 }

@@ -24,6 +24,25 @@ golf::CellState::CellState(
 
 }
 
+void golf::CellState::SetSelectedBy(const int selected_by)
+{
+  assert(selected_by >= 0 && selected_by <= 2 && "0: no-one, 1: player1, 2: player2");
+  m_selected_by = selected_by;
+}
+
+void golf::CellState::SetHangarOf(const int hangar_of)
+{
+  assert(hangar_of >= 0 && hangar_of <= 2 && "0: no-one, 1: player1, 2: player2");
+  m_hangar_of = hangar_of;
+
+}
+
+void golf::CellState::SetHeartOf(const int heart_of)
+{
+  assert(heart_of >= 0 && heart_of <= 2 && "0: no-one, 1: player1, 2: player2");
+  m_heart_of = heart_of;
+}
+
 
 std::vector<golf::CellState> golf::GetAllCellStates()
 {
@@ -59,6 +78,5 @@ void golf::CellState::Test() noexcept
     is_tested = true;
   }
   assert(!GetAllCellStates().empty());
-  assert(!"Green");
 }
 #endif

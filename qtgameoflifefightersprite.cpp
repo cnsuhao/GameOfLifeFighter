@@ -14,6 +14,17 @@ golf::QtSprite::QtSprite()
   #endif
 }
 
+QImage golf::QtSprite::Create(const CellState& state) const noexcept
+{
+  return Create(
+    state.GetSelectedBy(),
+    state.GetHangarOf(),
+    state.GetHeartOf(),
+    state.GetIsBuilding(),
+    state.GetCellType()
+  );
+}
+
 QImage golf::QtSprite::Create(
   const int selected_by,   //0: no-one, 1: player1, 2: player2
   const int hangar_of,     //0: no-one, 1: player1, 2: player2

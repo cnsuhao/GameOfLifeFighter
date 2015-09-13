@@ -189,24 +189,108 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
 {
   const int h{m_grid.GetHeight()};
   const int w{m_grid.GetWidth()};
-  CellStateGrid v(
+  CellStateGrid cell_states(
     h,
     std::vector<CellState>(w,CellState(0,0,0,0,CellType::empty))
   );
-  assert(m_grid.GetRawGrid().size() == v.size());
-  assert(m_grid.GetRawGrid()[0].size() == v[0].size());
+  assert(m_grid.GetRawGrid().size() == cell_states.size());
+  assert(m_grid.GetRawGrid()[0].size() == cell_states[0].size());
+  //Cell empty/alive
   for (int y=0; y!=h; ++y)
   {
+    auto& cell_states_row = cell_states[y];
     for (int x=0; x!=w; ++x)
     {
-
-      //int bit = 0;
-      //bit += (m_grid.Get(x,y) == CellType::alive? 1 : 0);
-      //bit += (IsHangar(x,y)                     ? 2 : 0);
-      v[y][x] = CellState(0,0,0,0,m_grid.Get(x,y));
+      auto& cell_state = cell_states_row[x];
+      cell_state.SetCellType(m_grid.Get(x,y));
     }
   }
-  return v;
+  //Display hangars
+  for (const Hangar& hangar: GetHangars())
+  {
+    const int left{hangar.GetLeft()};
+    const int top{hangar.GetTop()};
+    const int width{hangar.GetWidth()};
+    const int height{hangar.GetHeight()};
+    const auto player_index = hangar.GetPlayerIndex();
+    int is_hangar_of = 0;
+    switch (player_index)
+    {
+      case PlayerIndex::player1: is_hangar_of = 1; break;
+      case PlayerIndex::player2: is_hangar_of = 2; break;
+    }
+
+    //Darker if the Hangar is open
+    //const auto player_color = ToColor(player_index);
+    //const auto hangar_color = hangar.GetState() == HangarState::open
+    //  ? QtHelper().Blend(player_color,qRgb(0,0,0))
+    //  : player_color
+    //;
+    for (int y=0; y!=height; ++y)
+    {
+      for (int x=0; x!=width; ++x)
+      {
+        assert(y + top >= 0);
+        assert(y + top < static_cast<int>(cell_states.size()));
+        assert(x + left >= 0);
+        assert(x + left < static_cast<int>(cell_states[0].size()));
+        cell_states[y + top][x + left].SetHangarOf(is_hangar_of);
+        cell_states[y + top][x + left].SetIsBuilding(hangar.GetCell(x,y) == CellType::alive);
+      }
+    }
+
+  }
+
+  //Display hearts
+  for (const Heart& heart: GetHearts())
+  {
+    const int left{heart.GetLeft()};
+    const int top{heart.GetTop()};
+    const int width{heart.GetWidth()};
+    const int height{heart.GetHeight()};
+    const auto player_index = heart.GetPlayerIndex();
+    int is_heart_of = 0;
+    switch (player_index)
+    {
+      case PlayerIndex::player1: is_heart_of = 1; break;
+      case PlayerIndex::player2: is_heart_of = 2; break;
+    }
+
+    for (int y=0; y!=height; ++y)
+    {
+      for (int x=0; x!=width; ++x)
+      {
+        assert(y + top >= 0);
+        assert(y + top < static_cast<int>(cell_states.size()));
+        assert(x + left >= 0);
+        assert(x + left < static_cast<int>(cell_states[0].size()));
+        cell_states[y + top][x + left].SetHeartOf(is_heart_of);
+
+      }
+    }
+
+  }
+
+  //Display players
+  for (const auto player_index: { PlayerIndex::player1, PlayerIndex::player2 } )
+  {
+    const auto player = GetPlayer(player_index);
+    const auto x = player.GetX();
+    const auto y = player.GetY();
+    int selected_by = 0;
+    switch (player_index)
+    {
+      case PlayerIndex::player1: selected_by = 1; break;
+      case PlayerIndex::player2: selected_by = 2; break;
+    }
+    assert(y >= 0);
+    assert(y < static_cast<int>(cell_states.size()));
+    assert(x >= 0);
+    assert(x < static_cast<int>(cell_states[0].size()));
+    cell_states[y][x].SetSelectedBy(selected_by);
+  }
+
+  return cell_states;
 }
 
 const golf::PrefabPattern& golf::Game::GetPattern(const PlayerIndex player_index, const int pattern_index) const
