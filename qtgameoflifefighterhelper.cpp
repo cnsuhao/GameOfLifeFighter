@@ -75,7 +75,11 @@ void golf::QtHelper::DrawImage(
   const int left, const int top
 ) const noexcept
 {
-  const auto n_channels = source.pixelFormat().channelCount();
+  //Qt4:
+  //const auto n_channels = source.pixelFormat().channelCount();
+
+  const auto n_channels = 4;
+
   const int width = source.width();
   const int height = source.height();
   for (int y=0; y!=height; ++y)
@@ -97,7 +101,10 @@ void golf::QtHelper::DrawImageSlow(
   const int left, const int top
 ) const noexcept
 {
-  const auto n_channels = source.pixelFormat().channelCount();
+  //Qt4:
+  //const auto n_channels = source.pixelFormat().channelCount();
+
+  const auto n_channels = 4;
   const int width = source.width();
   const int height = source.height();
   for (int y=0; y!=height; ++y)
