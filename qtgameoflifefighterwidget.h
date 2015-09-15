@@ -50,6 +50,7 @@ private:
   #endif
 
 private slots:
+  void OnJoystickCheck();
   void OnTimer();
 };
 

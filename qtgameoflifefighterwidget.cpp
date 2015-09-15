@@ -9,9 +9,12 @@
 #include <QKeyEvent>
 #include <QDesktopWidget>
 
+#include <SFML/Graphics.hpp>
+
 #include "qtgameoflifefighterplayerindex.h"
 #include "qtgameoflifefighterhelper.h"
 #include "qtgameoflifefightersprite.h"
+#include "gameoflifefightertrace.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefighterplayerindex.h"
 #include "ui_qtgameoflifefighterwidget.h"
@@ -41,10 +44,16 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
     this->setGeometry(0,0,m_pixmap.width(),m_pixmap.height());
     this->move( screen.center() - this->rect().center() );
   }
-  //Start a timer
+  //Start the timer
   {
     QTimer * const timer{new QTimer(this)};
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(OnTimer()));
+    timer->setInterval(20);
+    timer->start();
+  }
+  {
+    QTimer * const timer{new QTimer(this)};
+    QObject::connect(timer,SIGNAL(timeout()),this,SLOT(OnJoystickCheck()));
     timer->setInterval(20);
     timer->start();
   }
@@ -97,6 +106,38 @@ void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
   const auto iter = m_key_map.find(e->key());
   if (iter == std::end(m_key_map)) return;
   m_keys.erase( (*iter).second );
+}
+
+void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
+{
+  sf::Joystick::update();
+  if (sf::Joystick::isConnected(0))
+  {
+    //const int n_buttons = sf::Joystick::getButtonCount(0);
+
+    const bool pressed1 = sf::Joystick::isButtonPressed(0,0);
+    if (pressed1) { m_keys.insert(Key::toggle_hangar2); }
+    const bool pressed2 = sf::Joystick::isButtonPressed(0,1);
+    if ( pressed2) { m_keys.insert(Key::toggle_cell2); }
+    if (!pressed2) { m_keys.erase(Key::toggle_cell2); }
+
+    m_keys.erase(Key::up2);
+    m_keys.erase(Key::right2);
+    m_keys.erase(Key::down2 );
+    m_keys.erase(Key::left2 );
+    if (sf::Joystick::hasAxis(0, sf::Joystick::X))
+    {
+      const double dx{sf::Joystick::getAxisPosition(0, sf::Joystick::X)};
+      if (dx < -50.0) { m_keys.insert(Key::left2 ); }
+      if (dx >  50.0) { m_keys.insert(Key::right2); }
+    }
+    if (sf::Joystick::hasAxis(0, sf::Joystick::Y))
+    {
+      const double dy{sf::Joystick::getAxisPosition(0, sf::Joystick::Y)};
+      if (dy < -50.0) { m_keys.insert(Key::up2  );  }
+      if (dy >  50.0) { m_keys.insert(Key::down2);  }
+    }
+  }
 }
 
 void golf::QtGameOfLifeFighterWidget::OnTimer()
