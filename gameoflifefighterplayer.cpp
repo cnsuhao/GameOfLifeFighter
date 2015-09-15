@@ -2,12 +2,16 @@
 
 #include <cassert>
 
-golf::Player::Player(const int x, const int y)
-  : m_x{x},
+golf::Player::Player(const PlayerIndex player_index, const int x, const int y)
+  : m_player_index{player_index},
+    m_x{x},
     m_y{y},
     m_patterns{CreateInitialPatterns()}
 {
-
+  if (m_player_index == PlayerIndex::player2)
+  {
+    for (auto& pattern: m_patterns) { pattern.FlipHorizontal(); }
+  }
 }
 
 golf::Player::PrefabPatterns golf::Player::CreateInitialPatterns()

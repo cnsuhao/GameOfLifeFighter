@@ -45,7 +45,7 @@ CONFIG(release, debug|release) {
   DEFINES += NDEBUG NTRACE_BILDERBIKKEL
 }
 
-LIBS += -lsfml-graphics -lsfml-window -lsfml-system
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 include(GameOfLifeFighterConsole.pri)
 include(GameOfLifeFighterQt.pri)

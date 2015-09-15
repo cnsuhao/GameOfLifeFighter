@@ -115,11 +115,17 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
   {
     //const int n_buttons = sf::Joystick::getButtonCount(0);
 
-    const bool pressed1 = sf::Joystick::isButtonPressed(0,0);
-    if (pressed1) { m_keys.insert(Key::toggle_hangar2); }
-    const bool pressed2 = sf::Joystick::isButtonPressed(0,1);
-    if ( pressed2) { m_keys.insert(Key::toggle_cell2); }
-    if (!pressed2) { m_keys.erase(Key::toggle_cell2); }
+    const bool pressed0{sf::Joystick::isButtonPressed(0,0)};
+    if (pressed0) { m_keys.insert(Key::toggle_hangar2); }
+    const bool pressed1{sf::Joystick::isButtonPressed(0,1)};
+    if ( pressed1) { m_keys.insert(Key::toggle_cell2); }
+    if (!pressed1) { m_keys.erase(Key::toggle_cell2); }
+    const bool pressed2{sf::Joystick::isButtonPressed(0,2)};
+    if ( pressed2) { m_keys.insert(Key::pattern_a2); }
+    const bool pressed3{sf::Joystick::isButtonPressed(0,3)};
+    if ( pressed3) { m_keys.insert(Key::pattern_b2); }
+    const bool pressed4{sf::Joystick::isButtonPressed(0,4)};
+    if ( pressed4) { m_keys.insert(Key::pattern_c2); }
 
     m_keys.erase(Key::up2);
     m_keys.erase(Key::right2);

@@ -171,14 +171,14 @@ golf::Game::Players golf::Game::CreateInitialPlayers(const GameType game_type)
   {
     case GameType::classic:
     {
-      v.push_back(Player( 45,25));
-      v.push_back(Player(145,35));
+      v.push_back(Player(PlayerIndex::player1, 45,25));
+      v.push_back(Player(PlayerIndex::player2,145,35));
     }
     break;
     case GameType::free_fight:
     {
-      v.push_back(Player( 50,30));
-      v.push_back(Player(150,30));
+      v.push_back(Player(PlayerIndex::player1,50,30));
+      v.push_back(Player(PlayerIndex::player2,150,30));
     }
     break;
   }
