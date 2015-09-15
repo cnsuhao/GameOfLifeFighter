@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include <QColor>
 
 #include "gameoflifefightertrace.h"
 
@@ -13,6 +12,7 @@ golf::QtHelper::QtHelper()
   #endif
 }
 
+/*
 
 QColor golf::QtHelper::Blend(
   const QColor a,
@@ -139,6 +139,7 @@ void golf::QtHelper::DrawImageSlowest(
   }
 }
 
+*/
 
 #ifndef NDEBUG
 void golf::QtHelper::Test() noexcept
@@ -153,6 +154,7 @@ void golf::QtHelper::Test() noexcept
   {
     const QtHelper q;
   }
+  /*
   //CreateImage
   {
     const QImage a = QtHelper().CreateImage(256,256,64);
@@ -176,5 +178,6 @@ void golf::QtHelper::Test() noexcept
     assert(target_fast == target_slow);
     assert(target_fast == target_slowest);
   }
+  */
 }
 #endif

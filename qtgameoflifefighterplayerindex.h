@@ -2,11 +2,10 @@
 #define QTGAMEOFLIFEFIGHTERPLAYERINDEX_H
 
 #include "gameoflifefighterplayerindex.h"
-#include <QColor>
 
 namespace golf {
 
-QColor ToColor(const PlayerIndex player) noexcept;
+//QColor ToColor(const PlayerIndex player) noexcept;
 
 } //~namespace golf
 

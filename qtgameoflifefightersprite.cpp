@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <iostream>
-#include <QImage>
 
 #include "qtgameoflifefighterplayerindex.h"
 #include "qtgameoflifefighterhelper.h"
@@ -15,6 +14,7 @@ golf::QtSprite::QtSprite()
   #endif
 }
 
+/*
 QImage golf::QtSprite::Create(const CellState& state) const noexcept
 {
   return Create(
@@ -144,7 +144,7 @@ QImage golf::QtSprite::Create(
   }
   return image;
 }
-
+*/
 
 #ifndef NDEBUG
 void golf::QtSprite::Test() noexcept
@@ -155,6 +155,7 @@ void golf::QtSprite::Test() noexcept
     is_tested = true;
   }
   //Create one pixmap with all pictures
+  /*
   {
     std::vector<QImage> v;
     for (const auto cell_state: GetAllCellStates())
@@ -171,5 +172,6 @@ void golf::QtSprite::Test() noexcept
     }
     qimage.save("sprites.png");
   }
+  */
 }
 #endif

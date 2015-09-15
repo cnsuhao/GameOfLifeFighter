@@ -1,7 +1,7 @@
 #include "qtgameoflifefighterplayerindex.h"
 
 #include <cassert>
-
+/*
 QColor golf::ToColor(const PlayerIndex player) noexcept
 {
   switch (player)
@@ -12,3 +12,4 @@ QColor golf::ToColor(const PlayerIndex player) noexcept
   assert(!"Should not get here");
   return qRgb(0,0,0);
 }
+*/

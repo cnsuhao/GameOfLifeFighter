@@ -129,8 +129,8 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
 
     m_keys.erase(Key::up2);
     m_keys.erase(Key::right2);
-    m_keys.erase(Key::down2 );
-    m_keys.erase(Key::left2 );
+    m_keys.erase(Key::down2);
+    m_keys.erase(Key::left2);
     if (sf::Joystick::hasAxis(0, sf::Joystick::X))
     {
       const double dx{sf::Joystick::getAxisPosition(0, sf::Joystick::X)};
