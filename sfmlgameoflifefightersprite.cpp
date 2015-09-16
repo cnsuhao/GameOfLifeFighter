@@ -1,22 +1,21 @@
-#include "qtgameoflifefightersprite.h"
+#include "sfmlgameoflifefightersprite.h"
 
 #include <cassert>
 #include <iostream>
 
-#include <QColor>
-
-#include "qtgameoflifefighterplayerindex.h"
-#include "qtgameoflifefighterhelper.h"
+#include "sfmlgameoflifefighterplayerindex.h"
+#include "sfmlgameoflifefighterhelper.h"
 #include "gameoflifefightercellstate.h"
 
-golf::QtSprite::QtSprite()
+golf::SfmlSprite::SfmlSprite()
 {
   #ifndef NDEBUG
   Test();
   #endif
 }
 
-QImage golf::QtSprite::Create(const CellState& state) const noexcept
+/*
+QImage golf::SfmlSprite::Create(const CellState& state) const noexcept
 {
   return Create(
     state.GetSelectedBy(),
@@ -27,7 +26,7 @@ QImage golf::QtSprite::Create(const CellState& state) const noexcept
   );
 }
 
-QImage golf::QtSprite::Create(
+QImage golf::SfmlSprite::Create(
   const int selected_by,   //0: no-one, 1: player1, 2: player2
   const int hangar_of,     //0: no-one, 1: player1, 2: player2
   const int heart_of,      //0: no-one, 1: player1, 2: player2
@@ -145,9 +144,10 @@ QImage golf::QtSprite::Create(
   }
   return image;
 }
+*/
 
 #ifndef NDEBUG
-void golf::QtSprite::Test() noexcept
+void golf::SfmlSprite::Test() noexcept
 {
   {
     static bool is_tested{false};
@@ -159,7 +159,7 @@ void golf::QtSprite::Test() noexcept
     std::vector<QImage> v;
     for (const auto cell_state: GetAllCellStates())
     {
-      v.push_back(QtSprite().Create(cell_state));
+      v.push_back(SfmlSprite().Create(cell_state));
     }
     const int sz{static_cast<int>(v.size())};
     QImage qimage{QtHelper().CreateImage(6,6 * sz)};

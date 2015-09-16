@@ -6,9 +6,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
 
-#include "qtgameoflifefighterplayerindex.h"
-#include "qtgameoflifefighterhelper.h"
-#include "qtgameoflifefightersprite.h"
+#include "sfmlgameoflifefighterplayerindex.h"
+#include "sfmlgameoflifefighterhelper.h"
+#include "sfmlgameoflifefightersprite.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefighterplayerindex.h"
@@ -19,8 +19,8 @@ golf::SfmlWidget::SfmlWidget()
     m_keys{},
     m_pixmap(
       sf::VideoMode(
-        Game().GetWidth() * QtSprite().GetWidth(),
-        Game().GetHeight() * QtSprite().GetHeight()
+        Game().GetWidth() * SfmlSprite().GetWidth(),
+        Game().GetHeight() * SfmlSprite().GetHeight()
       ),
       "Game Of Life Fighter"
     ),

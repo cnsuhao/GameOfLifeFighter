@@ -1,19 +1,18 @@
-#include "qtgameoflifefighterhelper.h"
+#include "sfmlgameoflifefighterhelper.h"
 
 #include <cassert>
 
-#include <QColor>
-
 #include "gameoflifefightertrace.h"
 
-golf::QtHelper::QtHelper()
+golf::SfmlHelper::SfmlHelper()
 {
   #ifndef NDEBUG
   Test();
   #endif
 }
 
-QColor golf::QtHelper::Blend(
+/*
+QColor golf::SfmlHelper::Blend(
   const QColor a,
   const QColor b
 ) const noexcept
@@ -26,7 +25,7 @@ QColor golf::QtHelper::Blend(
 }
 
 
-void golf::QtHelper::Blend(
+void golf::SfmlHelper::Blend(
   QImage& image,
   const int x, const int y,
   const QColor color
@@ -35,7 +34,7 @@ void golf::QtHelper::Blend(
   Blend(image,x,y,color.red(),color.green(),color.blue());
 }
 
-void golf::QtHelper::Blend(
+void golf::SfmlHelper::Blend(
   QImage& image,
   const int x, const int y,
   const int r, const int g, const int b
@@ -53,7 +52,7 @@ void golf::QtHelper::Blend(
 }
 
 
-QImage golf::QtHelper::CreateImage(const int width, const int height, const int z) const noexcept
+QImage golf::SfmlHelper::CreateImage(const int width, const int height, const int z) const noexcept
 {
   QImage image(width,height,QImage::Format_ARGB32);
   for (int y=0;y!=height;++y)
@@ -69,7 +68,7 @@ QImage golf::QtHelper::CreateImage(const int width, const int height, const int 
   return image;
 }
 
-void golf::QtHelper::DrawImage(
+void golf::SfmlHelper::DrawImage(
   QImage& target, const QImage& source,
   const int left, const int top
 ) const noexcept
@@ -95,7 +94,7 @@ void golf::QtHelper::DrawImage(
 
 
 
-void golf::QtHelper::DrawImageSlow(
+void golf::SfmlHelper::DrawImageSlow(
   QImage& target, const QImage& source,
   const int left, const int top
 ) const noexcept
@@ -122,7 +121,7 @@ void golf::QtHelper::DrawImageSlow(
   }
 }
 
-void golf::QtHelper::DrawImageSlowest(
+void golf::SfmlHelper::DrawImageSlowest(
   QImage& target, const QImage& source,
   const int left, const int top
 ) const noexcept
@@ -137,9 +136,10 @@ void golf::QtHelper::DrawImageSlowest(
     }
   }
 }
+*/
 
 #ifndef NDEBUG
-void golf::QtHelper::Test() noexcept
+void golf::SfmlHelper::Test() noexcept
 {
   {
     static bool is_tested{false};
@@ -147,32 +147,34 @@ void golf::QtHelper::Test() noexcept
     is_tested = true;
   }
   const bool verbose{false};
-  if (verbose) { TRACE("Default-construction of QtHelper"); }
+  if (verbose) { TRACE("Default-construction of SfmlHelper"); }
   {
-    const QtHelper q;
+    const SfmlHelper q;
   }
+  /*
   //CreateImage
   {
-    const QImage a = QtHelper().CreateImage(256,256,64);
+    const QImage a = SfmlHelper().CreateImage(256,256,64);
     assert(!a.isNull());
   }
   {
-    QImage target = QtHelper().CreateImage(256,256,64);
+    QImage target = SfmlHelper().CreateImage(256,256,64);
     assert(!target.isNull());
-    const QImage source = QtHelper().CreateImage(196,156,196);
+    const QImage source = SfmlHelper().CreateImage(196,156,196);
     assert(!source.isNull());
-    QtHelper().DrawImage(target,source,32,64);
+    SfmlHelper().DrawImage(target,source,32,64);
   }
   {
-    QImage target_slowest = QtHelper().CreateImage(256,256,64);
-    QImage target_slow    = QtHelper().CreateImage(256,256,64);
-    QImage target_fast    = QtHelper().CreateImage(256,256,64);
-    const QImage source   = QtHelper().CreateImage(196,156,196);
-    QtHelper().DrawImage(       target_fast   ,source,32,64);
-    QtHelper().DrawImageSlow   (target_slow   ,source,32,64);
-    QtHelper().DrawImageSlowest(target_slowest,source,32,64);
+    QImage target_slowest = SfmlHelper().CreateImage(256,256,64);
+    QImage target_slow    = SfmlHelper().CreateImage(256,256,64);
+    QImage target_fast    = SfmlHelper().CreateImage(256,256,64);
+    const QImage source   = SfmlHelper().CreateImage(196,156,196);
+    SfmlHelper().DrawImage(       target_fast   ,source,32,64);
+    SfmlHelper().DrawImageSlow   (target_slow   ,source,32,64);
+    SfmlHelper().DrawImageSlowest(target_slowest,source,32,64);
     assert(target_fast == target_slow);
     assert(target_fast == target_slowest);
   }
+  */
 }
 #endif
