@@ -1,6 +1,9 @@
 #ifndef SFMLGAMEOFLIFEFIGHTERHELPER_H
 #define SFMLGAMEOFLIFEFIGHTERHELPER_H
 
+#include <string>
+#include <vector>
+
 namespace golf {
 
 struct SfmlHelper

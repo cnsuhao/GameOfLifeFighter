@@ -22,7 +22,7 @@ private:
   Game m_game;
   std::map<sf::Keyboard::Key,Key> m_key_map;
   std::set<Key> m_keys;
-  sf::RenderWindow m_pixmap;
+  sf::RenderWindow m_window;
 
   ///The number of ticks the game is running
   int m_tick;

@@ -155,6 +155,7 @@ void golf::SfmlSprite::Test() noexcept
     is_tested = true;
   }
   //Create one pixmap with all pictures
+  /*
   {
     std::vector<QImage> v;
     for (const auto cell_state: GetAllCellStates())
@@ -171,5 +172,6 @@ void golf::SfmlSprite::Test() noexcept
     }
     qimage.save("sprites.png");
   }
+  */
 }
 #endif

@@ -17,7 +17,7 @@ golf::SfmlWidget::SfmlWidget()
   : m_game{},
     m_key_map{CreateInitialKeyMap()},
     m_keys{},
-    m_pixmap(
+    m_window(
       sf::VideoMode(
         Game().GetWidth() * SfmlSprite().GetWidth(),
         Game().GetHeight() * SfmlSprite().GetHeight()
@@ -70,13 +70,7 @@ void golf::SfmlWidget::Draw()
   const int grid_rows{m_game.GetHeight()};
   const int grid_cols{m_game.GetWidth()};
 
-  m_pixmap.clear();
-
-  QImage image(
-    grid_cols * QtSprite().GetWidth(),
-    grid_rows * QtSprite().GetHeight(),
-    QImage::Format_ARGB32
-  );
+  m_window.clear();
 
   const auto grid = m_game.GetCellStateGrid();
   for (int y=0; y!=grid_rows; ++y)
@@ -84,21 +78,31 @@ void golf::SfmlWidget::Draw()
     const auto& grid_row = grid[y];
     for (int x=0; x!=grid_cols; ++x)
     {
-      QtHelper().DrawImage(
-        image,
-        QtSprite().Create(grid_row[x]),
-        x * QtSprite().GetWidth(),
-        y * QtSprite().GetHeight()
+      const auto& cell = grid_row[x];
+      sf::Texture texture;
+      texture.loadFromFile(
+        cell.GetCellType() == CellType::empty
+        ? "../GameOfLifeFighter/Resources/Sprites/Empty.png"
+        : "../GameOfLifeFighter/Resources/Sprites/Alive.png"
       );
-
+      sf::Sprite sprite(texture);
+      sprite.setPosition(
+        x * SfmlSprite().GetWidth(),
+        y * SfmlSprite().GetHeight()
+      );
+      m_window.draw(sprite);
     }
   }
+  m_window.display();
 
-  m_pixmap.draw(shape);
-  shape.setRotation(angle);
-  m_pixmap.display();
-  angle += 1.0;
-
+  #ifndef NDEBUG
+  //Create a screenshot
+  {
+    const sf::Image screenshot = m_window.capture();
+    screenshot.saveToFile("screenshot.png");
+    screenshot.saveToFile("~/screenshot.png");
+  }
+  #endif
 }
 
 void golf::SfmlWidget::Execute()
@@ -109,14 +113,14 @@ void golf::SfmlWidget::Execute()
   shape.setPosition(500,300);
   double angle = 0.0;
 
-  while (m_pixmap.isOpen())
+  while (m_window.isOpen())
   {
     sf::Event event;
-    while (m_pixmap.pollEvent(event))
+    while (m_window.pollEvent(event))
     {
       if (event.type == sf::Event::Closed)
       {
-        m_pixmap.close();
+        m_window.close();
         return;
       }
     }
@@ -182,23 +186,6 @@ void golf::SfmlWidget::ProcessKeyboard()
   }
 }
 
-void golf::SfmlWidget::paintEvent(QPaintEvent *)
-{
-  QPainter painter(this);
-  painter.drawPixmap(
-    rect(),
-    m_pixmap
-  );
-}
-
-QKeyEvent CreateDel() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Delete,Qt::NoModifier); }
-QKeyEvent CreateK() { return QKeyEvent(QEvent::KeyPress,Qt::Key_K,Qt::NoModifier); }
-QKeyEvent CreateS() { return QKeyEvent(QEvent::KeyPress,Qt::Key_S,Qt::NoModifier); }
-QKeyEvent CreateSpace() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Space,Qt::NoModifier); }
-QKeyEvent CreateDown() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Down,Qt::NoModifier); }
-QKeyEvent CreateControlDown() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Down,Qt::ControlModifier); }
-QKeyEvent CreateControlE() { return QKeyEvent(QEvent::KeyPress,Qt::Key_E,Qt::ControlModifier); }
-QKeyEvent CreateControlN() { return QKeyEvent(QEvent::KeyPress,Qt::Key_N,Qt::ControlModifier); }
 
 void golf::SfmlWidget::Test() noexcept
 {
@@ -207,26 +194,6 @@ void golf::SfmlWidget::Test() noexcept
     if (is_tested) return;
     is_tested = true;
   }
-  QtHelper();
-  QtSprite();
-  //A key 'S' press should move player 1 down
-  {
-    SfmlWidget w;
-    auto down = CreateS();
-    const int y_before{w.m_game.GetPlayer(PlayerIndex::player1).GetY()};
-    w.keyPressEvent(&down);
-    w.OnTimer();
-    const int y_after{w.m_game.GetPlayer(PlayerIndex::player1).GetY()};
-    assert(y_after == y_before + 1);
-  }
-  //A key 'K' (arrows do not do anything) press should move player 2 down
-  {
-    SfmlWidget w;
-    auto down = CreateK();
-    const int y_before{w.m_game.GetPlayer(PlayerIndex::player2).GetY()};
-    w.keyPressEvent(&down);
-    w.OnTimer();
-    const int y_after{w.m_game.GetPlayer(PlayerIndex::player2).GetY()};
-    assert(y_after == y_before + 1);
-  }
+  SfmlHelper();
+  SfmlSprite();
 }
