@@ -18,6 +18,9 @@ struct CellState
     const CellType cell_type
   );
 
+  ///Get the hashed value of the CellState, which is unique for each CellState
+  int GetHash() const noexcept { return m_hash; }
+
   int GetSelectedBy() const noexcept { return m_selected_by; }
   int GetHangarOf() const noexcept { return m_hangar_of; }
   int GetHeartOf() const noexcept { return m_heart_of; }
@@ -33,9 +36,18 @@ struct CellState
   private:
   int m_selected_by;
   int m_hangar_of;
+  int m_hash;
   int m_heart_of;
   bool m_is_building;
   CellType m_cell_type;
+
+  static int CalculateHash(
+    const int selected_by,   //0: no-one, 1: player1, 2: player2
+    const int hangar_of,     //0: no-one, 1: player1, 2: player2
+    const int heart_of,      //0: no-one, 1: player1, 2: player2
+    const bool is_building,  //Has the player built something on this square?
+    const CellType cell_type
+  ) noexcept;
 
   #ifndef NDEBUG
   static void Test() noexcept;
@@ -43,6 +55,8 @@ struct CellState
 };
 
 std::vector<CellState> GetAllCellStates();
+
+bool operator<(const CellState& lhs, const CellState& rhs) noexcept;
 
 } //~namespace golf
 

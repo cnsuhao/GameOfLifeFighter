@@ -3,9 +3,14 @@
 #include <cassert>
 #include <iostream>
 
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include "sfmlgameoflifefighterplayerindex.h"
 #include "sfmlgameoflifefighterhelper.h"
+#include "gameoflifefighterhelper.h"
 #include "gameoflifefightercellstate.h"
+
+std::map<golf::CellState,sf::Sprite> golf::SfmlSprite::m_sprites = CreateSprites();
 
 golf::SfmlSprite::SfmlSprite()
 {
@@ -14,18 +19,38 @@ golf::SfmlSprite::SfmlSprite()
   #endif
 }
 
-/*
-QImage golf::SfmlSprite::Create(const CellState& state) const noexcept
+std::map<golf::CellState,sf::Sprite> golf::SfmlSprite::CreateSprites() noexcept
 {
-  return Create(
-    state.GetSelectedBy(),
-    state.GetHangarOf(),
-    state.GetHeartOf(),
-    state.GetIsBuilding(),
-    state.GetCellType()
-  );
+  std::map<golf::CellState,sf::Sprite> m;
+
+  const std::string alive_file{"../GameOfLifeFighter/Resources/Sprites/Alive.png"};
+  const std::string empty_file{"../GameOfLifeFighter/Resources/Sprites/Empty.png"};
+  assert(Helper().IsRegularFile(alive_file));
+  assert(Helper().IsRegularFile(empty_file));
+
+  sf::Texture texture_alive;
+  texture_alive.loadFromFile(alive_file);
+  sf::Texture texture_empty;
+  texture_empty.loadFromFile(empty_file);
+
+  const sf::IntRect rect(0,0,6,6);
+
+  for (const auto cell_state: GetAllCellStates())
+  {
+    const auto& texture = cell_state.GetCellType() == CellType::empty ? texture_empty : texture_alive;
+    sf::Sprite sprite(texture,rect);
+    m.insert(std::make_pair(cell_state,sprite));
+  }
+  return m;
 }
 
+sf::Sprite& golf::SfmlSprite::Get(const CellState& state) noexcept
+{
+  assert(m_sprites.count(state) == 1);
+  return m_sprites[state];
+}
+
+/*
 QImage golf::SfmlSprite::Create(
   const int selected_by,   //0: no-one, 1: player1, 2: player2
   const int hangar_of,     //0: no-one, 1: player1, 2: player2
@@ -154,24 +179,17 @@ void golf::SfmlSprite::Test() noexcept
     if (is_tested) return;
     is_tested = true;
   }
-  //Create one pixmap with all pictures
-  /*
   {
-    std::vector<QImage> v;
+    Helper();
+  }
+  //Create one pixmap with all pictures
+  {
+    SfmlSprite s;
     for (const auto cell_state: GetAllCellStates())
     {
-      v.push_back(SfmlSprite().Create(cell_state));
+      assert(s.Get(cell_state).getTexture());
     }
-    const int sz{static_cast<int>(v.size())};
-    QImage qimage{QtHelper().CreateImage(6,6 * sz)};
-    for (int i=0; i!=sz; ++i)
-    {
-      assert(i >= 0);
-      assert(i < static_cast<int>(v.size()));
-      QtHelper().DrawImage(qimage,v[i],0,i * 6);
-    }
-    qimage.save("sprites.png");
+
   }
-  */
 }
 #endif

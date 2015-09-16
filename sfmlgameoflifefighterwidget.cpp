@@ -17,6 +17,7 @@ golf::SfmlWidget::SfmlWidget()
   : m_game{},
     m_key_map{CreateInitialKeyMap()},
     m_keys{},
+    m_sprite{},
     m_window(
       sf::VideoMode(
         Game().GetWidth() * SfmlSprite().GetWidth(),
@@ -78,14 +79,8 @@ void golf::SfmlWidget::Draw()
     const auto& grid_row = grid[y];
     for (int x=0; x!=grid_cols; ++x)
     {
-      const auto& cell = grid_row[x];
-      sf::Texture texture;
-      texture.loadFromFile(
-        cell.GetCellType() == CellType::empty
-        ? "../GameOfLifeFighter/Resources/Sprites/Empty.png"
-        : "../GameOfLifeFighter/Resources/Sprites/Alive.png"
-      );
-      sf::Sprite sprite(texture);
+      const auto& cell_state = grid_row[x];
+      sf::Sprite& sprite = m_sprite.Get(cell_state);
       sprite.setPosition(
         x * SfmlSprite().GetWidth(),
         y * SfmlSprite().GetHeight()
@@ -96,11 +91,11 @@ void golf::SfmlWidget::Draw()
   m_window.display();
 
   #ifndef NDEBUG
-  //Create a screenshot
+
+  if (!"Create a screenshot")
   {
     const sf::Image screenshot = m_window.capture();
     screenshot.saveToFile("screenshot.png");
-    screenshot.saveToFile("~/screenshot.png");
   }
   #endif
 }
@@ -111,7 +106,6 @@ void golf::SfmlWidget::Execute()
   shape.setFillColor(sf::Color::Green);
   shape.setOrigin(250.0,125.0);
   shape.setPosition(500,300);
-  double angle = 0.0;
 
   while (m_window.isOpen())
   {
