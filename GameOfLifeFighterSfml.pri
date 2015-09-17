@@ -2,11 +2,13 @@
 SOURCES += \
     sfmlgameoflifefighterwidget.cpp \
     sfmlgameoflifefighterplayerindex.cpp \
-    sfmlgameoflifefightersprite.cpp \
-    sfmlgameoflifefighterhelper.cpp
+    sfmlgameoflifefighterhelper.cpp \
+    sfmlgameoflifefightersprites.cpp \
+    sfmlgameoflifefighterspritesimpl.cpp
 
 HEADERS += \
     sfmlgameoflifefighterwidget.h \
     sfmlgameoflifefighterplayerindex.h \
-    sfmlgameoflifefightersprite.h \
-    sfmlgameoflifefighterhelper.h
+    sfmlgameoflifefighterhelper.h \
+    sfmlgameoflifefightersprites.h \
+    sfmlgameoflifefighterspritesimpl.h

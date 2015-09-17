@@ -1,4 +1,4 @@
-#include "sfmlgameoflifefightersprite.h"
+#include "sfmlgameoflifefighterspritesimpl.h"
 
 #include <cassert>
 #include <iostream>
@@ -10,41 +10,93 @@
 #include "gameoflifefighterhelper.h"
 #include "gameoflifefightercellstate.h"
 
-std::map<golf::CellState,sf::Sprite> golf::SfmlSprite::m_sprites = CreateSprites();
-
-golf::SfmlSprite::SfmlSprite()
+golf::SfmlSpritesImpl::SfmlSpritesImpl()
+  : m_sprites{},
+    m_texture_alive{},
+    m_texture_empty{},
+    m_texture_hangar_blue{},
+    m_texture_hangar_red{}
 {
   #ifndef NDEBUG
   Test();
   #endif
-}
 
-std::map<golf::CellState,sf::Sprite> golf::SfmlSprite::CreateSprites() noexcept
-{
-  std::map<golf::CellState,sf::Sprite> m;
-
+  //Create textures
   const std::string alive_file{"../GameOfLifeFighter/Resources/Sprites/Alive.png"};
   const std::string empty_file{"../GameOfLifeFighter/Resources/Sprites/Empty.png"};
+  const std::string hangar_blue_file{"../GameOfLifeFighter/Resources/Sprites/HangarBlue.png"};
+  const std::string hangar_red_file{"../GameOfLifeFighter/Resources/Sprites/HangarRed.png"};
+
   assert(Helper().IsRegularFile(alive_file));
   assert(Helper().IsRegularFile(empty_file));
+  assert(Helper().IsRegularFile(hangar_blue_file));
+  assert(Helper().IsRegularFile(hangar_red_file));
 
-  sf::Texture texture_alive;
-  texture_alive.loadFromFile(alive_file);
-  sf::Texture texture_empty;
-  texture_empty.loadFromFile(empty_file);
+  m_texture_alive.loadFromFile(alive_file,sf::IntRect(0,0,6,6));
+  m_texture_empty.loadFromFile(empty_file,sf::IntRect(0,0,6,6));
+  m_texture_hangar_blue.loadFromFile(hangar_blue_file,sf::IntRect(0,0,6,6));
+  m_texture_hangar_red.loadFromFile(hangar_red_file,sf::IntRect(0,0,6,6));
 
-  const sf::IntRect rect(0,0,6,6);
-
+  //Create textures
   for (const auto cell_state: GetAllCellStates())
   {
-    const auto& texture = cell_state.GetCellType() == CellType::empty ? texture_empty : texture_alive;
-    sf::Sprite sprite(texture,rect);
-    m.insert(std::make_pair(cell_state,sprite));
+    sf::Texture texture;
+
+    const sf::Texture& cell_type_texture =
+      ( cell_state.GetCellType() == CellType::empty ? m_texture_empty : m_texture_alive);
+
+    texture.
+    //Add hangar color
+    if (cell_state.GetHangarOf() == 1)
+    {
+      const sf::Texture& hangar_texture = m_texture_hangar_red;
+      sf::Sprite hangar_sprite(hangar_texture);
+      hangar_sprite.draw(*sprite.getTexture(),sf::RenderStates());
+    }
+    else if (cell_state.GetHangarOf() == 2)
+    {
+      const sf::Texture& hangar_texture = m_texture_hangar_blue;
+      sf::Sprite hangar_sprite(hangar_texture);
+      hangar_sprite.draw(sprite,sf::RenderStates::Default);
+    }
+
+
+    //const int hash{cell_state.GetHash()};
+    //sprite.setColor(sf::Color(255-hash,255-hash,255-hash,255));
+    m_textures.insert(std::make_pair(cell_state,texture));
   }
-  return m;
+
+
+  //Create sprites
+  for (const auto cell_state: GetAllCellStates())
+  {
+    //All cells are either empty or alive
+    const sf::Texture& cell_type_texture =
+      ( cell_state.GetCellType() == CellType::empty ? m_texture_empty : m_texture_alive);
+    sf::Sprite sprite(cell_type_texture);
+
+    //Add hangar color
+    if (cell_state.GetHangarOf() == 1)
+    {
+      const sf::Texture& hangar_texture = m_texture_hangar_red;
+      sf::Sprite hangar_sprite(hangar_texture);
+      hangar_sprite.draw(*sprite.getTexture(),sf::RenderStates());
+    }
+    else if (cell_state.GetHangarOf() == 2)
+    {
+      const sf::Texture& hangar_texture = m_texture_hangar_blue;
+      sf::Sprite hangar_sprite(hangar_texture);
+      hangar_sprite.draw(sprite,sf::RenderStates::Default);
+    }
+
+
+    //const int hash{cell_state.GetHash()};
+    //sprite.setColor(sf::Color(255-hash,255-hash,255-hash,255));
+    m_sprites.insert(std::make_pair(cell_state,sprite));
+  }
 }
 
-sf::Sprite& golf::SfmlSprite::Get(const CellState& state) noexcept
+sf::Sprite& golf::SfmlSpritesImpl::Get(const CellState& state) noexcept
 {
   assert(m_sprites.count(state) == 1);
   return m_sprites[state];
@@ -172,7 +224,7 @@ QImage golf::SfmlSprite::Create(
 */
 
 #ifndef NDEBUG
-void golf::SfmlSprite::Test() noexcept
+void golf::SfmlSpritesImpl::Test() noexcept
 {
   {
     static bool is_tested{false};
@@ -184,7 +236,7 @@ void golf::SfmlSprite::Test() noexcept
   }
   //Create one pixmap with all pictures
   {
-    SfmlSprite s;
+    SfmlSpritesImpl s;
     for (const auto cell_state: GetAllCellStates())
     {
       assert(s.Get(cell_state).getTexture());

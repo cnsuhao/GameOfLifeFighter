@@ -5,7 +5,7 @@
 #include <map>
 
 #include "gameoflifefightergame.h"
-#include "sfmlgameoflifefightersprite.h"
+#include "sfmlgameoflifefightersprites.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -24,7 +24,7 @@ private:
   Game m_game;
   std::map<sf::Keyboard::Key,Key> m_key_map;
   std::set<Key> m_keys;
-  SfmlSprite m_sprite;
+  SfmlSprites m_sprite;
   sf::RenderWindow m_window;
 
   ///The number of ticks the game is running

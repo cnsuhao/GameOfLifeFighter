@@ -8,7 +8,7 @@
 
 #include "sfmlgameoflifefighterplayerindex.h"
 #include "sfmlgameoflifefighterhelper.h"
-#include "sfmlgameoflifefightersprite.h"
+#include "sfmlgameoflifefightersprites.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefighterplayerindex.h"
@@ -20,8 +20,8 @@ golf::SfmlWidget::SfmlWidget()
     m_sprite{},
     m_window(
       sf::VideoMode(
-        Game().GetWidth() * SfmlSprite().GetWidth(),
-        Game().GetHeight() * SfmlSprite().GetHeight()
+        Game().GetWidth() * SfmlSprites().GetWidth(),
+        Game().GetHeight() * SfmlSprites().GetHeight()
       ),
       "Game Of Life Fighter"
     ),
@@ -81,9 +81,10 @@ void golf::SfmlWidget::Draw()
     {
       const auto& cell_state = grid_row[x];
       sf::Sprite& sprite = m_sprite.Get(cell_state);
+
       sprite.setPosition(
-        x * SfmlSprite().GetWidth(),
-        y * SfmlSprite().GetHeight()
+        x * m_sprite.GetWidth(),
+        y * m_sprite.GetHeight()
       );
       m_window.draw(sprite);
     }
@@ -106,9 +107,11 @@ void golf::SfmlWidget::Execute()
   shape.setFillColor(sf::Color::Green);
   shape.setOrigin(250.0,125.0);
   shape.setPosition(500,300);
+  assert(m_window.isOpen());
 
   while (m_window.isOpen())
   {
+    //Poll all events
     sf::Event event;
     while (m_window.pollEvent(event))
     {
@@ -189,5 +192,5 @@ void golf::SfmlWidget::Test() noexcept
     is_tested = true;
   }
   SfmlHelper();
-  SfmlSprite();
+  SfmlSprites();
 }
