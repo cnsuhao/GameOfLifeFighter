@@ -16,5 +16,5 @@ int main(int argc, char *argv[])
 
   golf::QtGameOfLifeFighterWidget w;
   w.show();
-  return a.exec();
+  a.exec();
 }

@@ -1,6 +1,7 @@
 #include "qtgameoflifefighterwidget.h"
 
 #include <cassert>
+#include <chrono>
 #include <iostream>
 #include <QImage>
 #include <QPainter>
@@ -183,6 +184,10 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
   if (m_tick % 3 == 0)
   {
     m_game.Next();
+    if (m_game.GetGameState() != GameState::playing)
+    {
+      QTimer::singleShot(1000,this,SLOT(close()));
+    }
   }
   m_game.PressKeys(m_keys);
   const int grid_rows{m_game.GetHeight()};
@@ -210,6 +215,19 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
   }
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
+  /*
+  {
+    const auto t_start = std::chrono::system_clock::now();
+    while (1)
+    {
+      const auto t_now = std::chrono::system_clock::now();
+      if (std::chrono::duration_cast<std::chrono::seconds>(t_now - t_start).count() > 10.0) //msecs
+      {
+        std::exit(0);
+      }
+    }
+  }
+  */
 }
 
 void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
