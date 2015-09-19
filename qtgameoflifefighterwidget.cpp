@@ -144,6 +144,37 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
       if (dy >  50.0) { m_keys.insert(Key::down2);  }
     }
   }
+  if (sf::Joystick::isConnected(1))
+  {
+    const bool pressed0{sf::Joystick::isButtonPressed(1,0)};
+    if (pressed0) { m_keys.insert(Key::toggle_hangar1); }
+    const bool pressed1{sf::Joystick::isButtonPressed(1,1)};
+    if ( pressed1) { m_keys.insert(Key::toggle_cell1); }
+    if (!pressed1) { m_keys.erase(Key::toggle_cell1); }
+    const bool pressed2{sf::Joystick::isButtonPressed(1,2)};
+    if ( pressed2) { m_keys.insert(Key::pattern_a1); }
+    const bool pressed3{sf::Joystick::isButtonPressed(1,3)};
+    if ( pressed3) { m_keys.insert(Key::pattern_b1); }
+    const bool pressed4{sf::Joystick::isButtonPressed(1,4)};
+    if ( pressed4) { m_keys.insert(Key::pattern_c1); }
+
+    m_keys.erase(Key::up1);
+    m_keys.erase(Key::right1);
+    m_keys.erase(Key::down1);
+    m_keys.erase(Key::left1);
+    if (sf::Joystick::hasAxis(1, sf::Joystick::X))
+    {
+      const double dx{sf::Joystick::getAxisPosition(1, sf::Joystick::X)};
+      if (dx < -50.0) { m_keys.insert(Key::left1 ); }
+      if (dx >  50.0) { m_keys.insert(Key::right1); }
+    }
+    if (sf::Joystick::hasAxis(1, sf::Joystick::Y))
+    {
+      const double dy{sf::Joystick::getAxisPosition(1, sf::Joystick::Y)};
+      if (dy < -50.0) { m_keys.insert(Key::up1  );  }
+      if (dy >  50.0) { m_keys.insert(Key::down1);  }
+    }
+  }
 }
 
 void golf::QtGameOfLifeFighterWidget::OnTimer()
