@@ -186,7 +186,7 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
     m_game.Next();
     if (m_game.GetGameState() != GameState::playing)
     {
-      QTimer::singleShot(1000,this,SLOT(close()));
+      QTimer::singleShot(5000,this,SLOT(close()));
     }
   }
   m_game.PressKeys(m_keys);
