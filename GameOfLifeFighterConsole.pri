@@ -14,7 +14,8 @@ SOURCES += \
     gameoflifefighterheart.cpp \
     gameoflifefightergamestate.cpp \
     gameoflifefightercellstate.cpp \
-    gameoflifefighterhelper.cpp
+    gameoflifefighterhelper.cpp \
+    gameoflifefighterselectedby.cpp
 
 HEADERS += \
     gameoflifefighterkey.h \
@@ -30,4 +31,5 @@ HEADERS += \
     gameoflifefighterheart.h \
     gameoflifefightergamestate.h \
     gameoflifefightercellstate.h \
-    gameoflifefighterhelper.h
+    gameoflifefighterhelper.h \
+    gameoflifefighterselectedby.h

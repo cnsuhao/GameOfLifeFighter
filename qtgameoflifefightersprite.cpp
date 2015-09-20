@@ -28,7 +28,7 @@ QImage golf::QtSprite::Create(const CellState& state) const noexcept
 }
 
 QImage golf::QtSprite::Create(
-  const int selected_by,   //0: no-one, 1: player1, 2: player2
+  const SelectedBy selected_by,   //0: no-one, 1: player1, 2: player2
   const int hangar_of,     //0: no-one, 1: player1, 2: player2
   const int heart_of,      //0: no-one, 1: player1, 2: player2
   const bool is_building,  //Has the player built something on this square?
@@ -104,13 +104,13 @@ QImage golf::QtSprite::Create(
   }
 
   //Draw player
-  if (selected_by != 0)
+  if (selected_by != SelectedBy::none)
   {
     QColor qtcolor = Qt::black;
     switch (selected_by)
     {
-      case 1: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player1)); break;
-      case 2: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player2)); break;
+      case SelectedBy::player1: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player1)); break;
+      case SelectedBy::player2: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player2)); break;
       default: assert(!"Should not get here");
     }
     image.setPixel((width / 2)-0,(height / 2)-0,qtcolor.rgb());

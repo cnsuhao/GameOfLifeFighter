@@ -3,7 +3,7 @@
 #include <cassert>
 
 golf::CellState::CellState(
-    const int selected_by,
+    const SelectedBy selected_by,
     const int hangar_of,
     const int heart_of,
     const bool is_building,
@@ -19,14 +19,14 @@ golf::CellState::CellState(
   Test();
   #endif
 
-  assert(selected_by >= 0 && selected_by <= 2 && "0: no-one, 1: player1, 2: player2");
+  //assert(selected_by >= 0 && selected_by <= 2 && "0: no-one, 1: player1, 2: player2");
   assert(hangar_of >= 0 && hangar_of <= 2 && "0: no-one, 1: player1, 2: player2");
   assert(heart_of >= 0 && heart_of <= 2 && "0: no-one, 1: player1, 2: player2");
 
 }
 
 int golf::CellState::CalculateHash(
-  const int selected_by,   //0: no-one, 1: player1, 2: player2
+  const SelectedBy selected_by,
   const int hangar_of,     //0: no-one, 1: player1, 2: player2
   const int heart_of,      //0: no-one, 1: player1, 2: player2
   const bool is_building,  //Has the player built something on this square?
@@ -40,15 +40,9 @@ int golf::CellState::CalculateHash(
   hash += (heart_of == 2    ?   8 : 0);
   hash += (hangar_of == 1   ?  16 : 0);
   hash += (hangar_of == 2   ?  32 : 0);
-  hash += (selected_by == 1 ?  64 : 0);
-  hash += (selected_by == 2 ? 128 : 0);
+  hash += (selected_by == SelectedBy::player1 ?  64 : 0);
+  hash += (selected_by == SelectedBy::player2 ? 128 : 0);
   return hash;
-}
-
-void golf::CellState::SetSelectedBy(const int selected_by)
-{
-  assert(selected_by >= 0 && selected_by <= 2 && "0: no-one, 1: player1, 2: player2");
-  m_selected_by = selected_by;
 }
 
 void golf::CellState::SetHangarOf(const int hangar_of)
@@ -69,7 +63,7 @@ std::vector<golf::CellState> golf::GetAllCellStates()
 {
   //Check if all pictures are different
   std::vector<CellState> v;
-  for (int selected_by = 0; selected_by <= 2; ++selected_by)
+  for (const SelectedBy selected_by: { SelectedBy::none, SelectedBy::player1, SelectedBy::player2})
   {
     for (int hangar_of = 0; hangar_of <= 2; ++hangar_of)
     {
@@ -77,7 +71,7 @@ std::vector<golf::CellState> golf::GetAllCellStates()
       {
         for (bool is_building: { true, false} )
         {
-          for (CellType cell_type: { CellType::empty, CellType::alive} )
+          for (const CellType cell_type: { CellType::empty, CellType::alive} )
           {
             v.push_back(CellState(selected_by,hangar_of,heart_of,is_building,cell_type));
           }

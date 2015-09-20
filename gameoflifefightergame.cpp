@@ -149,7 +149,7 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
   const int w{m_grid.GetWidth()};
   CellStateGrid cell_states(
     h,
-    std::vector<CellState>(w,CellState(0,0,0,0,CellType::empty))
+    std::vector<CellState>(w,CellState(SelectedBy::none,0,0,0,CellType::empty))
   );
   assert(m_grid.GetRawGrid().size() == cell_states.size());
   assert(m_grid.GetRawGrid()[0].size() == cell_states[0].size());
@@ -235,11 +235,11 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
     const auto player = GetPlayer(player_index);
     const auto x = player.GetX();
     const auto y = player.GetY();
-    int selected_by = 0;
+    SelectedBy selected_by = SelectedBy::none;
     switch (player_index)
     {
-      case PlayerIndex::player1: selected_by = 1; break;
-      case PlayerIndex::player2: selected_by = 2; break;
+      case PlayerIndex::player1: selected_by = SelectedBy::player1; break;
+      case PlayerIndex::player2: selected_by = SelectedBy::player2; break;
     }
     assert(y >= 0);
     assert(y < static_cast<int>(cell_states.size()));
