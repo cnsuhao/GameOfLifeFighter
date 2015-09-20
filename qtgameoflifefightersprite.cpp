@@ -29,8 +29,8 @@ QImage golf::QtSprite::Create(const CellState& state) const noexcept
 
 QImage golf::QtSprite::Create(
   const SelectedBy selected_by,   //0: no-one, 1: player1, 2: player2
-  const int hangar_of,     //0: no-one, 1: player1, 2: player2
-  const int heart_of,      //0: no-one, 1: player1, 2: player2
+  const HangarOf hangar_of,     //0: no-one, 1: player1, 2: player2
+  const HeartOf heart_of,      //0: no-one, 1: player1, 2: player2
   const bool is_building,  //Has the player built something on this square?
   const CellType cell_type
 ) const
@@ -49,9 +49,9 @@ QImage golf::QtSprite::Create(
       qtcolor = Qt::white;
       switch (heart_of)
       {
-        case 0: break;
-        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
-        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
+        case HeartOf::none: break;
+        case HeartOf::player1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
+        case HeartOf::player2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
       }
     }
     else
@@ -59,9 +59,9 @@ QImage golf::QtSprite::Create(
       qtcolor = Qt::black;
       switch (heart_of)
       {
-        case 0: break;
-        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
-        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
+        case HeartOf::none: break;
+        case HeartOf::player1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
+        case HeartOf::player2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
       }
     }
     for (int y=1;y!=6; ++y)
@@ -79,17 +79,17 @@ QImage golf::QtSprite::Create(
     QColor qtcolor = Qt::black;
     switch (hangar_of)
     {
-      case 0: qtcolor = Qt::black; break;
-      case 1:
+      case HangarOf::none:
+        qtcolor = Qt::black;
+      break;
+      case HangarOf::player1:
         qtcolor = QtHelper().Blend(qRgb(0,0,0),ToColor(PlayerIndex::player1));
         qtcolor = QtHelper().Blend(qRgb(0,0,0),qtcolor);
       break;
-      //case 1: qtcolor = ToColor(PlayerIndex::player1); break;
-      case 2:
+      case HangarOf::player2:
         qtcolor = QtHelper().Blend(qRgb(0,0,128),ToColor(PlayerIndex::player2));
         qtcolor = QtHelper().Blend(qRgb(0,0,128),qtcolor);
-        break;
-      //case 2: qtcolor = ToColor(PlayerIndex::player2); break; //Blue is always less bright
+      break;
     }
     for (int x=0; x!=width; ++x)
     {
@@ -125,11 +125,9 @@ QImage golf::QtSprite::Create(
     QColor qtcolor = Qt::white;
     switch (hangar_of)
     {
-      case 0: qtcolor = Qt::darkGray; break;
-      case 1: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player1)); break;
-      //case 1: qtcolor = ToColor(PlayerIndex::player1); break;
-      case 2: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player2)); break;
-      //case 2: qtcolor = ToColor(PlayerIndex::player2); break;
+      case HangarOf::none: qtcolor = Qt::darkGray; break;
+      case HangarOf::player1: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player1)); break;
+      case HangarOf::player2: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player2)); break;
     }
     const int offset = 0;
     for (int x=offset; x!=width-1-offset; ++x)
