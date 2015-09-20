@@ -80,7 +80,10 @@ void golf::SfmlWidget::Draw()
     for (int x=0; x!=grid_cols; ++x)
     {
       const auto& cell_state = grid_row[x];
-      sf::Sprite& sprite = m_sprite.Get(cell_state);
+      sf::Sprite sprite(
+        m_sprite.Get(cell_state.GetCellType()),
+        sf::IntRect(0,0,6,6)
+      );
 
       sprite.setPosition(
         x * m_sprite.GetWidth(),

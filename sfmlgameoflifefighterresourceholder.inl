@@ -8,7 +8,7 @@ void ResourceHolder<Resource, Identifier>::Load(Identifier id, const std::string
     throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
 
   // If loading successful, insert resource to map
-  insertResource(id, std::move(resource));
+  InsertResource(id, std::move(resource));
 }
 
 template <typename Resource, typename Identifier>

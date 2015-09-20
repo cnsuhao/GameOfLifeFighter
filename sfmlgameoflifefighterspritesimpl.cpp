@@ -11,12 +11,11 @@
 #include "gameoflifefightercellstate.h"
 
 golf::SfmlSpritesImpl::SfmlSpritesImpl()
-  : m_cell_type_textures{}
-    //m_sprites{},
-    //m_texture_alive{},
-    //m_texture_empty{},
-    //m_texture_hangar_blue{},
-    //m_texture_hangar_red{}
+  :
+    m_cell_type_textures{},
+    m_hangar_of_textures{},
+    m_heart_of_textures{},
+    m_selected_by_textures{}
 {
   #ifndef NDEBUG
   Test();
@@ -24,83 +23,17 @@ golf::SfmlSpritesImpl::SfmlSpritesImpl()
   m_cell_type_textures.Load(CellType::empty,"../GameOfLifeFighter/Resources/Sprites/Empty.png");
   m_cell_type_textures.Load(CellType::alive,"../GameOfLifeFighter/Resources/Sprites/Alive.png");
 
-  //Create textures
-  const std::string hangar_blue_file{"../GameOfLifeFighter/Resources/Sprites/HangarBlue.png"};
-  const std::string hangar_red_file{"../GameOfLifeFighter/Resources/Sprites/HangarRed.png"};
+  m_hangar_of_textures.Load(HangarOf::none,"../GameOfLifeFighter/Resources/Sprites/Transparent.png");
+  m_hangar_of_textures.Load(HangarOf::player1,"../GameOfLifeFighter/Resources/Sprites/HangarBlue.png");
+  m_hangar_of_textures.Load(HangarOf::player2,"../GameOfLifeFighter/Resources/Sprites/HangarRed.png");
 
-  assert(Helper().IsRegularFile(alive_file));
-  assert(Helper().IsRegularFile(empty_file));
-  assert(Helper().IsRegularFile(hangar_blue_file));
-  assert(Helper().IsRegularFile(hangar_red_file));
+  m_heart_of_textures.Load(HeartOf::none,"../GameOfLifeFighter/Resources/Sprites/Transparent.png");
+  m_heart_of_textures.Load(HeartOf::player1,"../GameOfLifeFighter/Resources/Sprites/HeartBlue.png");
+  m_heart_of_textures.Load(HeartOf::player2,"../GameOfLifeFighter/Resources/Sprites/HeartRed.png");
 
-  m_texture_alive.loadFromFile(alive_file,sf::IntRect(0,0,6,6));
-  m_texture_empty.loadFromFile(empty_file,sf::IntRect(0,0,6,6));
-  m_texture_hangar_blue.loadFromFile(hangar_blue_file,sf::IntRect(0,0,6,6));
-  m_texture_hangar_red.loadFromFile(hangar_red_file,sf::IntRect(0,0,6,6));
-
-  //Create textures
-  for (const auto cell_state: GetAllCellStates())
-  {
-    sf::Texture texture;
-
-    const sf::Texture& cell_type_texture =
-      ( cell_state.GetCellType() == CellType::empty ? m_texture_empty : m_texture_alive);
-
-    texture.
-    //Add hangar color
-    if (cell_state.GetHangarOf() == 1)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_red;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(*sprite.getTexture(),sf::RenderStates());
-    }
-    else if (cell_state.GetHangarOf() == 2)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_blue;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(sprite,sf::RenderStates::Default);
-    }
-
-
-    //const int hash{cell_state.GetHash()};
-    //sprite.setColor(sf::Color(255-hash,255-hash,255-hash,255));
-    m_textures.insert(std::make_pair(cell_state,texture));
-  }
-
-
-  //Create sprites
-  for (const auto cell_state: GetAllCellStates())
-  {
-    //All cells are either empty or alive
-    const sf::Texture& cell_type_texture =
-      ( cell_state.GetCellType() == CellType::empty ? m_texture_empty : m_texture_alive);
-    sf::Sprite sprite(cell_type_texture);
-
-    //Add hangar color
-    if (cell_state.GetHangarOf() == 1)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_red;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(*sprite.getTexture(),sf::RenderStates());
-    }
-    else if (cell_state.GetHangarOf() == 2)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_blue;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(sprite,sf::RenderStates::Default);
-    }
-
-
-    //const int hash{cell_state.GetHash()};
-    //sprite.setColor(sf::Color(255-hash,255-hash,255-hash,255));
-    m_sprites.insert(std::make_pair(cell_state,sprite));
-  }
-}
-
-sf::Sprite& golf::SfmlSpritesImpl::Get(const CellState& state) noexcept
-{
-  assert(m_sprites.count(state) == 1);
-  return m_sprites[state];
+  m_selected_by_textures.Load(SelectedBy::none,"../GameOfLifeFighter/Resources/Sprites/Transparent.png");
+  m_selected_by_textures.Load(SelectedBy::player1,"../GameOfLifeFighter/Resources/Sprites/SelectedByBlue.png");
+  m_selected_by_textures.Load(SelectedBy::player2,"../GameOfLifeFighter/Resources/Sprites/SelectedByRed.png");
 }
 
 /*
@@ -224,6 +157,26 @@ QImage golf::SfmlSprite::Create(
 }
 */
 
+sf::Texture& golf::SfmlSpritesImpl::Get(const CellType& cell_type) noexcept
+{
+  return m_cell_type_textures.Get(cell_type);
+}
+
+sf::Texture& golf::SfmlSpritesImpl::Get(const HangarOf& hangar_of) noexcept
+{
+  return m_hangar_of_textures.Get(hangar_of);
+}
+
+sf::Texture& golf::SfmlSpritesImpl::Get(const HeartOf& heart_of) noexcept
+{
+  return m_heart_of_textures.Get(heart_of);
+}
+
+sf::Texture& golf::SfmlSpritesImpl::Get(const SelectedBy& selected_by) noexcept
+{
+  return m_selected_by_textures.Get(selected_by);
+}
+
 #ifndef NDEBUG
 void golf::SfmlSpritesImpl::Test() noexcept
 {
@@ -238,11 +191,26 @@ void golf::SfmlSpritesImpl::Test() noexcept
   //Create one pixmap with all pictures
   {
     SfmlSpritesImpl s;
-    for (const auto cell_state: GetAllCellStates())
+    for (const auto cell_type: GetAllCellTypes())
     {
-      assert(s.Get(cell_state).getTexture());
+      assert(s.Get(cell_type).getSize().x == 6);
+      assert(s.Get(cell_type).getSize().y == 6);
     }
-
+    for (const auto hangar_of: GetAllHangarOfs())
+    {
+      assert(s.Get(hangar_of).getSize().x == 6);
+      assert(s.Get(hangar_of).getSize().y == 6);
+    }
+    for (const auto heart_of: GetAllHeartOfs())
+    {
+      assert(s.Get(heart_of).getSize().x == 6);
+      assert(s.Get(heart_of).getSize().y == 6);
+    }
+    for (const auto selected_by: GetAllSelectedBys())
+    {
+      assert(s.Get(selected_by).getSize().x == 6);
+      assert(s.Get(selected_by).getSize().y == 6);
+    }
   }
 }
 #endif

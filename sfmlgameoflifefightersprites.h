@@ -14,7 +14,10 @@ struct SfmlSprites
 {
   SfmlSprites();
 
-  sf::Sprite& Get(const CellState& state) noexcept;
+  sf::Texture& Get(const CellType& cell_type) noexcept;
+  sf::Texture& Get(const HangarOf& hangar_of) noexcept;
+  sf::Texture& Get(const HeartOf& heart_of) noexcept;
+  sf::Texture& Get(const SelectedBy& selected_by) noexcept;
 
   int GetHeight() const noexcept;
   int GetWidth() const noexcept;
