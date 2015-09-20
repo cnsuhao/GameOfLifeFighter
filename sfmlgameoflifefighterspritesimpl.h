@@ -8,6 +8,7 @@
 
 #include "gameoflifefightercelltype.h"
 #include "gameoflifefightercellstate.h"
+#include "sfmlgameoflifefighterresourceholder.h"
 
 namespace golf {
 
@@ -37,13 +38,13 @@ struct SfmlSpritesImpl
   #ifndef NDEBUG
   static void Test() noexcept;
   #endif
-
-  std::map<CellState,sf::Sprite> m_sprites;
-  std::map<CellState,sf::Sprite> m_textures;
-  sf::Texture m_texture_alive;
-  sf::Texture m_texture_empty;
-  sf::Texture m_texture_hangar_blue;
-  sf::Texture m_texture_hangar_red;
+  ResourceHolder<sf::Texture,CellType> m_cell_type_textures;
+  //std::map<CellState,sf::Sprite> m_sprites;
+  //std::map<CellState,sf::Sprite> m_textures;
+  //sf::Texture m_texture_alive;
+  //sf::Texture m_texture_empty;
+  //sf::Texture m_texture_hangar_blue;
+  //sf::Texture m_texture_hangar_red;
 
   friend class SfmlSprites;
 };

@@ -10,7 +10,6 @@
 #include "gameoflifefighterheart.h"
 #include "gameoflifefightercellstate.h"
 #include "gameoflifefightergamestate.h"
-#include "gameoflifefightergametype.h"
 
 namespace golf {
 
@@ -25,7 +24,7 @@ struct Game
   using Players = std::vector<Player>;
   using CellStateGrid = std::vector<std::vector<CellState>>;
 
-  Game(const GameType game_type = GameType::free_fight);
+  Game();
 
   bool CanBuild(const PlayerIndex player_index) const noexcept;
   bool CanBuildHere(const PlayerIndex player_index, const int x, const int y) const noexcept;
@@ -85,7 +84,6 @@ struct Game
 
   private:
   GameState m_game_state;
-  GameType m_game_type;
   Grid m_grid;
   Hangars m_hangars;
   Hearts m_hearts;
@@ -94,9 +92,9 @@ struct Game
   ///Let a player try to close a hangar
   void CloseHangar(const PlayerIndex player_index);
 
-  static Hangars CreateInitialHangars(const GameType game_type);
-  static Hearts CreateInitialHearts(const GameType game_type);
-  static Players CreateInitialPlayers(const GameType game_type);
+  static Hangars CreateInitialHangars();
+  static Hearts CreateInitialHearts();
+  static Players CreateInitialPlayers();
 
   ///Let a player try to open a hangar
   void OpenHangar(const PlayerIndex player_index);

@@ -28,8 +28,6 @@ golf::SfmlSpritesImpl::SfmlSpritesImpl()
   const std::string hangar_blue_file{"../GameOfLifeFighter/Resources/Sprites/HangarBlue.png"};
   const std::string hangar_red_file{"../GameOfLifeFighter/Resources/Sprites/HangarRed.png"};
 
-  assert(Helper().IsRegularFile(alive_file));
-  assert(Helper().IsRegularFile(empty_file));
   assert(Helper().IsRegularFile(hangar_blue_file));
   assert(Helper().IsRegularFile(hangar_red_file));
 

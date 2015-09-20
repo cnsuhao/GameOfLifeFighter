@@ -9,6 +9,10 @@ SOURCES += \
 HEADERS += \
     sfmlgameoflifefighterwidget.h \
     sfmlgameoflifefighterplayerindex.h \
+    sfmlgameoflifefighterspritesimpl.h \
     sfmlgameoflifefighterhelper.h \
     sfmlgameoflifefightersprites.h \
-    sfmlgameoflifefighterspritesimpl.h
+    sfmlgameoflifefighterresourceholder.h
+
+OTHER_FILES += \
+    sfmlgameoflifefighterresourceholder.inl

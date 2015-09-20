@@ -7,14 +7,13 @@
 #include "gameoflifefighterhangar.h"
 #include "gameoflifefightertrace.h"
 
-golf::Game::Game(const GameType game_type)
+golf::Game::Game()
   :
     m_game_state{GameState::playing},
-    m_game_type{game_type},
     m_grid(GetWidth(),GetHeight()),
-    m_hangars{CreateInitialHangars(game_type)},
-    m_hearts{CreateInitialHearts(game_type)},
-    m_players{CreateInitialPlayers(game_type)}
+    m_hangars{CreateInitialHangars()},
+    m_hearts{CreateInitialHearts()},
+    m_players{CreateInitialPlayers()}
 {
   #ifndef NDEBUG
   Test();
@@ -112,76 +111,35 @@ void golf::Game::CloseHangar(const PlayerIndex player_index)
   (*iter).Close(m_grid);
 }
 
-golf::Game::Hangars golf::Game::CreateInitialHangars(const GameType game_type)
+golf::Game::Hangars golf::Game::CreateInitialHangars()
 {
   Hangars v;
-
-
-  switch (game_type)
-  {
-    case GameType::classic:
-    {
-      const bool do_transfer_up = true;
-      v.push_back(Hangar(30,10,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(50,10,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(30,30,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(50,30,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(130,20,10,10,PlayerIndex::player2,do_transfer_up));
-      v.push_back(Hangar(150,20,10,10,PlayerIndex::player2,do_transfer_up));
-      v.push_back(Hangar(130,40,10,10,PlayerIndex::player2,do_transfer_up));
-      v.push_back(Hangar(150,40,10,10,PlayerIndex::player2,do_transfer_up));
-    }
-    break;
-    case GameType::free_fight:
-    {
-      const bool do_transfer_up = false;
-      v.push_back(Hangar(  0,0,100,60,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(100,0,100,60,PlayerIndex::player2,do_transfer_up));
-    }
-    break;
-  }
+  const bool do_transfer_up = false;
+  const int w{GetWidth()};
+  const int h{GetHeight()};
+  v.push_back(Hangar(             0,0,w / 2,h,PlayerIndex::player1,do_transfer_up));
+  v.push_back(Hangar(GetWidth() / 2,0,w / 2,h,PlayerIndex::player2,do_transfer_up));
   return v;
 }
 
-golf::Game::Hearts golf::Game::CreateInitialHearts(const GameType game_type)
+golf::Game::Hearts golf::Game::CreateInitialHearts()
 {
   Hearts v;
-  switch (game_type)
-  {
-    case GameType::classic:
-    {
-      v.push_back(Heart(40,20,10,10,PlayerIndex::player1));
-      v.push_back(Heart(140,30,10,10,PlayerIndex::player2));
-    }
-    break;
-    case GameType::free_fight:
-    {
-      v.push_back(Heart(45,25,10,10,PlayerIndex::player1));
-      v.push_back(Heart(145,25,10,10,PlayerIndex::player2));
-    }
-    break;
-  }
+  const int sz = 10;
+  const int w{GetWidth()};
+  const int h{GetHeight()};
+  v.push_back(Heart((w * 1 / 4) - (sz / 2),(h / 2) - (sz / 2),sz,sz,PlayerIndex::player1));
+  v.push_back(Heart((w * 3 / 4) - (sz / 2),(h / 2) - (sz / 2),sz,sz,PlayerIndex::player2));
   return v;
 }
 
-golf::Game::Players golf::Game::CreateInitialPlayers(const GameType game_type)
+golf::Game::Players golf::Game::CreateInitialPlayers()
 {
   Players v;
-  switch (game_type)
-  {
-    case GameType::classic:
-    {
-      v.push_back(Player(PlayerIndex::player1, 45,25));
-      v.push_back(Player(PlayerIndex::player2,145,35));
-    }
-    break;
-    case GameType::free_fight:
-    {
-      v.push_back(Player(PlayerIndex::player1,50,30));
-      v.push_back(Player(PlayerIndex::player2,150,30));
-    }
-    break;
-  }
+  const int w{GetWidth()};
+  const int h{GetHeight()};
+  v.push_back(Player(PlayerIndex::player1,w * 1 / 4, h / 2));
+  v.push_back(Player(PlayerIndex::player2,w * 3 / 4, h / 2));
   return v;
 }
 
@@ -370,10 +328,7 @@ void golf::Game::Next()
   if (m_game_state != GameState::playing) return;
 
   //In free fight mode, a Hangar cannot be open for more than one turn
-  if (m_game_type == GameType::free_fight)
-  {
-    for (auto& hangar: m_hangars) { hangar.Close(m_grid); }
-  }
+  for (auto& hangar: m_hangars) { hangar.Close(m_grid); }
 
   m_grid.Next();
 

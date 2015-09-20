@@ -13,7 +13,6 @@ SOURCES += \
     gameoflifefighterprefabpattern.cpp \
     gameoflifefighterheart.cpp \
     gameoflifefightergamestate.cpp \
-    gameoflifefightergametype.cpp \
     gameoflifefightercellstate.cpp \
     gameoflifefighterhelper.cpp
 
@@ -30,6 +29,5 @@ HEADERS += \
     gameoflifefighterprefabpattern.h \
     gameoflifefighterheart.h \
     gameoflifefightergamestate.h \
-    gameoflifefightergametype.h \
     gameoflifefightercellstate.h \
     gameoflifefighterhelper.h
