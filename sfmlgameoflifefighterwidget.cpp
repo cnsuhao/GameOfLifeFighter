@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "sfmlgameoflifefighterplayerindex.h"
 #include "sfmlgameoflifefighterhelper.h"
@@ -68,30 +69,97 @@ std::map<sf::Keyboard::Key,golf::Key> golf::SfmlWidget::CreateInitialKeyMap() no
 
 void golf::SfmlWidget::Draw()
 {
+  sf::Clock clock;
+
   const int grid_rows{m_game.GetHeight()};
   const int grid_cols{m_game.GetWidth()};
 
   m_window.clear();
 
   const auto grid = m_game.GetCellStateGrid();
+
+  //Draw cells
   for (int y=0; y!=grid_rows; ++y)
   {
     const auto& grid_row = grid[y];
     for (int x=0; x!=grid_cols; ++x)
     {
       const auto& cell_state = grid_row[x];
-      sf::Sprite sprite(
-        m_sprite.Get(cell_state.GetCellType()),
-        sf::IntRect(0,0,6,6)
-      );
 
-      sprite.setPosition(
-        x * m_sprite.GetWidth(),
-        y * m_sprite.GetHeight()
-      );
-      m_window.draw(sprite);
+      //Cell type
+      {
+        sf::Sprite sprite(
+          m_sprite.Get(cell_state.GetCellType()),
+          sf::IntRect(0,0,6,6)
+        );
+        sprite.setPosition(
+          x * m_sprite.GetWidth(),
+          y * m_sprite.GetHeight()
+        );
+        m_window.draw(sprite);
+      }
+
+      //Heart of
+      {
+        sf::Sprite sprite(
+          m_sprite.Get(cell_state.GetHeartOf()),
+          sf::IntRect(0,0,6,6)
+        );
+        sprite.setPosition(
+          x * m_sprite.GetWidth(),
+          y * m_sprite.GetHeight()
+        );
+        m_window.draw(sprite);
+      }
+
+      //Hangar of
+      {
+        sf::Sprite sprite(
+          m_sprite.Get(cell_state.GetHangarOf()),
+          sf::IntRect(0,0,6,6)
+        );
+        sprite.setPosition(
+          x * m_sprite.GetWidth(),
+          y * m_sprite.GetHeight()
+        );
+        m_window.draw(sprite);
+      }
     }
   }
+
+  //Draw selected
+  for (const PlayerIndex player_index: GetAllPlayerIndices())
+  {
+    const auto player = m_game.GetPlayer(player_index);
+    SelectedBy selected_by = SelectedBy::none;
+    switch (player_index)
+    {
+      case PlayerIndex::player1: selected_by = SelectedBy::player1; break;
+      case PlayerIndex::player2: selected_by = SelectedBy::player2; break;
+    }
+    sf::Sprite sprite(
+      m_sprite.Get(selected_by),
+      sf::IntRect(0,0,6,6)
+    );
+    sprite.setPosition(
+      player.GetX() * m_sprite.GetWidth(),
+      player.GetY() * m_sprite.GetHeight()
+    );
+    m_window.draw(sprite);
+
+  }
+  //Draw time
+  {
+    sf::Font font;
+    const bool can_find{font.loadFromFile("../GameOfLifeFighter/Resources/Fonts/Courier.ttf")};
+    assert(can_find);
+    std::stringstream s;
+    s << clock.getElapsedTime().asMilliseconds() << " ms";
+    sf::Text text(s.str(),font);
+    text.setString(s.str());
+    m_window.draw(text);
+  }
+
   m_window.display();
 
   #ifndef NDEBUG
