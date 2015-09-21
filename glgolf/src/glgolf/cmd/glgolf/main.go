@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "glgolf"
 
+func main() {
+	glgolf.InitGame()
 }

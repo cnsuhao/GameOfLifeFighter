@@ -1,0 +1,140 @@
+#!/usr/bin/env python
+
+import inspect
+import os.path
+import shutil
+import subprocess
+import sys
+from operator import itemgetter
+
+
+class Path(object):
+    def __init__(self, *paths):
+        self._path = os.path.join(*paths)
+
+    def __str__(self):
+        return self._path
+    __unicode__ = __str__
+
+    def __truediv__(self, other):
+        return Path(os.path.join(self, other))
+
+    def exists(self):
+        return os.path.exists(str(self))
+
+    def isfile(self):
+        return os.path.isfile(self)
+
+
+class TaskError(Exception):
+    pass
+
+
+def _is_task(n):
+    return inspect.isfunction(n) and n.__name__.startswith('task_')
+
+
+def get_tasks(module):
+    tasks = inspect.getmembers(module, _is_task)
+    return {k.replace('task_', '', 1): v for k, v in tasks}
+
+
+def show_help(tasks):
+    lk = max(map(len, tasks.keys()))
+    for n, f in sorted(tasks.items(), key=itemgetter(0)):
+        print('{}{}    {}'.format(n, (lk - len(n)) * ' ', f.__doc__))
+    print('help{}    Show this message.'.format((lk-4)*' '))
+
+
+def call(*args):
+    code = subprocess.call(args)
+    if code > 0:
+        raise TaskError('command exited with non-zero code: {}'
+                        .format(' '.join(args)))
+
+
+def main(argv, module, default_task=''):
+    tasks = get_tasks(module)
+
+    if len(argv) == 1:
+        names = [default_task]
+    elif len(argv) >= 2:
+        names = argv[1:]
+
+    try:
+        for name in names:
+            if name in tasks:
+                tasks[name]()
+            elif name == 'help':
+                show_help(tasks)
+            else:
+                print('task does not exist: {}'.format(name))
+    except TaskError as e:
+        print('{}: {}'.format(name, e))
+        sys.exit(1)
+
+
+# -------------
+# --- Tasks ---
+# -------------
+
+import json
+import os
+
+
+BIN = str(Path('bin', 'glgolf'))
+
+
+def task_build():
+    """Build project."""
+    call('gb', 'build', 'all')
+
+
+def task_run():
+    """Run application server."""
+    try:
+        call(BIN)
+    except KeyboardInterrupt:
+        pass
+
+
+def task_setup():
+    """Install build dependencies."""
+    call('go', 'get', '-u', 'github.com/constabulary/gb/...')
+
+
+def task_clean():
+    """Remove binaries."""
+    shutil.rmtree('pkg', ignore_errors=True)
+    shutil.rmtree(str(Path('vendor', 'pkg')), ignore_errors=True)
+    os.remove(BIN)
+
+
+def _get_dep():
+    path = Path('vendor', 'manifest')
+
+    if not path.exists():
+        raise TaskError('manifest not found: {}'.format(path))
+    with open(str(path), 'r') as fd:
+        data = json.load(fd)
+    if not 'dependencies' in data:
+        raise TaskError('manifest has incorrect format')
+
+    return [n['importpath'] for n in data['dependencies']]
+
+
+def task_list_dep():
+    """List all dependencies."""
+    for package in _get_dep():
+        print(package)
+
+
+def task_update_dep():
+    """Update all dependencies."""
+    for n in _get_dep():
+        print(n)
+        call('gb', 'vendor', 'update', n)
+
+
+if __name__ == '__main__':
+    main(sys.argv, sys.modules[__name__], 'build')
