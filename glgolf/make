@@ -8,19 +8,12 @@ import sys
 from operator import itemgetter
 
 
-class Path(object):
-    def __init__(self, *paths):
-        self._path = os.path.join(*paths)
-
-    def __str__(self):
-        return self._path
-    __unicode__ = __str__
-
+class Path(str):
     def __truediv__(self, other):
         return Path(os.path.join(self, other))
 
     def exists(self):
-        return os.path.exists(str(self))
+        return os.path.exists(self)
 
     def isfile(self):
         return os.path.isfile(self)
@@ -81,8 +74,8 @@ def main(argv, module, default_task=''):
 import json
 import os
 
-
-BIN = str(Path('bin', 'glgolf'))
+BIN = Path('bin') / 'glgolf'
+VENDOR = Path('vendor')
 
 
 def task_build():
@@ -106,16 +99,16 @@ def task_setup():
 def task_clean():
     """Remove binaries."""
     shutil.rmtree('pkg', ignore_errors=True)
-    shutil.rmtree(str(Path('vendor', 'pkg')), ignore_errors=True)
+    shutil.rmtree(VENDOR / 'pkg', ignore_errors=True)
     os.remove(BIN)
 
 
 def _get_dep():
-    path = Path('vendor', 'manifest')
+    path = VENDOR / 'manifest'
 
     if not path.exists():
         raise TaskError('manifest not found: {}'.format(path))
-    with open(str(path), 'r') as fd:
+    with open(path, 'r') as fd:
         data = json.load(fd)
     if not 'dependencies' in data:
         raise TaskError('manifest has incorrect format')
