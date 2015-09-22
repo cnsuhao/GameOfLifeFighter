@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
+#include <stdexcept>
 
 #include "gameoflifefighterhangar.h"
 #include "gameoflifefightertrace.h"

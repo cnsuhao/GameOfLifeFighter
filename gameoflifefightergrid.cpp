@@ -136,6 +136,7 @@ void golf::Grid::Next()
   m_grid = v;
 }
 
+#ifndef NDEBUG
 void golf::Grid::Test() noexcept
 {
   {
@@ -188,3 +189,4 @@ void golf::Grid::Test() noexcept
     assert(g.CountNeighbours(11,11) == 4);
   }
 }
+#endif

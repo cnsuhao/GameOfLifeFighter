@@ -248,6 +248,7 @@ QKeyEvent CreateControlDown() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Down,Q
 QKeyEvent CreateControlE() { return QKeyEvent(QEvent::KeyPress,Qt::Key_E,Qt::ControlModifier); }
 QKeyEvent CreateControlN() { return QKeyEvent(QEvent::KeyPress,Qt::Key_N,Qt::ControlModifier); }
 
+#ifndef NDEBUG
 void golf::QtGameOfLifeFighterWidget::Test() noexcept
 {
   {
@@ -278,3 +279,4 @@ void golf::QtGameOfLifeFighterWidget::Test() noexcept
     assert(y_after == y_before + 1);
   }
 }
+#endif
