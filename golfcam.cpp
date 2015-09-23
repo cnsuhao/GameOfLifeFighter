@@ -21,11 +21,7 @@
 GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerIndex player):
     Object(context),
     player_{player},
-    yaw_{0.0},
-    pitch_{0.0},
-    yawDelta_{0.0},
-    pitchDelta_{0.0},
-    forceMultiplier{1.0}
+    targetCoords_{IntVector2{50, 30}}
 {
     masterControl_ = masterControl;
     SubscribeToEvent(E_SCENEUPDATE, HANDLER(GOLFCam, HandleSceneUpdate));
@@ -110,7 +106,19 @@ void GOLFCam::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 
     //Take the frame time step, which is stored as a double
     double timeStep = eventData[P_TIMESTEP].GetFloat();
-
-    rigidBody_->ApplyTorque(Vector3::UP*100.0f);
+//    Urho3D::Log::Write(1, String(CenterCoords().x_));
+//    Urho3D::Log::Write(1, String(CenterCoords().y_));
+//    rigidBody_->ApplyTorque(Vector3::UP*100.0f);
 }
 
+IntVector2 GOLFCam::CenterCoords()
+{
+    PODVector<RayQueryResult> results{};
+    Ray camRay{rootNode_->GetPosition(), rootNode_->GetDirection()};
+    if (masterControl_->OctreeRayCast(results, camRay, 12.0f)){
+        for (unsigned r = 0; r < results.Size(); r++) {
+            unsigned id = results[r].node_->GetID();
+            return masterControl_->cellMaster_->GetCell(id)->GetCoords();
+        }
+    }
+}

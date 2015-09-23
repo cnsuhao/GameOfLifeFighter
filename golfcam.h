@@ -21,6 +21,7 @@
 
 #include "urho3dhelper.h"
 #include "mastercontrol.h"
+#include "cellmaster.h"
 
 namespace Urho3D {
 class Drawable;
@@ -53,6 +54,7 @@ public:
 
     Vector3 GetWorldPosition();
     Quaternion GetRotation();
+    IntVector2 CenterCoords();
 private:
     MasterControl* masterControl_;
     void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
@@ -62,12 +64,7 @@ private:
     golf::PlayerIndex player_;
     SharedPtr<RigidBody> rigidBody_;
     Zone* zone_;
-    double yaw_;
-    double pitch_;
-    //double roll_ = 0.0;
-    double yawDelta_;
-    double pitchDelta_;
-    double forceMultiplier;
+    IntVector2 targetCoords_;
     void SetupViewport();
 };
 

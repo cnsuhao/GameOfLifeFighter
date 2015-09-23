@@ -40,6 +40,8 @@ typedef struct GameWorld
 {
     HashMap<int, GOLFCam*> cameras_;
     SharedPtr<Scene> scene_;
+    SharedPtr<PhysicsWorld> physics_;
+    SharedPtr<Octree> octree_;
     SharedPtr<Node> backgroundNode_;
     SharedPtr<Node> voidNode_;
     struct {
@@ -88,6 +90,8 @@ public:
     Color RandomColor();
     float GetStepProgress() { return sinceStep_/stepInterval_; }
     int GetNumHumans() const;
+
+    bool OctreeRayCast(PODVector<RayQueryResult> &hitResults, Ray ray, float distance);
 private:
     float stepInterval_;
     float sinceStep_;
@@ -108,7 +112,6 @@ private:
 
     void CreatePlatform(const Vector3 pos);
     void UpdateCursor(double timeStep);
-    bool CursorRayCast(double maxDistance, PODVector<RayQueryResult> &hitResults);
 
     bool paused_;
 };
