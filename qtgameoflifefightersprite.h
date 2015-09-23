@@ -2,6 +2,7 @@
 #define QTGAMEOFLIFEFIGHTERSPRITE_H
 
 #include <QImage>
+
 #include "gameoflifefightercelltype.h"
 #include "gameoflifefightercellstate.h"
 
@@ -13,11 +14,10 @@ struct QtSprite
 
   QImage Create(const CellState& state) const noexcept;
 
-
   QImage Create(
-    const int selected_by,   //0: no-one, 1: player1, 2: player2
-    const int hangar_of,     //0: no-one, 1: player1, 2: player2
-    const int heart_of,      //0: no-one, 1: player1, 2: player2
+    const SelectedBy selected_by,
+    const HangarOf hangar_of,
+    const HeartOf heart_of,
     const bool is_building,  //Has the player built something on this square?
     const CellType cell_type 
   ) const;

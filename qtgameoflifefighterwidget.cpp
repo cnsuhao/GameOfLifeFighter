@@ -1,6 +1,7 @@
 #include "qtgameoflifefighterwidget.h"
 
 #include <cassert>
+#include <chrono>
 #include <iostream>
 #include <QImage>
 #include <QPainter>
@@ -9,9 +10,12 @@
 #include <QKeyEvent>
 #include <QDesktopWidget>
 
+#include <SFML/Graphics.hpp>
+
 #include "qtgameoflifefighterplayerindex.h"
 #include "qtgameoflifefighterhelper.h"
 #include "qtgameoflifefightersprite.h"
+#include "gameoflifefightertrace.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefighterplayerindex.h"
 #include "ui_qtgameoflifefighterwidget.h"
@@ -26,7 +30,8 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
     m_game{},
     m_key_map{CreateInitialKeyMap()},
     m_keys{},
-    m_pixmap(width * QtSprite().GetWidth(),height * QtSprite().GetHeight())
+    m_pixmap(width * QtSprite().GetWidth(),height * QtSprite().GetHeight()),
+    m_tick{0}
 {
   #ifndef NDEBUG
   Test();
@@ -36,13 +41,20 @@ golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   {
     //Put the dialog in the screen center
     const QRect screen = QApplication::desktop()->screenGeometry();
-    this->setGeometry(0,0,screen.width() * 20 / 24,screen.height() * 8 / 24);
+    //this->setGeometry(0,0,screen.width() * 20 / 24,screen.height() * 8 / 24);
+    this->setGeometry(0,0,m_pixmap.width(),m_pixmap.height());
     this->move( screen.center() - this->rect().center() );
   }
-  //Start a timer
+  //Start the timer
   {
     QTimer * const timer{new QTimer(this)};
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(OnTimer()));
+    timer->setInterval(20);
+    timer->start();
+  }
+  {
+    QTimer * const timer{new QTimer(this)};
+    QObject::connect(timer,SIGNAL(timeout()),this,SLOT(OnJoystickCheck()));
     timer->setInterval(20);
     timer->start();
   }
@@ -97,16 +109,93 @@ void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
   m_keys.erase( (*iter).second );
 }
 
+void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
+{
+  sf::Joystick::update();
+  if (sf::Joystick::isConnected(0))
+  {
+    //const int n_buttons = sf::Joystick::getButtonCount(0);
+
+    const bool pressed0{sf::Joystick::isButtonPressed(0,0)};
+    if (pressed0) { m_keys.insert(Key::toggle_hangar2); }
+    const bool pressed1{sf::Joystick::isButtonPressed(0,1)};
+    if ( pressed1) { m_keys.insert(Key::toggle_cell2); }
+    if (!pressed1) { m_keys.erase(Key::toggle_cell2); }
+    const bool pressed2{sf::Joystick::isButtonPressed(0,2)};
+    if ( pressed2) { m_keys.insert(Key::pattern_a2); }
+    const bool pressed3{sf::Joystick::isButtonPressed(0,3)};
+    if ( pressed3) { m_keys.insert(Key::pattern_b2); }
+    const bool pressed4{sf::Joystick::isButtonPressed(0,4)};
+    if ( pressed4) { m_keys.insert(Key::pattern_c2); }
+
+    m_keys.erase(Key::up2);
+    m_keys.erase(Key::right2);
+    m_keys.erase(Key::down2);
+    m_keys.erase(Key::left2);
+    if (sf::Joystick::hasAxis(0, sf::Joystick::X))
+    {
+      const double dx{sf::Joystick::getAxisPosition(0, sf::Joystick::X)};
+      if (dx < -50.0) { m_keys.insert(Key::left2 ); }
+      if (dx >  50.0) { m_keys.insert(Key::right2); }
+    }
+    if (sf::Joystick::hasAxis(0, sf::Joystick::Y))
+    {
+      const double dy{sf::Joystick::getAxisPosition(0, sf::Joystick::Y)};
+      if (dy < -50.0) { m_keys.insert(Key::up2  );  }
+      if (dy >  50.0) { m_keys.insert(Key::down2);  }
+    }
+  }
+  if (sf::Joystick::isConnected(1))
+  {
+    const bool pressed0{sf::Joystick::isButtonPressed(1,0)};
+    if (pressed0) { m_keys.insert(Key::toggle_hangar1); }
+    const bool pressed1{sf::Joystick::isButtonPressed(1,1)};
+    if ( pressed1) { m_keys.insert(Key::toggle_cell1); }
+    if (!pressed1) { m_keys.erase(Key::toggle_cell1); }
+    const bool pressed2{sf::Joystick::isButtonPressed(1,2)};
+    if ( pressed2) { m_keys.insert(Key::pattern_a1); }
+    const bool pressed3{sf::Joystick::isButtonPressed(1,3)};
+    if ( pressed3) { m_keys.insert(Key::pattern_b1); }
+    const bool pressed4{sf::Joystick::isButtonPressed(1,4)};
+    if ( pressed4) { m_keys.insert(Key::pattern_c1); }
+
+    m_keys.erase(Key::up1);
+    m_keys.erase(Key::right1);
+    m_keys.erase(Key::down1);
+    m_keys.erase(Key::left1);
+    if (sf::Joystick::hasAxis(1, sf::Joystick::X))
+    {
+      const double dx{sf::Joystick::getAxisPosition(1, sf::Joystick::X)};
+      if (dx < -50.0) { m_keys.insert(Key::left1 ); }
+      if (dx >  50.0) { m_keys.insert(Key::right1); }
+    }
+    if (sf::Joystick::hasAxis(1, sf::Joystick::Y))
+    {
+      const double dy{sf::Joystick::getAxisPosition(1, sf::Joystick::Y)};
+      if (dy < -50.0) { m_keys.insert(Key::up1  );  }
+      if (dy >  50.0) { m_keys.insert(Key::down1);  }
+    }
+  }
+}
+
 void golf::QtGameOfLifeFighterWidget::OnTimer()
 {
-  m_game.Next();
+  ++m_tick;
+  if (m_tick % 3 == 0)
+  {
+    m_game.Next();
+    if (m_game.GetGameState() != GameState::playing)
+    {
+      QTimer::singleShot(5000,this,SLOT(close()));
+    }
+  }
   m_game.PressKeys(m_keys);
   const int grid_rows{m_game.GetHeight()};
   const int grid_cols{m_game.GetWidth()};
   QImage image(
     grid_cols * QtSprite().GetWidth(),
     grid_rows * QtSprite().GetHeight(),
-    QImage::Format_RGB32
+    QImage::Format_ARGB32
   );
 
   const auto grid = m_game.GetCellStateGrid();
@@ -126,6 +215,19 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
   }
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
+  /*
+  {
+    const auto t_start = std::chrono::system_clock::now();
+    while (1)
+    {
+      const auto t_now = std::chrono::system_clock::now();
+      if (std::chrono::duration_cast<std::chrono::seconds>(t_now - t_start).count() > 10.0) //msecs
+      {
+        std::exit(0);
+      }
+    }
+  }
+  */
 }
 
 void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
@@ -146,6 +248,7 @@ QKeyEvent CreateControlDown() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Down,Q
 QKeyEvent CreateControlE() { return QKeyEvent(QEvent::KeyPress,Qt::Key_E,Qt::ControlModifier); }
 QKeyEvent CreateControlN() { return QKeyEvent(QEvent::KeyPress,Qt::Key_N,Qt::ControlModifier); }
 
+#ifndef NDEBUG
 void golf::QtGameOfLifeFighterWidget::Test() noexcept
 {
   {
@@ -176,3 +279,4 @@ void golf::QtGameOfLifeFighterWidget::Test() noexcept
     assert(y_after == y_before + 1);
   }
 }
+#endif

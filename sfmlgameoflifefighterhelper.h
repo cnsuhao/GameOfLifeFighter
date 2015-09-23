@@ -1,14 +1,15 @@
-#ifndef QTGAMEOFLIFEFIGHTERHELPER_H
-#define QTGAMEOFLIFEFIGHTERHELPER_H
+#ifndef SFMLGAMEOFLIFEFIGHTERHELPER_H
+#define SFMLGAMEOFLIFEFIGHTERHELPER_H
 
-#include <QImage>
+#include <string>
+#include <vector>
 
 namespace golf {
 
-struct QtHelper
+struct SfmlHelper
 {
-  QtHelper();
-
+  SfmlHelper();
+  /*
   ///Mix the color of a QImage its pixel with a new RGB set
   void Blend(
     QImage& image,
@@ -35,12 +36,12 @@ struct QtHelper
   ///Draw a QImage on another QImage
   ///Scanline with std::copy
   void DrawImage(QImage& target, const QImage& source,  const int left, const int top) const noexcept;
-
+  */
   std::string GetVersion() const noexcept;
   std::vector<std::string> GetVersionHistory() const noexcept;
 
 private:
-
+  /*
   ///Draw a QImage on another QImage
   ///Scanline with indexed copy
   void DrawImageSlow(QImage& target, const QImage& source,  const int left, const int top) const noexcept;
@@ -48,7 +49,7 @@ private:
   ///Draw a QImage on another QImage
   ///Pixel-by-pixel
   void DrawImageSlowest(QImage& target, const QImage& source,  const int left, const int top) const noexcept;
-
+  */
   #ifndef NDEBUG
   static void Test() noexcept;
   #endif
@@ -56,4 +57,4 @@ private:
 
 } //~namespace golf
 
-#endif // QTGAMEOFLIFEFIGHTERHELPER_H
+#endif // SFMLGAMEOFLIFEFIGHTERHELPER_H

@@ -1,7 +1,8 @@
-#include "qtgameoflifefighterplayerindex.h"
+#include "sfmlgameoflifefighterplayerindex.h"
 
 #include <cassert>
 
+/*
 QColor golf::ToColor(const PlayerIndex player) noexcept
 {
   switch (player)
@@ -13,3 +14,4 @@ QColor golf::ToColor(const PlayerIndex player) noexcept
   return qRgb(0,0,0);
 }
 
+*/

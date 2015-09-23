@@ -3,18 +3,18 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
+#include <stdexcept>
 
 #include "gameoflifefighterhangar.h"
 #include "gameoflifefightertrace.h"
 
-golf::Game::Game(const GameType game_type)
+golf::Game::Game()
   :
     m_game_state{GameState::playing},
-    m_game_type{game_type},
     m_grid(GetWidth(),GetHeight()),
-    m_hangars{CreateInitialHangars(game_type)},
-    m_hearts{CreateInitialHearts(game_type)},
-    m_players{CreateInitialPlayers(game_type)}
+    m_hangars{CreateInitialHangars()},
+    m_hearts{CreateInitialHearts()},
+    m_players{CreateInitialPlayers()}
 {
   #ifndef NDEBUG
   Test();
@@ -112,76 +112,35 @@ void golf::Game::CloseHangar(const PlayerIndex player_index)
   (*iter).Close(m_grid);
 }
 
-golf::Game::Hangars golf::Game::CreateInitialHangars(const GameType game_type)
+golf::Game::Hangars golf::Game::CreateInitialHangars()
 {
   Hangars v;
-
-
-  switch (game_type)
-  {
-    case GameType::classic:
-    {
-      const bool do_transfer_up = true;
-      v.push_back(Hangar(30,10,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(50,10,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(30,30,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(50,30,10,10,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(130,20,10,10,PlayerIndex::player2,do_transfer_up));
-      v.push_back(Hangar(150,20,10,10,PlayerIndex::player2,do_transfer_up));
-      v.push_back(Hangar(130,40,10,10,PlayerIndex::player2,do_transfer_up));
-      v.push_back(Hangar(150,40,10,10,PlayerIndex::player2,do_transfer_up));
-    }
-    break;
-    case GameType::free_fight:
-    {
-      const bool do_transfer_up = false;
-      v.push_back(Hangar(  0,0,100,60,PlayerIndex::player1,do_transfer_up));
-      v.push_back(Hangar(100,0,100,60,PlayerIndex::player2,do_transfer_up));
-    }
-    break;
-  }
+  const bool do_transfer_up = false;
+  const int w{GetWidth()};
+  const int h{GetHeight()};
+  v.push_back(Hangar(             0,0,w / 2,h,PlayerIndex::player1,do_transfer_up));
+  v.push_back(Hangar(GetWidth() / 2,0,w / 2,h,PlayerIndex::player2,do_transfer_up));
   return v;
 }
 
-golf::Game::Hearts golf::Game::CreateInitialHearts(const GameType game_type)
+golf::Game::Hearts golf::Game::CreateInitialHearts()
 {
   Hearts v;
-  switch (game_type)
-  {
-    case GameType::classic:
-    {
-      v.push_back(Heart(40,20,10,10,PlayerIndex::player1));
-      v.push_back(Heart(140,30,10,10,PlayerIndex::player2));
-    }
-    break;
-    case GameType::free_fight:
-    {
-      v.push_back(Heart(45,25,10,10,PlayerIndex::player1));
-      v.push_back(Heart(145,25,10,10,PlayerIndex::player2));
-    }
-    break;
-  }
+  const int sz = 10;
+  const int w{GetWidth()};
+  const int h{GetHeight()};
+  v.push_back(Heart((w * 1 / 4) - (sz / 2),(h / 2) - (sz / 2),sz,sz,PlayerIndex::player1));
+  v.push_back(Heart((w * 3 / 4) - (sz / 2),(h / 2) - (sz / 2),sz,sz,PlayerIndex::player2));
   return v;
 }
 
-golf::Game::Players golf::Game::CreateInitialPlayers(const GameType game_type)
+golf::Game::Players golf::Game::CreateInitialPlayers()
 {
   Players v;
-  switch (game_type)
-  {
-    case GameType::classic:
-    {
-      v.push_back(Player( 45,25));
-      v.push_back(Player(145,35));
-    }
-    break;
-    case GameType::free_fight:
-    {
-      v.push_back(Player( 50,30));
-      v.push_back(Player(150,30));
-    }
-    break;
-  }
+  const int w{GetWidth()};
+  const int h{GetHeight()};
+  v.push_back(Player(PlayerIndex::player1,w * 1 / 4, h / 2));
+  v.push_back(Player(PlayerIndex::player2,w * 3 / 4, h / 2));
   return v;
 }
 
@@ -191,7 +150,15 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
   const int w{m_grid.GetWidth()};
   CellStateGrid cell_states(
     h,
-    std::vector<CellState>(w,CellState(0,0,0,0,CellType::empty))
+    std::vector<CellState>(w,
+      CellState(
+        SelectedBy::none,
+        HangarOf::none,
+        HeartOf::none,
+        false, //is_building
+        CellType::empty
+      )
+    )
   );
   assert(m_grid.GetRawGrid().size() == cell_states.size());
   assert(m_grid.GetRawGrid()[0].size() == cell_states[0].size());
@@ -213,11 +180,11 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
     const int width{hangar.GetWidth()};
     const int height{hangar.GetHeight()};
     const auto player_index = hangar.GetPlayerIndex();
-    int is_hangar_of = 0;
+    HangarOf is_hangar_of = HangarOf::none;
     switch (player_index)
     {
-      case PlayerIndex::player1: is_hangar_of = 1; break;
-      case PlayerIndex::player2: is_hangar_of = 2; break;
+      case PlayerIndex::player1: is_hangar_of = HangarOf::player1; break;
+      case PlayerIndex::player2: is_hangar_of = HangarOf::player2; break;
     }
 
     //Darker if the Hangar is open
@@ -249,11 +216,11 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
     const int width{heart.GetWidth()};
     const int height{heart.GetHeight()};
     const auto player_index = heart.GetPlayerIndex();
-    int is_heart_of = 0;
+    HeartOf is_heart_of = HeartOf::none;
     switch (player_index)
     {
-      case PlayerIndex::player1: is_heart_of = 1; break;
-      case PlayerIndex::player2: is_heart_of = 2; break;
+      case PlayerIndex::player1: is_heart_of = HeartOf::player1; break;
+      case PlayerIndex::player2: is_heart_of = HeartOf::player2; break;
     }
 
     for (int y=0; y!=height; ++y)
@@ -277,11 +244,11 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
     const auto player = GetPlayer(player_index);
     const auto x = player.GetX();
     const auto y = player.GetY();
-    int selected_by = 0;
+    SelectedBy selected_by = SelectedBy::none;
     switch (player_index)
     {
-      case PlayerIndex::player1: selected_by = 1; break;
-      case PlayerIndex::player2: selected_by = 2; break;
+      case PlayerIndex::player1: selected_by = SelectedBy::player1; break;
+      case PlayerIndex::player2: selected_by = SelectedBy::player2; break;
     }
     assert(y >= 0);
     assert(y < static_cast<int>(cell_states.size()));
@@ -370,10 +337,7 @@ void golf::Game::Next()
   if (m_game_state != GameState::playing) return;
 
   //In free fight mode, a Hangar cannot be open for more than one turn
-  if (m_game_type == GameType::free_fight)
-  {
-    for (auto& hangar: m_hangars) { hangar.Close(m_grid); }
-  }
+  for (auto& hangar: m_hangars) { hangar.Close(m_grid); }
 
   m_grid.Next();
 

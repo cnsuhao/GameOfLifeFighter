@@ -11,6 +11,21 @@ golf::Grid::Grid(const int width, const int height)
   #endif
 }
 
+void golf::Grid::FlipHorizontal() noexcept
+{
+  const int height{GetHeight()};
+  const int width{GetWidth()};
+  const int maxx{width / 2};
+  for (int y=0; y!=height; ++y)
+  {
+    auto& row = m_grid[y];
+    for (int x=0; x!=maxx; ++x)
+    {
+      std::swap(row[x],row[width - 1 - x]);
+    }
+  }
+}
+
 void golf::Grid::Set(const int x, const int y, const CellType cell)
 {
   assert(!m_grid.empty());
@@ -121,6 +136,7 @@ void golf::Grid::Next()
   m_grid = v;
 }
 
+#ifndef NDEBUG
 void golf::Grid::Test() noexcept
 {
   {
@@ -173,3 +189,4 @@ void golf::Grid::Test() noexcept
     assert(g.CountNeighbours(11,11) == 4);
   }
 }
+#endif

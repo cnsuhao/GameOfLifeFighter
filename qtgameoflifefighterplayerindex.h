@@ -1,8 +1,9 @@
 #ifndef QTGAMEOFLIFEFIGHTERPLAYERINDEX_H
 #define QTGAMEOFLIFEFIGHTERPLAYERINDEX_H
 
-#include "gameoflifefighterplayerindex.h"
 #include <QColor>
+
+#include "gameoflifefighterplayerindex.h"
 
 namespace golf {
 

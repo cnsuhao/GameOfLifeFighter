@@ -10,7 +10,9 @@ There are two versions:
  * A 2D version
  * A 3D version
 
-![Screenshot of Qt version](GameOfLifeFighterQt.png)
+![Screenshot of Qt version of 2015-09-13](GameOfLifeFighterQt20150913.png)
+
+![Screenshot of Qt version of 2015-09-06](GameOfLifeFighterQt20150906.png)
 
 ## Controls
 

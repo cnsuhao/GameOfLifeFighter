@@ -16,7 +16,12 @@ macx {
 unix:!macx {
   # Linux only
   message("Desktop application, built for Linux")
-  #greaterThan(QT_MAJOR_VERSION, 4): QT += svg sql printsupport
+  greaterThan(QT_MAJOR_VERSION, 4) {
+    message("Qt5")
+    QT += svg sql printsupport
+  } else {
+    message("Qt4")
+  }
   QMAKE_CXXFLAGS += -std=c++1y -Wall -Wextra -Weffc++
 }
 
@@ -39,6 +44,8 @@ CONFIG(release, debug|release) {
   message(Release mode)
   DEFINES += NDEBUG NTRACE_BILDERBIKKEL
 }
+
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 include(GameOfLifeFighterConsole.pri)
 include(GameOfLifeFighterQt.pri)
