@@ -428,25 +428,25 @@ void golf::Game::PressKeys(std::set<Key>& keys)
   {
     switch (key)
     {
-      case Key::down1: player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;
-      case Key::down2: player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;
-      case Key::left1: player1.SetX((player1.GetX() - 1 + GetWidth()) % GetWidth()); break;
-      case Key::left2: player2.SetX((player2.GetX() - 1 + GetWidth()) % GetWidth()); break;
-      case Key::toggle_hangar1: ToggleHangar(PlayerIndex::player1); keys.erase(Key::toggle_hangar1); break;
-      case Key::toggle_hangar2: ToggleHangar(PlayerIndex::player2); keys.erase(Key::toggle_hangar2); break;
-      case Key::pattern_a1: BuildPattern(PlayerIndex::player1,0); keys.erase(Key::pattern_a1); break;
-      case Key::pattern_a2: BuildPattern(PlayerIndex::player2,0); keys.erase(Key::pattern_a2); break;
-      case Key::pattern_b1: BuildPattern(PlayerIndex::player1,1); keys.erase(Key::pattern_b1); break;
-      case Key::pattern_b2: BuildPattern(PlayerIndex::player2,1); keys.erase(Key::pattern_b2); break;
-      case Key::pattern_c1: BuildPattern(PlayerIndex::player1,2); keys.erase(Key::pattern_c1); break;
-      case Key::pattern_c2: BuildPattern(PlayerIndex::player2,2); keys.erase(Key::pattern_c2); break;
-      case Key::quit: break; //Cannot handle quit here
-      case Key::right1: player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
-      case Key::right2: player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
-      case Key::toggle_cell1: ToggleCell(PlayerIndex::player1); break;
-      case Key::toggle_cell2: ToggleCell(PlayerIndex::player2); break;
-      case Key::up1: player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
-      case Key::up2: player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
+    case Key::up1: player1.SetY((player1.GetY() - 1 + GetHeight()) % GetHeight()); break;
+    case Key::up2: player2.SetY((player2.GetY() - 1 + GetHeight()) % GetHeight()); break;
+    case Key::down1: player1.SetY((player1.GetY() + 1 + GetHeight()) % GetHeight()); break;
+    case Key::down2: player2.SetY((player2.GetY() + 1 + GetHeight()) % GetHeight()); break;
+    case Key::left1: player1.SetX((player1.GetX() - 1 + GetWidth()) % GetWidth()); break;
+    case Key::left2: player2.SetX((player2.GetX() - 1 + GetWidth()) % GetWidth()); break;
+    case Key::right1: player1.SetX((player1.GetX() + 1 + GetWidth()) % GetWidth()); break;
+    case Key::right2: player2.SetX((player2.GetX() + 1 + GetWidth()) % GetWidth()); break;
+    case Key::toggle_hangar1: ToggleHangar(PlayerIndex::player1); keys.erase(Key::toggle_hangar1); break;
+    case Key::toggle_hangar2: ToggleHangar(PlayerIndex::player2); keys.erase(Key::toggle_hangar2); break;
+    case Key::pattern_a1: BuildPattern(PlayerIndex::player1,0); keys.erase(Key::pattern_a1); break;
+    case Key::pattern_a2: BuildPattern(PlayerIndex::player2,0); keys.erase(Key::pattern_a2); break;
+    case Key::pattern_b1: BuildPattern(PlayerIndex::player1,1); keys.erase(Key::pattern_b1); break;
+    case Key::pattern_b2: BuildPattern(PlayerIndex::player2,1); keys.erase(Key::pattern_b2); break;
+    case Key::pattern_c1: BuildPattern(PlayerIndex::player1,2); keys.erase(Key::pattern_c1); break;
+    case Key::pattern_c2: BuildPattern(PlayerIndex::player2,2); keys.erase(Key::pattern_c2); break;
+    case Key::quit: break; //Cannot handle quit here
+    case Key::toggle_cell1: ToggleCell(PlayerIndex::player1); break;
+    case Key::toggle_cell2: ToggleCell(PlayerIndex::player2); break;
     }
   }
 

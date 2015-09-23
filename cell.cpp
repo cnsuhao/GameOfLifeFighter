@@ -32,16 +32,17 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing):
     rootNode_ = cellRing->rootNode_->CreateChild("Cell");
     rootNode_->SetPosition(Vector3(0.0f, 0.0f, 5.5f));
     rootNode_->SetScale(0.23f);
-    fillNode_ = rootNode_->CreateChild("Fill");
+    fillNode_ = rootNode_->CreateChild("Life");
     fillNode_->SetScale(0.0f);
     cellModel_ = rootNode_->CreateComponent<StaticModel>();
     cellModel_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Models/Cell.mdl"));
     cellModel_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Materials/Basic.xml"));
     fillModel_ = fillNode_->CreateComponent<AnimatedModel>();
-    fillModel_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Models/Fill.mdl"));
-    fillModel_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Materials/Fill.xml"));
-//    model_->SetCastShadows(true);
+    fillModel_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Models/Life.mdl"));
+    fillModel_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Materials/Life.xml"));
     SubscribeToEvent(E_UPDATE, HANDLER(Cell, HandleUpdate));
+
+
 }
 
 void Cell::HandleUpdate(StringHash eventType, VariantMap &eventData)
