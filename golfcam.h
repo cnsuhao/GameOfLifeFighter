@@ -19,7 +19,6 @@
 #ifndef GOLFCAM_H
 #define GOLFCAM_H
 
-#include "urho3dhelper.h"
 #include "mastercontrol.h"
 #include "cellmaster.h"
 

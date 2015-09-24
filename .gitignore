@@ -32,3 +32,6 @@
 /Urho3D
 /Data
 /CoreData
+
+# Blender temp files
+*.blend*

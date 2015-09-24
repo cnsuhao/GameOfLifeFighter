@@ -23,7 +23,6 @@
 #include "cellmaster.h"
 #include "cellring.h"
 #include "cell.h"
-#include "helper.h"
 
 namespace Urho3D {
 class Drawable;
@@ -47,10 +46,14 @@ public:
     void Rotate(float angle);
     void UpdateCells();
     Cell *GetCell(unsigned id);
+    float RowToRotation(int row);
+    float ColumnToRotation(int row);
 private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
 
+    int width_;
+    int height_;
     Vector<CellRing*> rings_;
     HashMap<IntVector2, unsigned > cellCoords_;
     HashMap<unsigned, SharedPtr<Cell> > cellsById_;

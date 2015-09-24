@@ -35,7 +35,7 @@ MasterControl::MasterControl(Context *context):
     cache_{GetSubsystem<ResourceCache>()},
     renderer_{GetSubsystem<Renderer>()},
     paused_(false),
-    stepInterval_{0.666f},
+    stepInterval_{0.23f},
     sinceStep_{stepInterval_}
 {
     human_[static_cast<int>(golf::PlayerIndex::player1)] = true;
@@ -49,7 +49,7 @@ void MasterControl::Setup()
     //Set custom window title and icon.
     engineParameters_["WindowTitle"] = "G.O.L.F.";
     engineParameters_["LogName"] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"golf.log";
-    engineParameters_["FullScreen"] = false;
+//    engineParameters_["FullScreen"] = false;
 //    engineParameters_["Headless"] = false;
 //    engineParameters_["WindowWidth"] = 960;
 //    engineParameters_["WindowHeight"] = 600;
@@ -58,6 +58,7 @@ void MasterControl::Start()
 {
     new InputMaster(context_, this);
     graphics_ = GetSubsystem<Graphics>();
+    game_ = new golf::Game();
 
     // Get default style
     defaultStyle_ = cache_->GetResource<XMLFile>("UI/DefaultStyle.xml");
@@ -77,7 +78,6 @@ void MasterControl::Start()
     musicSource->SetSoundType(SOUND_MUSIC);
     musicSource->Play(music);
 
-    game_ = new golf::Game();
 }
 
 void MasterControl::SubscribeToEvents()
@@ -200,7 +200,7 @@ int MasterControl::GetNumHumans() const
 {
     int numHumans = 0;
     for (int p = 0; p < human_.Size(); p++){
-        if (human_[p]) numHumans++;
+//        if (human_[p]) ++numHumans;
     }
     return numHumans;
 }
@@ -227,4 +227,12 @@ bool MasterControl::OctreeRayCast(PODVector<RayQueryResult> &hitResults, Ray ray
     world_.octree_->Raycast(query);
     if (hitResults.Size()) return true;
     else return false;
+}
+
+float MasterControl::MinAngle(float lhs, float rhs)
+{
+    float angle = lhs - rhs;
+    if (angle > 180.0f) angle -= 360.0f;
+    else if (angle < -180.0f) angle += 360.0f;
+    return angle;
 }

@@ -92,6 +92,7 @@ public:
     int GetNumHumans() const;
 
     bool OctreeRayCast(PODVector<RayQueryResult> &hitResults, Ray ray, float distance);
+    float MinAngle(float lhs, float rhs);
 private:
     float stepInterval_;
     float sinceStep_;

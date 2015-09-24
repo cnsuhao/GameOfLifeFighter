@@ -25,7 +25,6 @@ SOURCES += \
     cell.cpp \
     cellmaster.cpp \
     cellring.cpp \
-    helper.cpp \
     urho3dhelper.cpp
 
 HEADERS += \
