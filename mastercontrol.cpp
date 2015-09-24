@@ -49,7 +49,7 @@ void MasterControl::Setup()
     //Set custom window title and icon.
     engineParameters_["WindowTitle"] = "G.O.L.F.";
     engineParameters_["LogName"] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"golf.log";
-    engineParameters_["FullScreen"] = true;
+    engineParameters_["FullScreen"] = false;
 //    engineParameters_["Headless"] = false;
 //    engineParameters_["WindowWidth"] = 960;
 //    engineParameters_["WindowHeight"] = 600;
@@ -137,8 +137,8 @@ void MasterControl::CreateScene()
 
     //Create octree, use default volume (-1000, -1000, -1000) to (1000,1000,1000)
     world_.scene_->CreateComponent<Octree>();
-    PhysicsWorld* physicsWorld = world_.scene_->CreateComponent<PhysicsWorld>();
-    physicsWorld->SetGravity(Vector3::ZERO);
+    world_.physics_ = world_.scene_->CreateComponent<PhysicsWorld>();
+//    world_.physics_->SetEnabled(false);
     world_.scene_->CreateComponent<DebugRenderer>();
 
     //Create static lights
@@ -219,4 +219,12 @@ void MasterControl::HandleSceneUpdate(StringHash eventType, VariantMap &eventDat
 }
 void MasterControl::HandlePostRenderUpdate(StringHash eventType, VariantMap &eventData)
 {
+}
+
+bool MasterControl::OctreeRayCast(PODVector<RayQueryResult> &hitResults, Ray ray, float distance)
+{
+    RayOctreeQuery query(hitResults, ray, RAY_TRIANGLE, distance, DRAWABLE_GEOMETRY);
+    world_.octree_->Raycast(query);
+    if (hitResults.Size()) return true;
+    else return false;
 }

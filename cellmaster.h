@@ -43,15 +43,17 @@ class CellMaster : public Object
     OBJECT(CellMaster);
 public:
     CellMaster(Context *context, MasterControl *masterControl);
-    void AddCellToMap(IntVector2 coords, Cell *cell);
+    void AddCellToMaps(Cell *cell, IntVector2 coords);
     void Rotate(float angle);
     void UpdateCells();
+    Cell *GetCell(unsigned id);
 private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
 
     Vector<CellRing*> rings_;
-    HashMap<IntVector2, SharedPtr<Cell> > cellMap_;
+    HashMap<IntVector2, unsigned > cellCoords_;
+    HashMap<unsigned, SharedPtr<Cell> > cellsById_;
 };
 
 #endif // CELLMASTER_H

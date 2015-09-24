@@ -14,6 +14,8 @@ namespace golf {
 
 struct SfmlWidget
 {
+  using SpriteGrid = std::vector<std::vector<sf::Sprite>>;
+
   explicit SfmlWidget();
   SfmlWidget(const SfmlWidget&) = delete;
   SfmlWidget& operator=(const SfmlWidget&) = delete;

@@ -41,11 +41,14 @@ CellMaster::CellMaster(Context *context, MasterControl *masterControl):
                 newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/circumference, 0.0f), TS_PARENT);
                 rings_.Push(newRing);
     }
+    Rotate(180.0f);
 }
 
-void CellMaster::AddCellToMap(IntVector2 coords, Cell* cell)
+void CellMaster::AddCellToMaps(Cell* cell, IntVector2 coords)
 {
-    cellMap_[coords] = SharedPtr<Cell>(cell);
+    unsigned id = cell->GetID();
+    cellsById_[id] = SharedPtr<Cell>(cell);
+    cellCoords_[coords] = id;
 }
 
 void CellMaster::Rotate(float angle)
@@ -56,9 +59,14 @@ void CellMaster::Rotate(float angle)
 
 void CellMaster::UpdateCells()
 {
-    Vector<IntVector2> cellKeys = cellMap_.Keys();
-    for (unsigned c = 0; c < cellKeys.Size(); c++){
-        IntVector2 coords = cellKeys.At(c);
-        cellMap_[coords]->SetType(masterControl_->game_->GetCell(coords.x_, coords.y_));
+    Vector<SharedPtr<Cell> > cells{cellsById_.Values()};
+    for (unsigned c = 0; c < cells.Size(); c++){
+        IntVector2 coords = cells[c]->GetCoords();
+        cells[c]->SetType(masterControl_->game_->GetCell(coords.x_, coords.y_));
     }
+}
+
+Cell* CellMaster::GetCell(unsigned id)
+{
+    return cellsById_[id].Get();
 }

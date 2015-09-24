@@ -16,7 +16,82 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+
 #include "inputmaster.h"
+#include "golfcam.h"
+
+InputMaster::InputMaster(Context* context, MasterControl* masterControl) : Object(context),
+    masterControl_{masterControl},
+    input_{GetSubsystem<Input>()}
+{
+    keyBindings_[KEY_W] = keyBindings_[KEY_UP]    = golf::Key::up1;
+    keyBindings_[KEY_D] = keyBindings_[KEY_RIGHT] = golf::Key::right1;
+    keyBindings_[KEY_S] = keyBindings_[KEY_DOWN]  = golf::Key::down1;
+    keyBindings_[KEY_A] = keyBindings_[KEY_LEFT]  = golf::Key::left1;
+    keyBindings_[KEY_C] = keyBindings_[KEY_LSHIFT] = golf::Key::toggle_cell1;
+    keyBindings_[KEY_V] = keyBindings_[KEY_ALT]   = golf::Key::toggle_hangar1;
+
+    keyBindings_[KEY_KP_8]    = golf::Key::up2;
+    keyBindings_[KEY_KP_6]    = golf::Key::right2;
+    keyBindings_[KEY_KP_5]    = golf::Key::down2;
+    keyBindings_[KEY_KP_4]    = golf::Key::left2;
+    keyBindings_[KEY_RETURN]  = golf::Key::toggle_cell2;
+    keyBindings_[KEY_RSHIFT]  = golf::Key::toggle_hangar2;
+
+    SubscribeToEvent(E_KEYDOWN, HANDLER(InputMaster, HandleKeyDown));
+    SubscribeToEvent(E_KEYUP, HANDLER(InputMaster, HandleKeyUp));
+    SubscribeToEvent(E_JOYSTICKBUTTONDOWN, HANDLER(InputMaster, HandleJoyButtonDown));
+    SubscribeToEvent(E_JOYSTICKBUTTONUP, HANDLER(InputMaster, HandleJoyButtonUp));
+    SubscribeToEvent(E_UPDATE, HANDLER(InputMaster, HandleUpdate));
+}
+
+void InputMaster::HandleUpdate(StringHash eventType, VariantMap &eventData)
+{
+    if (!pressedKeys_.empty())
+        masterControl_->game_->PressKeys(pressedKeys_);
+}
+
+void InputMaster::HandleKeyDown(StringHash eventType, VariantMap &eventData)
+{
+    int key = eventData[KeyDown::P_KEY].GetInt();
+    if (keyBindings_.Contains(key)) {
+        pressedKeys_.insert(keyBindings_[key]);
+    }
+
+    switch (key){
+    case KEY_ESC:{
+        masterControl_->Exit();
+    } break;
+    case KEY_9:{
+        Image screenshot(context_);
+        Graphics* graphics = GetSubsystem<Graphics>();
+        graphics->TakeScreenShot(screenshot);
+        //Here we save in the Data folder with date and time appended
+        String fileName = GetSubsystem<FileSystem>()->GetProgramDir() + "Screenshots/Screenshot_" +
+                Time::GetTimeStamp().Replaced(':', '_').Replaced('.', '_').Replaced(' ', '_')+".png";
+        //Log::Write(1, fileName);
+        screenshot.SavePNG(fileName);
+    } break;
+    default: break;
+    }
+}
+
+void InputMaster::HandleKeyUp(StringHash eventType, VariantMap &eventData)
+{
+    int key = eventData[KeyUp::P_KEY].GetInt();
+    if (keyBindings_.Contains(key)) pressedKeys_.erase(keyBindings_[key]);
+}
+
+void InputMaster::HandleJoyButtonDown(StringHash eventType, VariantMap &eventData)
+{
+    JoystickButton button = static_cast<JoystickButton>(eventData[JoystickButtonDown::P_BUTTON].GetInt());
+}
+void InputMaster::HandleJoyButtonUp(StringHash eventType, VariantMap &eventData)
+{
+    JoystickButton button = static_cast<JoystickButton>(eventData[JoystickButtonUp::P_BUTTON].GetInt());
+}
+
+/*#include "inputmaster.h"
 #include "cellmaster.h"
 #include "golfcam.h"
 
@@ -61,14 +136,14 @@ void InputMaster::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 
 void InputMaster::HandleMouseDown(StringHash eventType, VariantMap &eventData)
 {
-    /*using namespace MouseButtonDown;
-    int button = eventData[P_BUTTON].GetInt();*/
+//    using namespace MouseButtonDown;
+//    int button = eventData[P_BUTTON].GetInt();
 }
 
 void InputMaster::HandleMouseUp(StringHash eventType, VariantMap &eventData)
 {
-    /*using namespace MouseButtonUp;
-    int button = eventData[P_BUTTON].GetInt();*/
+//    using namespace MouseButtonUp;
+//    int button = eventData[P_BUTTON].GetInt();
 }
 
 void InputMaster::HandleKeyDown(StringHash eventType, VariantMap &eventData)
@@ -91,3 +166,4 @@ void InputMaster::HandleKeyDown(StringHash eventType, VariantMap &eventData)
     }
 }
 
+*/

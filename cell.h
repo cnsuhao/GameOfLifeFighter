@@ -44,17 +44,22 @@ class Cell : public Object
     friend class CellMaster;
     friend class CellRing;
 public:
-    Cell(Context *context, MasterControl *masterControl, CellRing *cellRing);
+    Cell(Context *context, MasterControl *masterControl, CellRing *cellRing, IntVector2 coords);
     bool IsAlive() { return type_ == golf::CellType::alive; }
+    IntVector2 GetCoords() { return coords_; }
+    unsigned GetID() { return rootNode_->GetID(); }
 private:
     MasterControl* masterControl_;
-    float randomizer_;
+
+    IntVector2 coords_;
     golf::CellType type_;
     golf::CellType previousType_;
     SharedPtr<Node> rootNode_;
     SharedPtr<Node> fillNode_ ;
     SharedPtr<StaticModel> cellModel_;
     SharedPtr<AnimatedModel> fillModel_;
+    float randomizer_;
+
     void HandleUpdate(StringHash eventType, VariantMap &eventData);
     void SetType(golf::CellType type);
     float CalculateScale();
