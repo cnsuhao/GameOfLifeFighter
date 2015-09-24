@@ -24,7 +24,8 @@ golf::SfmlWidget::SfmlWidget()
         Game().GetWidth() * SfmlSprites().GetWidth(),
         Game().GetHeight() * SfmlSprites().GetHeight()
       ),
-      "Game Of Life Fighter"
+      "Game Of Life Fighter",
+      sf::Style::Titlebar | sf::Style::Close
     ),
     m_tick{0}
 {
