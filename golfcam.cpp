@@ -109,13 +109,16 @@ void GOLFCam::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 //    Urho3D::Log::Write(1, String(CenterCoords().x_));
 //    Urho3D::Log::Write(1, String(CenterCoords().y_));
 //    rigidBody_->ApplyTorque(Vector3::UP*100.0f);
+    rootNode_->SetRotation(Quaternion(Lerp(rootNode_->GetRotation().EulerAngles().y_, masterControl_->cellMaster_->ColumnToRotation(
+                                          masterControl_->game_->GetPlayer(golf::PlayerIndex::player1).GetX()), timeStep*5.0f),
+                                      Vector3::UP));
 }
 
 IntVector2 GOLFCam::CenterCoords()
 {
     PODVector<RayQueryResult> results{};
     Ray camRay{rootNode_->GetPosition(), rootNode_->GetDirection()};
-    if (masterControl_->OctreeRayCast(results, camRay, 12.0f)){
+    if (masterControl_->OctreeRayCast(results, camRay, 16.0f)){
         for (unsigned r = 0; r < results.Size(); r++) {
             unsigned id = results[r].node_->GetID();
             return masterControl_->cellMaster_->GetCell(id)->GetCoords();

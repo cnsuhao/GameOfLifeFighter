@@ -22,7 +22,8 @@
 CellRing::CellRing(Context *context, MasterControl *masterControl, CellMaster* cellMaster, int circumference, int ringNumber):
     Object(context),
     masterControl_{masterControl},
-    ringNumber_{ringNumber}
+    ringNumber_{ringNumber},
+    rotation_{0.0f}
 {
     masterControl_ = masterControl;
 
@@ -36,9 +37,21 @@ CellRing::CellRing(Context *context, MasterControl *masterControl, CellMaster* c
                                              360.0f*i/circumference, 0.0f, 0.0f), TS_WORLD);
         cellMaster->AddCellToMaps(newCell, cellCoords);
     }
+    SubscribeToEvent(E_UPDATE, HANDLER(CellRing, HandleUpdate));
 }
 
 void CellRing::Rotate(float angle)
 {
+    rotation_ += angle;
     rootNode_->Rotate(Quaternion(angle, Vector3::LEFT), TS_LOCAL);
+}
+
+void CellRing::SetTargetRotation(float angle)
+{
+    targetRotation_ = angle;
+}
+
+void CellRing::HandleUpdate(StringHash eventType, VariantMap &eventData)
+{
+    Rotate(Lerp(0.0f, targetRotation_-rotation_, eventData[Update::P_TIMESTEP].GetFloat()* 5.0f));
 }

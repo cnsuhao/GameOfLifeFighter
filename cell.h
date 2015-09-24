@@ -56,9 +56,10 @@ private:
     golf::CellType previousType_;
     SharedPtr<Node> rootNode_;
     SharedPtr<Node> fillNode_ ;
-    SharedPtr<StaticModel> cellModel_;
+    SharedPtr<AnimatedModel> cellModel_;
     SharedPtr<AnimatedModel> fillModel_;
     float randomizer_;
+    bool heart_;
 
     void HandleUpdate(StringHash eventType, VariantMap &eventData);
     void SetType(golf::CellType type);

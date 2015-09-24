@@ -25,9 +25,9 @@ InputMaster::InputMaster(Context* context, MasterControl* masterControl) : Objec
     input_{GetSubsystem<Input>()}
 {
     keyBindings_[KEY_W] = keyBindings_[KEY_UP]    = golf::Key::up1;
-    keyBindings_[KEY_D] = keyBindings_[KEY_RIGHT] = golf::Key::right1;
+    keyBindings_[KEY_D] = keyBindings_[KEY_RIGHT] = golf::Key::left1;
     keyBindings_[KEY_S] = keyBindings_[KEY_DOWN]  = golf::Key::down1;
-    keyBindings_[KEY_A] = keyBindings_[KEY_LEFT]  = golf::Key::left1;
+    keyBindings_[KEY_A] = keyBindings_[KEY_LEFT]  = golf::Key::right1;
     keyBindings_[KEY_C] = keyBindings_[KEY_LSHIFT] = golf::Key::toggle_cell1;
     keyBindings_[KEY_V] = keyBindings_[KEY_ALT]   = golf::Key::toggle_hangar1;
 
@@ -47,8 +47,12 @@ InputMaster::InputMaster(Context* context, MasterControl* masterControl) : Objec
 
 void InputMaster::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
-    if (!pressedKeys_.empty())
-        masterControl_->game_->PressKeys(pressedKeys_);
+    if (!pressedKeys_.empty()){
+        golf::Game* game = masterControl_->game_;
+        CellMaster* cellMaster = masterControl_->cellMaster_;
+        game->PressKeys(pressedKeys_);
+        cellMaster->Rotate(cellMaster->RowToRotation(game->GetPlayer(golf::PlayerIndex::player1).GetY()));
+    }
 }
 
 void InputMaster::HandleKeyDown(StringHash eventType, VariantMap &eventData)

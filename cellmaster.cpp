@@ -29,16 +29,17 @@ template <> unsigned MakeHash(const IntVector2& value)
 
 CellMaster::CellMaster(Context *context, MasterControl *masterControl):
     Object(context),
-    masterControl_{masterControl}
+    masterControl_{masterControl},
+    width_{200},
+    height_{60}
 {
     rootNode_ = masterControl_->world_.scene_->CreateChild("CellMaster");
     rootNode_->SetPosition(Vector3::ZERO);
 
-    int circumference = 200;
-    for (int i = 0; i < circumference; i++){
-                CellRing* newRing = new CellRing(context_, masterControl_, this, 60, i);
+    for (int i = 0; i < width_; i++){
+                CellRing* newRing = new CellRing(context_, masterControl_, this, height_, i);
                 newRing->rootNode_->SetPosition(Vector3(0.0f, 0.0f, 10.0f));
-                newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/circumference, 0.0f), TS_PARENT);
+                newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/width_, 0.0f), TS_PARENT);
                 rings_.Push(newRing);
     }
     Rotate(180.0f);
@@ -53,8 +54,9 @@ void CellMaster::AddCellToMaps(Cell* cell, IntVector2 coords)
 
 void CellMaster::Rotate(float angle)
 {
-    for (unsigned r = 0; r < rings_.Size(); r++)
-        rings_[r]->Rotate(angle);
+    for (unsigned r = 0; r < rings_.Size(); r++){
+        rings_[r]->SetTargetRotation(angle);
+    }
 }
 
 void CellMaster::UpdateCells()
@@ -69,4 +71,15 @@ void CellMaster::UpdateCells()
 Cell* CellMaster::GetCell(unsigned id)
 {
     return cellsById_[id].Get();
+}
+
+float CellMaster::RowToRotation(int row)
+{
+    float normalizedRow = static_cast<float>(row) / static_cast<float>(height_);
+    return normalizedRow * 360.0f;
+}
+float CellMaster::ColumnToRotation(int row)
+{
+    float normalizedColumn = static_cast<float>(row) / static_cast<float>(width_);
+    return normalizedColumn * 360.0f - 90.0f;
 }
