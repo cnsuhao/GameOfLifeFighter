@@ -12,6 +12,12 @@ There are two versions:
 
 ![Screenshot of Qt version of 2015-09-13](GameOfLifeFighterQt20150913.png)
 
+![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Wed_Sep_23_23_49_48_2015.png)
+
+![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Wed_Sep_23_23_50_01_2015.png)
+
+## Nostalic screenshots
+
 ![Screenshot of Qt version of 2015-09-06](GameOfLifeFighterQt20150906.png)
 
 ## Controls
