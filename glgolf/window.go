@@ -13,7 +13,7 @@ func initSDL() *sdl.Window {
 	window, err := sdl.CreateWindow("glgolf",
 		sdl.WINDOWPOS_UNDEFINED,
 		sdl.WINDOWPOS_UNDEFINED,
-		800, 600,
+		1280, 720,
 		sdl.WINDOW_OPENGL)
 	if err != nil {
 		panic(err)
@@ -48,7 +48,7 @@ func initGL(window *sdl.Window) sdl.GLContext {
 // initNanovg initializes nanovg.
 func initNanovg() *nanovg.Context {
 	// DEBUG: nanovg.DEBUG
-	nvg, err := nanovg.CreateCtx(nanovg.ANTIALIAS | nanovg.STENCIL_STROKES)
+	nvg, err := nanovg.CreateCtx(nanovg.ANTIALIAS | nanovg.STENCIL_STROKES | nanovg.DEBUG)
 	if err != nil {
 		panic(err)
 	}
@@ -60,11 +60,8 @@ func initNanovg() *nanovg.Context {
 func StartGame() {
 	// Initialize all dependencies.
 	window := initSDL()
-	defer window.Destroy()
 	context := initGL(window)
-	defer sdl.GL_DeleteContext(context)
 	nvg := initNanovg()
-	defer nvg.Close()
 
 	running := true
 
@@ -87,10 +84,29 @@ func StartGame() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT)
 
 		nvg.BeginFrame(ww, wh, 1.0)
+
+		nvg.BeginPath()
+
+		for i := float32(10.0); i <= 600.0; i += 10.0 {
+			nvg.MoveTo(i, 10.0)
+			nvg.LineTo(i, 600.0)
+			nvg.MoveTo(10.0, i)
+			nvg.LineTo(600.0, i)
+		}
+
+		nvg.StrokeColor(nanovg.RGBA(255, 255, 255, 255))
+		nvg.StrokeWidth(1.0)
+		nvg.Stroke()
+		nvg.ClosePath()
+
 		nvg.EndFrame()
 
 		sdl.GL_SwapWindow(window)
 	}
 
+	// Cleanup.
+	window.Destroy()
+	sdl.GL_DeleteContext(context)
+	nvg.Close()
 	sdl.Quit()
 }
