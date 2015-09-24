@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
@@ -255,7 +256,7 @@ void golf::SfmlWidget::ProcessKeyboard()
   }
 }
 
-
+#ifndef NDEBUG
 void golf::SfmlWidget::Test() noexcept
 {
   {
@@ -266,3 +267,4 @@ void golf::SfmlWidget::Test() noexcept
   SfmlHelper();
   SfmlSprites();
 }
+#endif
