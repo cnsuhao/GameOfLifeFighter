@@ -48,8 +48,8 @@ func initGL(window *sdl.Window) sdl.GLContext {
 
 // initNanovg initializes nanovg.
 func initNanovg() *nanovg.Context {
-	// DEBUG: nanovg.DEBUG
-	nvg, err := nanovg.CreateCtx(nanovg.ANTIALIAS | nanovg.STENCIL_STROKES | nanovg.DEBUG)
+	nvg, err := nanovg.CreateCtx(
+		nanovg.ANTIALIAS | nanovg.STENCIL_STROKES | nanovg.DEBUG)
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +67,7 @@ func StartGame() {
 	ww, wh := window.GetSize()
 	gw := ww / 5
 	gh := wh / 5
-	fmt.Println(gw, gh)
+	// fmt.Println(gw, gh)
 
 	life := NewLife(gw, gh)
 
@@ -76,13 +76,28 @@ func StartGame() {
 		refgrid[i] = make([]bool, gw)
 	}
 
-	running := true
+	// Run the game at 15fps. This gives us about 66ms to calculate
+	// and render everything. 30ms is not possible yet.
 	minms := uint32(1000 / 15)
-	fmt.Println(minms)
+	running := true
+	// fmt.Println(minms)
 
 	gl.ClearColor(0.3, 0.3, 0.32, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT)
 
+	// Draw all squares first.
+	tw, th := float32(life.w), float32(life.h)
+	for y := float32(0); y < th; y++ {
+		for x := float32(0); x < tw; x++ {
+			nvg.BeginPath()
+			nvg.Rect(x*5+1, y*5+1, 3, 3)
+			nvg.FillColor(nanovg.RGBA(100, 100, 100, 255))
+			nvg.Fill()
+			nvg.ClosePath()
+		}
+	}
+
+	// Loop!
 	for running {
 		lt := sdl.GetTicks()
 
@@ -103,16 +118,14 @@ func StartGame() {
 		gl.Viewport(0, 0, ww, wh)
 
 		nvg.BeginFrame(ww, wh, 1.0)
-
 		drawGrid(life, nvg, refgrid)
-
 		nvg.EndFrame()
 
 		if d := sdl.GetTicks() - lt; d < minms {
-			fmt.Println("Fast", d)
+			// fmt.Println("Fast", d)
 			sdl.Delay(minms - d)
 		} else {
-			fmt.Println("Slow", d)
+			// fmt.Println("Slow", d)
 		}
 
 		sdl.GL_SwapWindow(window)
