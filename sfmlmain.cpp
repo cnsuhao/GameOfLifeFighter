@@ -1,6 +1,9 @@
+#include <cassert>
+
 #include "sfmlgameoflifefighterwidget.h"
 #include "gameoflifefightertrace.h"
 #include "SFML/Audio/Music.hpp"
+
 int main()
 {
   START_TRACE();
@@ -13,4 +16,3 @@ int main()
   golf::SfmlWidget w;
   w.Execute();
 }
-
