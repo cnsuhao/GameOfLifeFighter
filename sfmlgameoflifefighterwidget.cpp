@@ -30,6 +30,7 @@ golf::SfmlWidget::SfmlWidget()
       sf::Style::Titlebar | sf::Style::Close
     ),
     m_background(CreateBackground()),
+    m_hangars(CreateHangars()),
     m_tick{0}
 {
   #ifndef NDEBUG
@@ -39,8 +40,6 @@ golf::SfmlWidget::SfmlWidget()
   const bool can_open{music.openFromFile("../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg")};
   assert(can_open);
   music.play();
-
-
 }
 
 sf::Texture golf::SfmlWidget::CreateBackground()
@@ -64,6 +63,38 @@ sf::Texture golf::SfmlWidget::CreateBackground()
     for (int x=0; x!=grid_cols; ++x) {
       bgSprite.setPosition(x * sw, y * sh);
       rt.draw(bgSprite);
+    }
+  }
+
+  rt.display();
+  sf::Texture texture = rt.getTexture();
+
+  return texture;
+}
+
+sf::Texture golf::SfmlWidget::CreateHangars()
+{
+  const int grid_rows{m_game.GetHeight()};
+  const int grid_cols{m_game.GetWidth()};
+  const int ww{Game().GetWidth() * SfmlSprites().GetWidth()};
+  const int wh{Game().GetHeight() * SfmlSprites().GetHeight()};
+  const int sw{m_sprite.GetWidth()};
+  const int sh{m_sprite.GetHeight()};
+  const auto grid = m_game.GetCellStateGrid();
+
+  sf::RenderTexture rt;
+  if (!rt.create(ww, wh)) {
+    throw std::runtime_error("cannot create background texture");
+  }
+
+  rt.clear(sf::Color(0, 0, 0, 0));
+
+  for (int y=0; y!=grid_rows; ++y) {
+    for (int x=0; x!=grid_cols; ++x) {
+      const auto& s = grid[y][x];
+      sf::Sprite sprite(m_sprite.Get(s.GetHangarOf()), sf::IntRect(0,0,6,6));
+      sprite.setPosition(x * sw, y * sh);
+      rt.draw(sprite);
     }
   }
 
@@ -162,21 +193,12 @@ void golf::SfmlWidget::Draw()
         );
         m_window.draw(sprite);
       }
-
-      //Hangar of
-      {
-        sf::Sprite sprite(
-          m_sprite.Get(cell_state.GetHangarOf()),
-          sf::IntRect(0,0,6,6)
-        );
-        sprite.setPosition(
-          x * m_sprite.GetWidth(),
-          y * m_sprite.GetHeight()
-        );
-        m_window.draw(sprite);
-      }
     }
   }
+
+  // Draw hangars.
+  sf::Sprite hsprite(m_hangars);
+  m_window.draw(hsprite);
 
   //Draw selected
   for (const PlayerIndex player_index: GetAllPlayerIndices())

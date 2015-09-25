@@ -30,6 +30,7 @@ private:
   SfmlSprites m_sprite;
   sf::RenderWindow m_window;
   sf::Texture m_background;
+  sf::Texture m_hangars;
 
   ///The number of ticks the game is running
   int m_tick;
@@ -38,6 +39,7 @@ private:
 
   void AddKey(const Key key);
   sf::Texture CreateBackground();
+  sf::Texture CreateHangars();
   void Draw();
   void ProcessJoystick();
   void ProcessKeyboard();
