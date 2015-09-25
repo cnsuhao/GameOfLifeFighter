@@ -152,10 +152,9 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
     h,
     std::vector<CellState>(w,
       CellState(
-        SelectedBy::none,
         HangarOf::none,
         HeartOf::none,
-        false, //is_building
+        IsBuilding::none,
         CellType::empty
       )
     )
@@ -195,14 +194,23 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
     //;
     for (int y=0; y!=height; ++y)
     {
+      assert(y + top >= 0);
+      assert(y + top < static_cast<int>(cell_states.size()));
+      auto& row = cell_states[y + top];
       for (int x=0; x!=width; ++x)
       {
-        assert(y + top >= 0);
-        assert(y + top < static_cast<int>(cell_states.size()));
         assert(x + left >= 0);
-        assert(x + left < static_cast<int>(cell_states[0].size()));
+        assert(x + left < static_cast<int>(row.size()));
+        auto& cell = row[x + left];
         cell_states[y + top][x + left].SetHangarOf(is_hangar_of);
-        cell_states[y + top][x + left].SetIsBuilding(hangar.GetCell(x,y) == CellType::alive);
+        if (hangar.GetCell(x,y) == CellType::alive)
+        {
+          cell.SetIsBuilding(hangar.GetPlayerIndex());
+        }
+        else
+        {
+          cell.SetIsBuilding(IsBuilding::none);
+        }
       }
     }
 
@@ -237,26 +245,6 @@ golf::Game::CellStateGrid golf::Game::GetCellStateGrid() const
     }
 
   }
-
-  //Display players
-  for (const auto player_index: { PlayerIndex::player1, PlayerIndex::player2 } )
-  {
-    const auto player = GetPlayer(player_index);
-    const auto x = player.GetX();
-    const auto y = player.GetY();
-    SelectedBy selected_by = SelectedBy::none;
-    switch (player_index)
-    {
-      case PlayerIndex::player1: selected_by = SelectedBy::player1; break;
-      case PlayerIndex::player2: selected_by = SelectedBy::player2; break;
-    }
-    assert(y >= 0);
-    assert(y < static_cast<int>(cell_states.size()));
-    assert(x >= 0);
-    assert(x < static_cast<int>(cell_states[0].size()));
-    cell_states[y][x].SetSelectedBy(selected_by);
-  }
-
   return cell_states;
 }
 

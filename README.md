@@ -14,6 +14,8 @@ There are multiple version, differing in the choice of graphics library used:
 
 ![Screenshot of Qt version of 2015-09-13](Screenshots/GameOfLifeFighterQt20150913.png)
 
+![Screenshot of Sfml version of 2015-09-24](Screenshots/GameOfLifeFighterSfml20150924.png)
+
 ![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Wed_Sep_23_23_49_48_2015.png)
 
 ![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Wed_Sep_23_23_50_01_2015.png)

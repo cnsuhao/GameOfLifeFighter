@@ -22,13 +22,13 @@ golf::SfmlWidget::SfmlWidget()
     m_keys{},
     m_sprite{},
     m_window(
-      sf::VideoMode::getFullscreenModes()[0],
-      //sf::VideoMode(
-      //  Game().GetWidth() * SfmlSprites().GetWidth(),
-      //  Game().GetHeight() * SfmlSprites().GetHeight()
-      //),
+      //sf::VideoMode::getFullscreenModes()[0],
+      sf::VideoMode(
+        Game().GetWidth() * SfmlSprites().GetWidth(),
+        Game().GetHeight() * SfmlSprites().GetHeight()
+      ),
       "Game Of Life Fighter",
-      sf::Style::Fullscreen | sf::Style::None
+      sf::Style::None
     ),
     m_background(CreateBackground()),
     m_hangars(CreateHangars()),
@@ -37,12 +37,25 @@ golf::SfmlWidget::SfmlWidget()
   #ifndef NDEBUG
   Test();
   #endif
+
   sf::Music music;
   const bool can_open{music.openFromFile("../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg")};
   assert(can_open);
   music.play();
 
-
+  //Center the window
+  {
+    const int sw{static_cast<int>(sf::VideoMode::getDesktopMode().width)};
+    const int sh{static_cast<int>(sf::VideoMode::getDesktopMode().height)};
+    const int ww{static_cast<int>(m_window.getSize().x)};
+    const int wh{static_cast<int>(m_window.getSize().y)};
+    m_window.setPosition(
+      sf::Vector2i(
+        (sw - ww) / 2,
+        (sh - wh) / 2
+      )
+    );
+  }
 }
 
 sf::Texture golf::SfmlWidget::CreateBackground()
@@ -164,10 +177,8 @@ void golf::SfmlWidget::Draw()
   m_window.draw(hsprite);
 
 
-  const auto grid = m_game.GetCellStateGrid();
-
-
   //Draw cells
+  const auto grid = m_game.GetCellStateGrid();
   for (int y=0; y!=grid_rows; ++y)
   {
     const auto& grid_row = grid[y];
@@ -190,6 +201,20 @@ void golf::SfmlWidget::Draw()
         }
       }
 
+      //Building here?
+      if (cell_state.GetIsBuilding() != IsBuilding::none)
+      {
+        sf::Sprite sprite(
+          m_sprite.Get(cell_state.GetIsBuilding()),
+          sf::IntRect(0,0,6,6)
+        );
+        sprite.setPosition(
+          x * m_sprite.GetWidth(),
+          y * m_sprite.GetHeight()
+        );
+        m_window.draw(sprite);
+      }
+
       //Heart of
       {
         sf::Sprite sprite(
@@ -206,18 +231,12 @@ void golf::SfmlWidget::Draw()
   }
 
 
-  //Draw selected
+  //Draw cursors
   for (const PlayerIndex player_index: GetAllPlayerIndices())
   {
     const auto player = m_game.GetPlayer(player_index);
-    SelectedBy selected_by = SelectedBy::none;
-    switch (player_index)
-    {
-      case PlayerIndex::player1: selected_by = SelectedBy::player1; break;
-      case PlayerIndex::player2: selected_by = SelectedBy::player2; break;
-    }
     sf::Sprite sprite(
-      m_sprite.Get(selected_by),
+      m_sprite.Get(player_index),
       sf::IntRect(0,0,6,6)
     );
     sprite.setPosition(
@@ -227,6 +246,7 @@ void golf::SfmlWidget::Draw()
     m_window.draw(sprite);
   }
   //Draw time
+  #ifndef NDEBUG
   {
     sf::Font font;
     const bool can_find{font.loadFromFile("../GameOfLifeFighter/Resources/Fonts/Courier.ttf")};
@@ -237,17 +257,8 @@ void golf::SfmlWidget::Draw()
     text.setString(s.str());
     m_window.draw(text);
   }
-
-  m_window.display();
-
-  #ifndef NDEBUG
-
-  if (!"Create a screenshot")
-  {
-    const sf::Image screenshot = m_window.capture();
-    screenshot.saveToFile("screenshot.png");
-  }
   #endif
+  m_window.display();
 }
 
 void golf::SfmlWidget::Execute()

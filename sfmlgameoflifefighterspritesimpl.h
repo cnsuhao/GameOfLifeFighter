@@ -8,6 +8,7 @@
 
 #include "gameoflifefightercelltype.h"
 #include "gameoflifefightercellstate.h"
+#include "gameoflifefighterplayerindex.h"
 #include "sfmlgameoflifefighterresourceholder.h"
 
 namespace golf {
@@ -25,7 +26,9 @@ struct SfmlSpritesImpl
   sf::Texture& Get(const CellType& cell_type) noexcept;
   sf::Texture& Get(const HangarOf& hangar_of) noexcept;
   sf::Texture& Get(const HeartOf& heart_of) noexcept;
-  sf::Texture& Get(const SelectedBy& selected_by) noexcept;
+  sf::Texture& Get(const IsBuilding& is_building) noexcept;
+  sf::Texture& Get(const PlayerIndex& player_index) noexcept;
+  //sf::Texture& Get(const SelectedBy& selected_by) noexcept;
 
   int GetHeight() const noexcept { return 6; }
   int GetWidth() const noexcept { return 6; }
@@ -36,7 +39,9 @@ struct SfmlSpritesImpl
   ResourceHolder<sf::Texture,CellType> m_cell_type_textures;
   ResourceHolder<sf::Texture,HangarOf> m_hangar_of_textures;
   ResourceHolder<sf::Texture,HeartOf> m_heart_of_textures;
-  ResourceHolder<sf::Texture,SelectedBy> m_selected_by_textures;
+  ResourceHolder<sf::Texture,IsBuilding> m_is_building_textures;
+  ResourceHolder<sf::Texture,PlayerIndex> m_player_index_textures;
+  //ResourceHolder<sf::Texture,SelectedBy> m_selected_by_textures;
   friend class SfmlSprites;
 };
 
