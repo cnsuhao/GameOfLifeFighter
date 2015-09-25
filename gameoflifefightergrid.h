@@ -12,6 +12,7 @@ struct Grid
 
   int CountNeighbours(const int x, const int y);
   void FlipHorizontal() noexcept;
+  void FlipVertical() noexcept;
   CellType Get(const int x, const int y) const;
   int GetHeight() const noexcept;
   int GetWidth() const;

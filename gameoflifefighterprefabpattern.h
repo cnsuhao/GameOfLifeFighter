@@ -21,6 +21,7 @@ struct PrefabPattern
   PrefabPattern(const int width, const int height);
 
   void FlipHorizontal() noexcept { m_grid.FlipHorizontal(); }
+  void FlipVertical() noexcept { m_grid.FlipVertical(); }
   CellType GetCell(const int x, const int y) const { return m_grid.Get(x,y); }
   int GetCursorX() const noexcept { return m_cursor_x; }
   int GetCursorY() const noexcept { return m_cursor_y; }

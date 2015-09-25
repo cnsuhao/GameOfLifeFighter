@@ -21,8 +21,26 @@ void golf::Grid::FlipHorizontal() noexcept
     auto& row = m_grid[y];
     for (int x=0; x!=maxx; ++x)
     {
+      assert(x >= 0);
+      assert(x < static_cast<int>(row.size()));
+      assert(width - 1 - x >= 0);
+      assert(width - 1 - x < static_cast<int>(row.size()));
       std::swap(row[x],row[width - 1 - x]);
     }
+  }
+}
+
+void golf::Grid::FlipVertical() noexcept
+{
+  const int height{GetHeight()};
+  const int maxy{height / 2};
+  for (int y=0; y!=maxy; ++y)
+  {
+    assert(y >= 0);
+    assert(y < static_cast<int>(m_grid.size()));
+    assert(height - 1 - y >= 0);
+    assert(height - 1 - y < static_cast<int>(m_grid.size()));
+    std::swap(m_grid[y],m_grid[height - 1 - y]);
   }
 }
 

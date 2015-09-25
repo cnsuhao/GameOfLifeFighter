@@ -10,7 +10,11 @@ golf::Player::Player(const PlayerIndex player_index, const int x, const int y)
 {
   if (m_player_index == PlayerIndex::player2)
   {
-    for (auto& pattern: m_patterns) { pattern.FlipHorizontal(); }
+    for (auto& pattern: m_patterns)
+    {
+      pattern.FlipHorizontal();
+      pattern.FlipVertical();
+    }
   }
 }
 

@@ -112,20 +112,24 @@ void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
 void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
 {
   sf::Joystick::update();
+  const int key_activate = 0;
+  const int key_build = 2;
+  const int key_glider = 3;
+  const int key_spaceship = 1;
+  const int key_grower = 4;
   if (sf::Joystick::isConnected(0))
   {
     //const int n_buttons = sf::Joystick::getButtonCount(0);
-
-    const bool pressed0{sf::Joystick::isButtonPressed(0,0)};
+    const bool pressed0{sf::Joystick::isButtonPressed(0,key_activate)};
     if (pressed0) { m_keys.insert(Key::toggle_hangar2); }
-    const bool pressed1{sf::Joystick::isButtonPressed(0,1)};
+    const bool pressed1{sf::Joystick::isButtonPressed(0,key_build)};
     if ( pressed1) { m_keys.insert(Key::toggle_cell2); }
     if (!pressed1) { m_keys.erase(Key::toggle_cell2); }
-    const bool pressed2{sf::Joystick::isButtonPressed(0,2)};
+    const bool pressed2{sf::Joystick::isButtonPressed(0,key_glider)};
     if ( pressed2) { m_keys.insert(Key::pattern_a2); }
-    const bool pressed3{sf::Joystick::isButtonPressed(0,3)};
+    const bool pressed3{sf::Joystick::isButtonPressed(0,key_spaceship)};
     if ( pressed3) { m_keys.insert(Key::pattern_b2); }
-    const bool pressed4{sf::Joystick::isButtonPressed(0,4)};
+    const bool pressed4{sf::Joystick::isButtonPressed(0,key_grower)};
     if ( pressed4) { m_keys.insert(Key::pattern_c2); }
 
     m_keys.erase(Key::up2);
@@ -147,16 +151,16 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
   }
   if (sf::Joystick::isConnected(1))
   {
-    const bool pressed0{sf::Joystick::isButtonPressed(1,0)};
+    const bool pressed0{sf::Joystick::isButtonPressed(1,key_activate)};
     if (pressed0) { m_keys.insert(Key::toggle_hangar1); }
-    const bool pressed1{sf::Joystick::isButtonPressed(1,1)};
+    const bool pressed1{sf::Joystick::isButtonPressed(1,key_build)};
     if ( pressed1) { m_keys.insert(Key::toggle_cell1); }
     if (!pressed1) { m_keys.erase(Key::toggle_cell1); }
-    const bool pressed2{sf::Joystick::isButtonPressed(1,2)};
+    const bool pressed2{sf::Joystick::isButtonPressed(1,key_glider)};
     if ( pressed2) { m_keys.insert(Key::pattern_a1); }
-    const bool pressed3{sf::Joystick::isButtonPressed(1,3)};
+    const bool pressed3{sf::Joystick::isButtonPressed(1,key_spaceship)};
     if ( pressed3) { m_keys.insert(Key::pattern_b1); }
-    const bool pressed4{sf::Joystick::isButtonPressed(1,4)};
+    const bool pressed4{sf::Joystick::isButtonPressed(1,key_grower)};
     if ( pressed4) { m_keys.insert(Key::pattern_c1); }
 
     m_keys.erase(Key::up1);
