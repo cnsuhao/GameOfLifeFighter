@@ -251,21 +251,21 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
 
     }
   }
+  QtHelper().DrawImage(
+    image,
+    QtSprite().Create(PlayerIndex::player1),
+    2 + (m_game.GetPlayer(PlayerIndex::player1).GetX() * QtSprite().GetWidth()),
+    2 + (m_game.GetPlayer(PlayerIndex::player1).GetY() * QtSprite().GetHeight())
+  );
+  QtHelper().DrawImage(
+    image,
+    QtSprite().Create(PlayerIndex::player2),
+    2 + (m_game.GetPlayer(PlayerIndex::player2).GetX() * QtSprite().GetWidth()),
+    2 + (m_game.GetPlayer(PlayerIndex::player2).GetY() * QtSprite().GetHeight())
+  );
+
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
-  /*
-  {
-    const auto t_start = std::chrono::system_clock::now();
-    while (1)
-    {
-      const auto t_now = std::chrono::system_clock::now();
-      if (std::chrono::duration_cast<std::chrono::seconds>(t_now - t_start).count() > 10.0) //msecs
-      {
-        std::exit(0);
-      }
-    }
-  }
-  */
 }
 
 void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)

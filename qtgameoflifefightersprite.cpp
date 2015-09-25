@@ -3,7 +3,10 @@
 #include <cassert>
 #include <iostream>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include <QColor>
+#pragma GCC diagnostic pop
 
 #include "qtgameoflifefighterplayerindex.h"
 #include "qtgameoflifefighterhelper.h"
@@ -19,7 +22,6 @@ golf::QtSprite::QtSprite()
 QImage golf::QtSprite::Create(const CellState& state) const noexcept
 {
   return Create(
-    state.GetSelectedBy(),
     state.GetHangarOf(),
     state.GetHeartOf(),
     state.GetIsBuilding(),
@@ -28,10 +30,37 @@ QImage golf::QtSprite::Create(const CellState& state) const noexcept
 }
 
 QImage golf::QtSprite::Create(
-  const SelectedBy selected_by,   //0: no-one, 1: player1, 2: player2
-  const HangarOf hangar_of,     //0: no-one, 1: player1, 2: player2
-  const HeartOf heart_of,      //0: no-one, 1: player1, 2: player2
-  const bool is_building,  //Has the player built something on this square?
+  const PlayerIndex player_index
+) const noexcept
+{
+  const int width{2};
+  const int height{2};
+  QImage image(width,height,QImage::Format_ARGB32);
+
+  QColor qtcolor = Qt::black;
+  switch (player_index)
+  {
+    case PlayerIndex::player1:
+      qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player1));
+    break;
+    case PlayerIndex::player2:
+      qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player2));
+    break;
+    default: assert(!"Should not get here");
+  }
+  //Make it even whiter
+  qtcolor = QtHelper().Blend(Qt::white,qtcolor);
+  image.setPixel(0,0,qtcolor.rgb());
+  image.setPixel(0,1,qtcolor.rgb());
+  image.setPixel(1,0,qtcolor.rgb());
+  image.setPixel(1,1,qtcolor.rgb());
+  return image;
+}
+
+QImage golf::QtSprite::Create(
+  const HangarOf hangar_of,
+  const HeartOf heart_of,
+  const IsBuilding is_building,
   const CellType cell_type
 ) const
 {
@@ -104,6 +133,7 @@ QImage golf::QtSprite::Create(
   }
 
   //Draw player
+  /*
   if (selected_by != SelectedBy::none)
   {
     QColor qtcolor = Qt::black;
@@ -118,9 +148,10 @@ QImage golf::QtSprite::Create(
     image.setPixel((width / 2)-1,(height / 2)-0,qtcolor.rgb());
     image.setPixel((width / 2)-1,(height / 2)-1,qtcolor.rgb());
   }
+  */
 
   //Draw mono-color of building
-  if (is_building)
+  if (is_building != IsBuilding::none)
   {
     QColor qtcolor = Qt::white;
     switch (hangar_of)

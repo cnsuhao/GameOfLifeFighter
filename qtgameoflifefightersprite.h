@@ -15,13 +15,13 @@ struct QtSprite
 {
   QtSprite();
 
+  QImage Create(const PlayerIndex player_index) const noexcept;
   QImage Create(const CellState& state) const noexcept;
 
   QImage Create(
-    const SelectedBy selected_by,
     const HangarOf hangar_of,
     const HeartOf heart_of,
-    const bool is_building,  //Has the player built something on this square?
+    const IsBuilding is_building,  //Has the player built something on this square?
     const CellType cell_type 
   ) const;
 
