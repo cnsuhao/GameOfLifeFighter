@@ -159,110 +159,10 @@ std::map<sf::Keyboard::Key,golf::Key> golf::SfmlWidget::CreateInitialKeyMap() no
   return m;
 }
 
-void golf::SfmlWidget::Draw()
-{
-  sf::Clock clock;
-
-  const int grid_rows{m_game.GetHeight()};
-  const int grid_cols{m_game.GetWidth()};
-
-  m_window.clear();
-
-  // Draw background.
-  sf::Sprite bgsprite(m_background);
-  m_window.draw(bgsprite);
-
-  // Draw hangars.
-  sf::Sprite hsprite(m_hangars);
-  m_window.draw(hsprite);
-
-
-  //Draw cells
-  const auto grid = m_game.GetCellStateGrid();
-  for (int y=0; y!=grid_rows; ++y)
-  {
-    const auto& grid_row = grid[y];
-    for (int x=0; x!=grid_cols; ++x)
-    {
-      const auto& cell_state = grid_row[x];
-
-      //Cell type
-      {
-        if (cell_state.GetCellType() == CellType::alive) {
-          sf::Sprite sprite(
-            m_sprite.Get(CellType::alive),
-            sf::IntRect(0,0,6,6)
-          );
-          sprite.setPosition(
-            x * m_sprite.GetWidth(),
-            y * m_sprite.GetHeight()
-          );
-          m_window.draw(sprite);
-        }
-      }
-
-      //Building here?
-      if (cell_state.GetIsBuilding() != IsBuilding::none)
-      {
-        sf::Sprite sprite(
-          m_sprite.Get(cell_state.GetIsBuilding()),
-          sf::IntRect(0,0,6,6)
-        );
-        sprite.setPosition(
-          x * m_sprite.GetWidth(),
-          y * m_sprite.GetHeight()
-        );
-        m_window.draw(sprite);
-      }
-
-      //Heart of
-      {
-        sf::Sprite sprite(
-          m_sprite.Get(cell_state.GetHeartOf()),
-          sf::IntRect(0,0,6,6)
-        );
-        sprite.setPosition(
-          x * m_sprite.GetWidth(),
-          y * m_sprite.GetHeight()
-        );
-        m_window.draw(sprite);
-      }
-    }
-  }
-
-
-  //Draw cursors
-  for (const PlayerIndex player_index: GetAllPlayerIndices())
-  {
-    const auto player = m_game.GetPlayer(player_index);
-    sf::Sprite sprite(
-      m_sprite.Get(player_index),
-      sf::IntRect(0,0,6,6)
-    );
-    sprite.setPosition(
-      player.GetX() * m_sprite.GetWidth(),
-      player.GetY() * m_sprite.GetHeight()
-    );
-    m_window.draw(sprite);
-  }
-  //Draw time
-  #ifndef NDEBUG
-  {
-    sf::Font font;
-    const bool can_find{font.loadFromFile("../GameOfLifeFighter/Resources/Fonts/Courier.ttf")};
-    assert(can_find);
-    std::stringstream s;
-    s << clock.getElapsedTime().asMilliseconds() << " ms";
-    sf::Text text(s.str(),font);
-    text.setString(s.str());
-    m_window.draw(text);
-  }
-  #endif
-  m_window.display();
-}
 
 void golf::SfmlWidget::Execute()
 {
+  const int time_per_frame_msecs = 1000 / 60;
   sf::RectangleShape shape(sf::Vector2f(500.0,250.0));
   shape.setFillColor(sf::Color::Green);
   shape.setOrigin(250.0,125.0);
@@ -271,6 +171,7 @@ void golf::SfmlWidget::Execute()
 
   while (m_window.isOpen())
   {
+    sf::Clock clock;
     //Poll all events
     sf::Event event;
     while (m_window.pollEvent(event))
@@ -301,7 +202,9 @@ void golf::SfmlWidget::Execute()
     RemoveKey(Key::pattern_c1);
     RemoveKey(Key::pattern_c2);
 
-    Draw();
+    Render();
+    //Delay to get a desired frameframe
+    while (clock.getElapsedTime().asMilliseconds() < time_per_frame_msecs) { }
   }
 
 }
@@ -413,6 +316,108 @@ void golf::SfmlWidget::RemoveKey(const Key key)
     key
   );
   m_keys.erase(new_end,std::end(m_keys));
+}
+
+void golf::SfmlWidget::Render()
+{
+  sf::Clock clock;
+
+  const int grid_rows{m_game.GetHeight()};
+  const int grid_cols{m_game.GetWidth()};
+
+  m_window.clear();
+
+  // Draw background.
+  sf::Sprite bgsprite(m_background);
+  m_window.draw(bgsprite);
+
+  // Draw hangars.
+  sf::Sprite hsprite(m_hangars);
+  m_window.draw(hsprite);
+
+
+  //Draw cells
+  const auto grid = m_game.GetCellStateGrid();
+  for (int y=0; y!=grid_rows; ++y)
+  {
+    const auto& grid_row = grid[y];
+    for (int x=0; x!=grid_cols; ++x)
+    {
+      const auto& cell_state = grid_row[x];
+
+      //Cell type
+      {
+        if (cell_state.GetCellType() == CellType::alive) {
+          sf::Sprite sprite(
+            m_sprite.Get(CellType::alive),
+            sf::IntRect(0,0,6,6)
+          );
+          sprite.setPosition(
+            x * m_sprite.GetWidth(),
+            y * m_sprite.GetHeight()
+          );
+          m_window.draw(sprite);
+        }
+      }
+
+      //Building here?
+      if (cell_state.GetIsBuilding() != IsBuilding::none)
+      {
+        sf::Sprite sprite(
+          m_sprite.Get(cell_state.GetIsBuilding()),
+          sf::IntRect(0,0,6,6)
+        );
+        sprite.setPosition(
+          x * m_sprite.GetWidth(),
+          y * m_sprite.GetHeight()
+        );
+        m_window.draw(sprite);
+      }
+
+      //Heart of
+      {
+        sf::Sprite sprite(
+          m_sprite.Get(cell_state.GetHeartOf()),
+          sf::IntRect(0,0,6,6)
+        );
+        sprite.setPosition(
+          x * m_sprite.GetWidth(),
+          y * m_sprite.GetHeight()
+        );
+        m_window.draw(sprite);
+      }
+    }
+  }
+
+
+  //Draw cursors
+  for (const PlayerIndex player_index: GetAllPlayerIndices())
+  {
+    const auto player = m_game.GetPlayer(player_index);
+    sf::Sprite sprite(
+      m_sprite.Get(player_index),
+      sf::IntRect(0,0,6,6)
+    );
+    sprite.setPosition(
+      player.GetX() * m_sprite.GetWidth(),
+      player.GetY() * m_sprite.GetHeight()
+    );
+    m_window.draw(sprite);
+  }
+  //Draw time
+  #ifndef NDEBUG
+  {
+    sf::Font font;
+    const bool can_find{font.loadFromFile("../GameOfLifeFighter/Resources/Fonts/Courier.ttf")};
+    assert(can_find);
+    std::stringstream s;
+    s << clock.getElapsedTime().asMilliseconds() << " ms";
+    sf::Text text(s.str(),font);
+    text.setString(s.str());
+    m_window.draw(text);
+  }
+  #endif
+  m_window.display();
 }
 
 #ifndef NDEBUG

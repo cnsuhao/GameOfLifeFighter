@@ -40,14 +40,16 @@ private:
   void AddKey(const Key key);
   sf::Texture CreateBackground();
   sf::Texture CreateHangars();
-  void Draw();
   void ProcessJoystick();
   void ProcessKeyboard();
   void RemoveKey(const Key key);
+  void Render();
 
   #ifndef NDEBUG
   void Test() noexcept;
   #endif
+
+  void Update();
 };
 
 } //~namespace golf
