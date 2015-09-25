@@ -22,12 +22,13 @@ golf::SfmlWidget::SfmlWidget()
     m_keys{},
     m_sprite{},
     m_window(
-      sf::VideoMode(
-        Game().GetWidth() * SfmlSprites().GetWidth(),
-        Game().GetHeight() * SfmlSprites().GetHeight()
-      ),
+      sf::VideoMode::getFullscreenModes()[0],
+      //sf::VideoMode(
+      //  Game().GetWidth() * SfmlSprites().GetWidth(),
+      //  Game().GetHeight() * SfmlSprites().GetHeight()
+      //),
       "Game Of Life Fighter",
-      sf::Style::Titlebar | sf::Style::Close
+      sf::Style::Fullscreen | sf::Style::None
     ),
     m_background(CreateBackground()),
     m_hangars(CreateHangars()),
@@ -295,22 +296,15 @@ void golf::SfmlWidget::Execute()
 void golf::SfmlWidget::ProcessJoystick()
 {
   sf::Joystick::update();
+  const int key_activate{0};
+  const int key_build{2};
+  const int key_glider{3};
+  const int key_spaceship{1};
+  const int key_grower{4};
+
   if (sf::Joystick::isConnected(0))
   {
-    //const int n_buttons = sf::Joystick::getButtonCount(0);
-
-    const bool pressed0{sf::Joystick::isButtonPressed(0,0)};
-    if (pressed0) { AddKey(Key::toggle_hangar2); }
-    const bool pressed1{sf::Joystick::isButtonPressed(0,1)};
-    if ( pressed1) { AddKey(Key::toggle_cell2); }
-    if (!pressed1) { RemoveKey(Key::toggle_cell2); }
-    const bool pressed2{sf::Joystick::isButtonPressed(0,2)};
-    if ( pressed2) { AddKey(Key::pattern_a2); }
-    const bool pressed3{sf::Joystick::isButtonPressed(0,3)};
-    if ( pressed3) { AddKey(Key::pattern_b2); }
-    const bool pressed4{sf::Joystick::isButtonPressed(0,4)};
-    if ( pressed4) { AddKey(Key::pattern_c2); }
-
+    //First move, then build
     RemoveKey(Key::up2);
     RemoveKey(Key::right2);
     RemoveKey(Key::down2);
@@ -327,6 +321,51 @@ void golf::SfmlWidget::ProcessJoystick()
       if (dy < -50.0) { AddKey(Key::up2  );  }
       if (dy >  50.0) { AddKey(Key::down2);  }
     }
+
+    const bool pressed0{sf::Joystick::isButtonPressed(0,key_activate)};
+    if (pressed0) { AddKey(Key::toggle_hangar2); }
+    const bool pressed1{sf::Joystick::isButtonPressed(0,key_build)};
+    if ( pressed1) { AddKey(Key::toggle_cell2); }
+    if (!pressed1) { RemoveKey(Key::toggle_cell2); }
+    const bool pressed2{sf::Joystick::isButtonPressed(0,key_glider)};
+    if ( pressed2) { AddKey(Key::pattern_a2); }
+    const bool pressed3{sf::Joystick::isButtonPressed(0,key_spaceship)};
+    if ( pressed3) { AddKey(Key::pattern_b2); }
+    const bool pressed4{sf::Joystick::isButtonPressed(0,key_grower)};
+    if ( pressed4) { AddKey(Key::pattern_c2); }
+  }
+
+  if (sf::Joystick::isConnected(1))
+  {
+    //First move, then build
+    RemoveKey(Key::up1);
+    RemoveKey(Key::right1);
+    RemoveKey(Key::down1);
+    RemoveKey(Key::left1);
+    if (sf::Joystick::hasAxis(1, sf::Joystick::X))
+    {
+      const double dx{sf::Joystick::getAxisPosition(1, sf::Joystick::X)};
+      if (dx < -50.0) { AddKey(Key::left1 ); }
+      if (dx >  50.0) { AddKey(Key::right1); }
+    }
+    if (sf::Joystick::hasAxis(1, sf::Joystick::Y))
+    {
+      const double dy{sf::Joystick::getAxisPosition(1, sf::Joystick::Y)};
+      if (dy < -50.0) { AddKey(Key::up1  );  }
+      if (dy >  50.0) { AddKey(Key::down1);  }
+    }
+
+    const bool pressed0{sf::Joystick::isButtonPressed(1,key_activate)};
+    if (pressed0) { AddKey(Key::toggle_hangar1); }
+    const bool pressed1{sf::Joystick::isButtonPressed(1,key_build)};
+    if ( pressed1) { AddKey(Key::toggle_cell1); }
+    if (!pressed1) { RemoveKey(Key::toggle_cell1); }
+    const bool pressed2{sf::Joystick::isButtonPressed(1,key_glider)};
+    if ( pressed2) { AddKey(Key::pattern_a1); }
+    const bool pressed3{sf::Joystick::isButtonPressed(1,key_spaceship)};
+    if ( pressed3) { AddKey(Key::pattern_b1); }
+    const bool pressed4{sf::Joystick::isButtonPressed(1,key_grower)};
+    if ( pressed4) { AddKey(Key::pattern_c1); }
   }
 }
 
@@ -337,6 +376,18 @@ void golf::SfmlWidget::ProcessKeyboard()
   {
     if (sf::Keyboard::isKeyPressed(key.first)) AddKey(key.second);
   }
+
+  const bool esc_pressed{sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)};
+  const bool lalt_pressed{sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LAlt)};
+  const bool ralt_pressed{sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RAlt)};
+  const bool f4_pressed{sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F4)};
+  const bool alt_pressed{lalt_pressed || ralt_pressed};
+  const bool alt_f4_pressed{alt_pressed && f4_pressed};
+  if (esc_pressed || alt_f4_pressed)
+  {
+    std::exit(0);
+  }
+
 }
 
 void golf::SfmlWidget::RemoveKey(const Key key)
