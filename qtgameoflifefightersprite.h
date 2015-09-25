@@ -1,7 +1,10 @@
 #ifndef QTGAMEOFLIFEFIGHTERSPRITE_H
 #define QTGAMEOFLIFEFIGHTERSPRITE_H
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include <QImage>
+#pragma GCC diagnostic pop
 
 #include "gameoflifefightercelltype.h"
 #include "gameoflifefightercellstate.h"

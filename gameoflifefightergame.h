@@ -71,8 +71,14 @@ struct Game
   ///Is this coordinat a heart?
   bool IsHeart(const int x, const int y) const noexcept;
 
+
+  ///Press all keys once
+  void PressKeys(const std::vector<Key>& keys);
+
   ///Press all keys once
   ///Some keys are only to be pressed once, like building pattern
+  ///Prefer the other PressKeys
+  __attribute__ ((deprecated))
   void PressKeys(std::set<Key>& keys);
 
   ///Set the content of a global grid cell
