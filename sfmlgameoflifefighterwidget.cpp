@@ -40,6 +40,8 @@ golf::SfmlWidget::SfmlWidget()
   const bool can_open{music.openFromFile("../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg")};
   assert(can_open);
   music.play();
+
+
 }
 
 sf::Texture golf::SfmlWidget::CreateBackground()
