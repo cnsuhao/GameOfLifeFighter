@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 
 #include "sfmlgameoflifefighterplayerindex.h"
 #include "sfmlgameoflifefighterhelper.h"
@@ -28,6 +29,7 @@ golf::SfmlWidget::SfmlWidget()
       "Game Of Life Fighter",
       sf::Style::Titlebar | sf::Style::Close
     ),
+    m_background(CreateBackground()),
     m_tick{0}
 {
   #ifndef NDEBUG
@@ -37,6 +39,38 @@ golf::SfmlWidget::SfmlWidget()
   const bool can_open{music.openFromFile("../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg")};
   assert(can_open);
   music.play();
+
+
+}
+
+sf::Texture golf::SfmlWidget::CreateBackground()
+{
+  const int grid_rows{m_game.GetHeight()};
+  const int grid_cols{m_game.GetWidth()};
+  const int ww{Game().GetWidth() * SfmlSprites().GetWidth()};
+  const int wh{Game().GetHeight() * SfmlSprites().GetHeight()};
+  const int sw{m_sprite.GetWidth()};
+  const int sh{m_sprite.GetHeight()};
+  sf::Sprite bgSprite(m_sprite.Get(CellType::empty), sf::IntRect(0,0,6,6));
+
+  sf::RenderTexture rt;
+  if (!rt.create(ww, wh)) {
+    throw std::runtime_error("cannot create background texture");
+  }
+
+  rt.clear();
+
+  for (int y=0; y!=grid_rows; ++y) {
+    for (int x=0; x!=grid_cols; ++x) {
+      bgSprite.setPosition(x * sw, y * sh);
+      rt.draw(bgSprite);
+    }
+  }
+
+  rt.display();
+  sf::Texture texture = rt.getTexture();
+
+  return texture;
 }
 
 std::map<sf::Keyboard::Key,golf::Key> golf::SfmlWidget::CreateInitialKeyMap() noexcept
@@ -77,6 +111,10 @@ void golf::SfmlWidget::Draw()
   const int grid_cols{m_game.GetWidth()};
 
   m_window.clear();
+
+  // Draw background.
+  sf::Sprite bgsprite(m_background);
+  m_window.draw(bgsprite);
 
   const auto grid = m_game.GetCellStateGrid();
 
