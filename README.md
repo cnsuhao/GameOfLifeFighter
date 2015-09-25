@@ -6,11 +6,13 @@ Goal is to destroy the other player his/her base its heart.
 
 To to so, you can build patterns in your own part of the screen. Pressing `Activate` sets them loose!
 
-There are two versions:
- * A 2D version
- * A 3D version
+There are multiple version, differing in the choice of graphics library used:
 
-![Screenshot of Qt version of 2015-09-13](GameOfLifeFighterQt20150913.png)
+ * A 2D version using Qt
+ * A 2D version using SFML
+ * A 3D version using Urho3D
+
+![Screenshot of Qt version of 2015-09-13](Screenshots/GameOfLifeFighterQt20150913.png)
 
 ![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Wed_Sep_23_23_49_48_2015.png)
 
@@ -18,7 +20,9 @@ There are two versions:
 
 ## Nostalic screenshots
 
-![Screenshot of Qt version of 2015-09-06](GameOfLifeFighterQt20150906.png)
+The classic version, with four little hangars per player.
+
+![Screenshot of Qt version of 2015-09-06](Screenshots/GameOfLifeFighterQt20150906.png)
 
 ## Controls
 
