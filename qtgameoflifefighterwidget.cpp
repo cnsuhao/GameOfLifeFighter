@@ -167,6 +167,7 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
     const bool pressed4{sf::Joystick::isButtonPressed(0,key_grower)};
     if ( pressed4) { AddKey(Key::pattern_c2); }
   }
+
   if (sf::Joystick::isConnected(1))
   {
     //First move, then build
