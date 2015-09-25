@@ -90,15 +90,17 @@ void golf::SfmlWidget::Draw()
 
       //Cell type
       {
-        sf::Sprite sprite(
-          m_sprite.Get(cell_state.GetCellType()),
-          sf::IntRect(0,0,6,6)
-        );
-        sprite.setPosition(
-          x * m_sprite.GetWidth(),
-          y * m_sprite.GetHeight()
-        );
-        m_window.draw(sprite);
+        if (cell_state.GetCellType() == CellType::alive) {
+          sf::Sprite sprite(
+            m_sprite.Get(CellType::alive),
+            sf::IntRect(0,0,6,6)
+          );
+          sprite.setPosition(
+            x * m_sprite.GetWidth(),
+            y * m_sprite.GetHeight()
+          );
+          m_window.draw(sprite);
+        }
       }
 
       //Heart of
@@ -148,7 +150,6 @@ void golf::SfmlWidget::Draw()
       player.GetY() * m_sprite.GetHeight()
     );
     m_window.draw(sprite);
-
   }
   //Draw time
   {
