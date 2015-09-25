@@ -25,7 +25,7 @@ struct SfmlWidget
 private:
   Game m_game;
   std::map<sf::Keyboard::Key,Key> m_key_map;
-  std::set<Key> m_keys;
+  std::vector<Key> m_keys;
   SfmlSprites m_sprite;
   sf::RenderWindow m_window;
 
@@ -34,10 +34,11 @@ private:
 
   static std::map<sf::Keyboard::Key,Key> CreateInitialKeyMap() noexcept;
 
+  void AddKey(const Key key);
   void Draw();
-
   void ProcessJoystick();
   void ProcessKeyboard();
+  void RemoveKey(const Key key);
 
   #ifndef NDEBUG
   void Test() noexcept;

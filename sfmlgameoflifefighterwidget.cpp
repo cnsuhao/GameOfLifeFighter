@@ -39,6 +39,15 @@ golf::SfmlWidget::SfmlWidget()
   music.play();
 }
 
+void golf::SfmlWidget::AddKey(const Key key)
+{
+  if (std::count(std::begin(m_keys),std::end(m_keys),key) == 0)
+  {
+    m_keys.push_back(key);
+  }
+  assert(std::count(std::begin(m_keys),std::end(m_keys),key) == 1);
+}
+
 std::map<sf::Keyboard::Key,golf::Key> golf::SfmlWidget::CreateInitialKeyMap() noexcept
 {
   std::map<sf::Keyboard::Key,Key> m;
@@ -203,6 +212,17 @@ void golf::SfmlWidget::Execute()
       m_game.Next();
     }
     m_game.PressKeys(m_keys);
+
+    //Keys manipulation
+    RemoveKey(Key::toggle_hangar1);
+    RemoveKey(Key::toggle_hangar2);
+    RemoveKey(Key::pattern_a1);
+    RemoveKey(Key::pattern_a2);
+    RemoveKey(Key::pattern_b1);
+    RemoveKey(Key::pattern_b2);
+    RemoveKey(Key::pattern_c1);
+    RemoveKey(Key::pattern_c2);
+
     Draw();
   }
 
@@ -217,32 +237,32 @@ void golf::SfmlWidget::ProcessJoystick()
     //const int n_buttons = sf::Joystick::getButtonCount(0);
 
     const bool pressed0{sf::Joystick::isButtonPressed(0,0)};
-    if (pressed0) { m_keys.insert(Key::toggle_hangar2); }
+    if (pressed0) { AddKey(Key::toggle_hangar2); }
     const bool pressed1{sf::Joystick::isButtonPressed(0,1)};
-    if ( pressed1) { m_keys.insert(Key::toggle_cell2); }
-    if (!pressed1) { m_keys.erase(Key::toggle_cell2); }
+    if ( pressed1) { AddKey(Key::toggle_cell2); }
+    if (!pressed1) { RemoveKey(Key::toggle_cell2); }
     const bool pressed2{sf::Joystick::isButtonPressed(0,2)};
-    if ( pressed2) { m_keys.insert(Key::pattern_a2); }
+    if ( pressed2) { AddKey(Key::pattern_a2); }
     const bool pressed3{sf::Joystick::isButtonPressed(0,3)};
-    if ( pressed3) { m_keys.insert(Key::pattern_b2); }
+    if ( pressed3) { AddKey(Key::pattern_b2); }
     const bool pressed4{sf::Joystick::isButtonPressed(0,4)};
-    if ( pressed4) { m_keys.insert(Key::pattern_c2); }
+    if ( pressed4) { AddKey(Key::pattern_c2); }
 
-    m_keys.erase(Key::up2);
-    m_keys.erase(Key::right2);
-    m_keys.erase(Key::down2);
-    m_keys.erase(Key::left2);
+    RemoveKey(Key::up2);
+    RemoveKey(Key::right2);
+    RemoveKey(Key::down2);
+    RemoveKey(Key::left2);
     if (sf::Joystick::hasAxis(0, sf::Joystick::X))
     {
       const double dx{sf::Joystick::getAxisPosition(0, sf::Joystick::X)};
-      if (dx < -50.0) { m_keys.insert(Key::left2 ); }
-      if (dx >  50.0) { m_keys.insert(Key::right2); }
+      if (dx < -50.0) { AddKey(Key::left2 ); }
+      if (dx >  50.0) { AddKey(Key::right2); }
     }
     if (sf::Joystick::hasAxis(0, sf::Joystick::Y))
     {
       const double dy{sf::Joystick::getAxisPosition(0, sf::Joystick::Y)};
-      if (dy < -50.0) { m_keys.insert(Key::up2  );  }
-      if (dy >  50.0) { m_keys.insert(Key::down2);  }
+      if (dy < -50.0) { AddKey(Key::up2  );  }
+      if (dy >  50.0) { AddKey(Key::down2);  }
     }
   }
 }
@@ -252,8 +272,19 @@ void golf::SfmlWidget::ProcessKeyboard()
   m_keys.clear();
   for (const auto key: m_key_map)
   {
-    if (sf::Keyboard::isKeyPressed(key.first)) m_keys.insert(key.second);
+    if (sf::Keyboard::isKeyPressed(key.first)) AddKey(key.second);
   }
+}
+
+void golf::SfmlWidget::RemoveKey(const Key key)
+{
+  assert(std::count(std::begin(m_keys),std::end(m_keys),key) <= 1);
+  const auto new_end = std::remove(
+    std::begin(m_keys),
+    std::end(m_keys),
+    key
+  );
+  m_keys.erase(new_end,std::end(m_keys));
 }
 
 #ifndef NDEBUG
