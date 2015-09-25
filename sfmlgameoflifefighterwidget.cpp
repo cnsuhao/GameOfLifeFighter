@@ -159,7 +159,13 @@ void golf::SfmlWidget::Draw()
   sf::Sprite bgsprite(m_background);
   m_window.draw(bgsprite);
 
+  // Draw hangars.
+  sf::Sprite hsprite(m_hangars);
+  m_window.draw(hsprite);
+
+
   const auto grid = m_game.GetCellStateGrid();
+
 
   //Draw cells
   for (int y=0; y!=grid_rows; ++y)
@@ -199,9 +205,6 @@ void golf::SfmlWidget::Draw()
     }
   }
 
-  // Draw hangars.
-  sf::Sprite hsprite(m_hangars);
-  m_window.draw(hsprite);
 
   //Draw selected
   for (const PlayerIndex player_index: GetAllPlayerIndices())
