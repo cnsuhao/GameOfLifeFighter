@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 
 #include "sfmlgameoflifefighterplayerindex.h"
 #include "sfmlgameoflifefighterhelper.h"
@@ -28,6 +29,8 @@ golf::SfmlWidget::SfmlWidget()
       "Game Of Life Fighter",
       sf::Style::Titlebar | sf::Style::Close
     ),
+    m_background(CreateBackground()),
+    m_hangars(CreateHangars()),
     m_tick{0}
 {
   #ifndef NDEBUG
@@ -37,6 +40,70 @@ golf::SfmlWidget::SfmlWidget()
   const bool can_open{music.openFromFile("../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg")};
   assert(can_open);
   music.play();
+
+
+}
+
+sf::Texture golf::SfmlWidget::CreateBackground()
+{
+  const int grid_rows{m_game.GetHeight()};
+  const int grid_cols{m_game.GetWidth()};
+  const int ww{Game().GetWidth() * SfmlSprites().GetWidth()};
+  const int wh{Game().GetHeight() * SfmlSprites().GetHeight()};
+  const int sw{m_sprite.GetWidth()};
+  const int sh{m_sprite.GetHeight()};
+  sf::Sprite bgSprite(m_sprite.Get(CellType::empty), sf::IntRect(0,0,6,6));
+
+  sf::RenderTexture rt;
+  if (!rt.create(ww, wh)) {
+    throw std::runtime_error("cannot create background texture");
+  }
+
+  rt.clear();
+
+  for (int y=0; y!=grid_rows; ++y) {
+    for (int x=0; x!=grid_cols; ++x) {
+      bgSprite.setPosition(x * sw, y * sh);
+      rt.draw(bgSprite);
+    }
+  }
+
+  rt.display();
+  sf::Texture texture = rt.getTexture();
+
+  return texture;
+}
+
+sf::Texture golf::SfmlWidget::CreateHangars()
+{
+  const int grid_rows{m_game.GetHeight()};
+  const int grid_cols{m_game.GetWidth()};
+  const int ww{Game().GetWidth() * SfmlSprites().GetWidth()};
+  const int wh{Game().GetHeight() * SfmlSprites().GetHeight()};
+  const int sw{m_sprite.GetWidth()};
+  const int sh{m_sprite.GetHeight()};
+  const auto grid = m_game.GetCellStateGrid();
+
+  sf::RenderTexture rt;
+  if (!rt.create(ww, wh)) {
+    throw std::runtime_error("cannot create background texture");
+  }
+
+  rt.clear(sf::Color(0, 0, 0, 0));
+
+  for (int y=0; y!=grid_rows; ++y) {
+    for (int x=0; x!=grid_cols; ++x) {
+      const auto& s = grid[y][x];
+      sf::Sprite sprite(m_sprite.Get(s.GetHangarOf()), sf::IntRect(0,0,6,6));
+      sprite.setPosition(x * sw, y * sh);
+      rt.draw(sprite);
+    }
+  }
+
+  rt.display();
+  sf::Texture texture = rt.getTexture();
+
+  return texture;
 }
 
 void golf::SfmlWidget::AddKey(const Key key)
@@ -87,6 +154,10 @@ void golf::SfmlWidget::Draw()
 
   m_window.clear();
 
+  // Draw background.
+  sf::Sprite bgsprite(m_background);
+  m_window.draw(bgsprite);
+
   const auto grid = m_game.GetCellStateGrid();
 
   //Draw cells
@@ -99,15 +170,17 @@ void golf::SfmlWidget::Draw()
 
       //Cell type
       {
-        sf::Sprite sprite(
-          m_sprite.Get(cell_state.GetCellType()),
-          sf::IntRect(0,0,6,6)
-        );
-        sprite.setPosition(
-          x * m_sprite.GetWidth(),
-          y * m_sprite.GetHeight()
-        );
-        m_window.draw(sprite);
+        if (cell_state.GetCellType() == CellType::alive) {
+          sf::Sprite sprite(
+            m_sprite.Get(CellType::alive),
+            sf::IntRect(0,0,6,6)
+          );
+          sprite.setPosition(
+            x * m_sprite.GetWidth(),
+            y * m_sprite.GetHeight()
+          );
+          m_window.draw(sprite);
+        }
       }
 
       //Heart of
@@ -122,21 +195,12 @@ void golf::SfmlWidget::Draw()
         );
         m_window.draw(sprite);
       }
-
-      //Hangar of
-      {
-        sf::Sprite sprite(
-          m_sprite.Get(cell_state.GetHangarOf()),
-          sf::IntRect(0,0,6,6)
-        );
-        sprite.setPosition(
-          x * m_sprite.GetWidth(),
-          y * m_sprite.GetHeight()
-        );
-        m_window.draw(sprite);
-      }
     }
   }
+
+  // Draw hangars.
+  sf::Sprite hsprite(m_hangars);
+  m_window.draw(hsprite);
 
   //Draw selected
   for (const PlayerIndex player_index: GetAllPlayerIndices())
@@ -157,7 +221,6 @@ void golf::SfmlWidget::Draw()
       player.GetY() * m_sprite.GetHeight()
     );
     m_window.draw(sprite);
-
   }
   //Draw time
   {
