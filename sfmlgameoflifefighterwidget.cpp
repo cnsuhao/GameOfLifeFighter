@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/Music.hpp>
@@ -40,6 +41,10 @@ golf::SfmlWidget::SfmlWidget()
 
   sf::Music music;
   const bool can_open{music.openFromFile("../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg")};
+  if (!can_open)
+  {
+    throw std::runtime_error("Music file not found at ../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg");
+  }
   assert(can_open);
   music.play();
 
