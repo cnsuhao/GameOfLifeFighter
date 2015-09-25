@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
   music.play();
 
   golf::QtGameOfLifeFighterWidget w;
+  w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
   w.show();
   a.exec();
 }
