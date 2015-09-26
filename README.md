@@ -16,9 +16,9 @@ There are multiple version, differing in the choice of graphics library used:
 
 ![Screenshot of Sfml version of 2015-09-25](Screenshots/GameOfLifeFighterSfml20150925.png)
 
-![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Wed_Sep_23_23_49_48_2015.png)
+![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Thu_Sep_24_16_07_27_2015.png)
 
-![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Wed_Sep_23_23_50_01_2015.png)
+![Screenshot of Urho3D version of 2015-09-24](Screenshots/Screenshot_Thu_Sep_24_16_07_22_2015.png)
 
 ## Nostalic screenshots
 
