@@ -26,23 +26,24 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     masterControl_ = masterControl;
     SubscribeToEvent(E_SCENEUPDATE, HANDLER(GOLFCam, HandleSceneUpdate));
 
-    float viewRange = 12.0f;
+    float viewRange = 32.0f;
 
     //Create the camera. Limit far clip distance to match the fog
     rootNode_ = masterControl_->world_.scene_->CreateChild("CameraPivot");
     camNode_ = rootNode_->CreateChild("CameraNode");
     camera_ = camNode_->CreateComponent<Camera>();
     camera_->SetFarClip(viewRange);
-    camera_->SetNearClip(0.1f);
+    camera_->SetNearClip(23.0f);
+    camera_->SetFov(23.0f);
 
     zone_ = rootNode_->CreateComponent<Zone>();
     zone_->SetBoundingBox(BoundingBox(Vector3(-100.0f, -50.0f, -100.0f), Vector3(100.0f, 50.0f, 100.0f)));
     zone_->SetFogColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
-    zone_->SetFogStart(10.0f);
+    zone_->SetFogStart(30.0f);
     zone_->SetFogEnd(viewRange);
 
     rootNode_->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-    camNode_->SetPosition(Vector3(25.0f, 0.0f, 0.0f));
+    camNode_->SetPosition(Vector3(42.0f, 0.0f, 0.0f));
     camNode_->LookAt(Vector3::ZERO);
     rigidBody_ = rootNode_->CreateComponent<RigidBody>();
     //rigidBody_->SetAngularDamping(0.0f);

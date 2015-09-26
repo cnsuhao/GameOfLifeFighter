@@ -194,6 +194,12 @@ void golf::SfmlWidget::Execute()
     if (m_tick % 3 == 0)
     {
       m_game.Next();
+      if (m_game.GetGameState() != GameState::playing)
+      {
+          sf::Clock deadclock;
+          while (deadclock.getElapsedTime().asSeconds() < 5) {}
+          std::exit(0);
+      }
     }
     m_game.PressKeys(m_keys);
 
