@@ -13,8 +13,9 @@
 namespace golf {
 
 
-struct CellState
+class CellState
 {
+  public:
   //Remove if the cursor is present (which was confusingly called 'IsSelected')
   CellState(
     const HangarOf hangar_of,
@@ -31,12 +32,11 @@ struct CellState
   IsBuilding GetIsBuilding() const noexcept { return m_is_building; }
   CellType GetCellType() const noexcept { return m_cell_type; }
 
-  void SetHangarOf(const HangarOf hangar_of) noexcept { m_hangar_of = hangar_of; }
-  void SetHeartOf(const HeartOf heart_of) noexcept { m_heart_of = heart_of; }
-  void SetIsBuilding(const IsBuilding is_building) noexcept { m_is_building = is_building; }
+  void SetHangarOf(const HangarOf hangar_of) noexcept;
+  void SetHeartOf(const HeartOf heart_of) noexcept;
+  void SetIsBuilding(const IsBuilding is_building) noexcept;
   void SetIsBuilding(const PlayerIndex is_building) noexcept;
-
-  void SetCellType(const CellType cell_type) noexcept { m_cell_type = cell_type; }
+  void SetCellType(const CellType cell_type) noexcept;
 
   private:
   HangarOf m_hangar_of;

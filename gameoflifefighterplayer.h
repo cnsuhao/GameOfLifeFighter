@@ -7,8 +7,10 @@
 
 namespace golf {
 
-struct Player
+class Player
 {
+  public:
+
   using PrefabPatterns = std::vector<PrefabPattern>;
 
   Player(const PlayerIndex player_index, const int x, const int y);
@@ -20,12 +22,12 @@ struct Player
   void SetY(const int y) noexcept { m_y = y; }
 
   private:
-  PlayerIndex m_player_index;
+  const PlayerIndex m_player_index;
   int m_x;
   int m_y;
-  PrefabPatterns m_patterns;
+  const PrefabPatterns m_patterns;
 
-  static PrefabPatterns CreateInitialPatterns();
+  static PrefabPatterns CreateInitialPatterns(const PlayerIndex player_index);
 };
 
 } //~namespace golf

@@ -6,8 +6,9 @@
 
 namespace golf {
 
-struct Grid
+class Grid
 {
+  public:
   Grid(const int width, const int height);
 
   int CountNeighbours(const int x, const int y);
