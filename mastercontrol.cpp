@@ -34,7 +34,7 @@ MasterControl::MasterControl(Context *context):
     Application(context),
     cache_{GetSubsystem<ResourceCache>()},
     renderer_{GetSubsystem<Renderer>()},
-    paused_(false),
+    paused_{false},
     stepInterval_{0.23f},
     sinceStep_{stepInterval_}
 {
@@ -46,7 +46,7 @@ MasterControl::MasterControl(Context *context):
 void MasterControl::Setup()
 {
     // Modify engine startup parameters.
-    // Set custom window title and icon.
+    // Set custom window title.
     engineParameters_["WindowTitle"] = "G.O.L.F.";
     engineParameters_["LogName"] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"golf.log";
 //    engineParameters_["FullScreen"] = false;

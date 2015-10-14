@@ -67,16 +67,17 @@ void GOLFCam::SetupViewport()
 
     //Set up a viewport to the Renderer subsystem so that the 3D scene can be seen
     SharedPtr<Viewport> viewport(new Viewport(context_, masterControl_->world_.scene_, camera_));
-//    viewport_ = viewport;
+    viewport_ = viewport;
 
-//    //Add anti-asliasing and bloom
-//    effectRenderPath_ = viewport_->GetRenderPath()->Clone();
-//    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
-//    effectRenderPath_->SetEnabled("FXAA3", true);
-//    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/Bloom.xml"));
-//    effectRenderPath_->SetShaderParameter("BloomThreshold", 0.5f);
-//    effectRenderPath_->SetEnabled("Bloom", true);
-//    viewport_->SetRenderPath(effectRenderPath_);
+    //Add anti-asliasing and bloom
+    effectRenderPath_ = viewport_->GetRenderPath()->Clone();
+    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
+    effectRenderPath_->SetEnabled("FXAA3", true);
+    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/Bloom.xml"));
+    effectRenderPath_->SetShaderParameter("BloomThreshold", 0.42f);
+    effectRenderPath_->SetShaderParameter("BloomMix", Vector2(1.0f, 1.23f));
+    effectRenderPath_->SetEnabled("Bloom", true);
+    viewport_->SetRenderPath(effectRenderPath_);
     renderer->SetViewport(0, viewport);
 }
 
