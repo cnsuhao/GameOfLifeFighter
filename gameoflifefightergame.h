@@ -17,8 +17,9 @@ namespace golf {
 ///The most important member functions are:
 ///* PressKeys: process all key presses
 ///* Next: go to the next game state
-struct Game
+class Game
 {
+  public:
   using Hangars = std::vector<Hangar>;
   using Hearts = std::vector<Heart>;
   using Players = std::vector<Player>;
@@ -92,7 +93,7 @@ struct Game
   GameState m_game_state;
   Grid m_grid;
   Hangars m_hangars;
-  Hearts m_hearts;
+  const Hearts m_hearts;
   Players m_players;
 
   ///Let a player try to close a hangar

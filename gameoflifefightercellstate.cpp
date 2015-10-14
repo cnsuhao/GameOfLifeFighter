@@ -56,6 +56,24 @@ std::vector<golf::CellState> golf::GetAllCellStates()
   return v;
 }
 
+void golf::CellState::SetHangarOf(const HangarOf hangar_of) noexcept
+{
+  m_hangar_of = hangar_of;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
+
+void golf::CellState::SetHeartOf(const HeartOf heart_of) noexcept
+{
+  m_heart_of = heart_of;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
+
+void golf::CellState::SetIsBuilding(const IsBuilding is_building) noexcept
+{
+  m_is_building = is_building;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
+
 void golf::CellState::SetIsBuilding(const PlayerIndex is_building) noexcept
 {
   switch (is_building)
@@ -63,8 +81,15 @@ void golf::CellState::SetIsBuilding(const PlayerIndex is_building) noexcept
     case PlayerIndex::player1: SetIsBuilding(IsBuilding::player1); break;
     case PlayerIndex::player2: SetIsBuilding(IsBuilding::player2); break;
   }
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
 }
 
+
+void golf::CellState::SetCellType(const CellType cell_type) noexcept
+{
+  m_cell_type = cell_type;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
 
 #ifndef NDEBUG
 void golf::CellState::Test() noexcept

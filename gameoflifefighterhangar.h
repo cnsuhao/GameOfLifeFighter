@@ -13,8 +13,9 @@ struct PrefabPattern;
 
 ///Hangar is like a Grid without dynamics; it can be in stasis (Closed) or active (Open)
 ///A Hangar has a Grid of its own, where the player can build cell compositions
-struct Hangar
+class Hangar
 {
+  public:
   ///A Hangar has a position, size and a Player that can use it
   Hangar(
     const int left,

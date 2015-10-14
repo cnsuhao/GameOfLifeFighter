@@ -16,8 +16,10 @@ namespace golf {
 /// 0 0 1 with cursor = (2,2)
 /// 1 1 1
 ///This is a glider that will have its tip at the cursor
-struct PrefabPattern
+class PrefabPattern
 {
+  public:
+
   PrefabPattern(const int width, const int height);
 
   void FlipHorizontal() noexcept { m_grid.FlipHorizontal(); }
