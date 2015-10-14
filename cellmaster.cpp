@@ -23,7 +23,7 @@
 namespace Urho3D {
 template <> unsigned MakeHash(const IntVector2& value)
   {
-    return golf::IntVector2ToHash(value);
+    return LucKey::IntVector2ToHash(value);
   }
 }
 
@@ -55,7 +55,7 @@ void CellMaster::AddCellToMaps(Cell* cell, IntVector2 coords)
 void CellMaster::Rotate(float angle)
 {
     for (unsigned r = 0; r < rings_.Size(); r++){
-        rings_[r]->SetTargetRotation(angle);
+        rings_[r]->SetTargetRotation(LucKey::Cycle(angle, 0.0f, 360.0f));
     }
 }
 

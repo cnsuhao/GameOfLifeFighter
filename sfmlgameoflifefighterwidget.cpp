@@ -46,7 +46,7 @@ golf::SfmlWidget::SfmlWidget()
     throw std::runtime_error("Music file not found at ../GameOfLifeFighter/Resources/Music/GameOfDeath.ogg");
   }
   assert(can_open);
-  music.play();
+  //music.play();
 
   //Center the window
   {

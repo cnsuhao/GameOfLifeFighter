@@ -43,15 +43,20 @@ CellRing::CellRing(Context *context, MasterControl *masterControl, CellMaster* c
 void CellRing::Rotate(float angle)
 {
     rotation_ += angle;
+    rotation_ = LucKey::Cycle(rotation_, 0.0f, 360.0f);
     rootNode_->Rotate(Quaternion(angle, Vector3::LEFT), TS_LOCAL);
 }
 
 void CellRing::SetTargetRotation(float angle)
 {
-    targetRotation_ = angle;
+    targetRotation_ = LucKey::Cycle(angle, 0.0f, 360.0f);
 }
 
 void CellRing::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
-    Rotate(Lerp(0.0f, targetRotation_-rotation_, eventData[Update::P_TIMESTEP].GetFloat()* 5.0f));
+    float difference = targetRotation_ - rotation_;
+    if (abs(difference - 360.0f) < abs(difference)) difference -= 360.0f;
+    if (abs(difference + 360.0f) < abs(difference)) difference += 360.0f;
+
+    Rotate(Lerp(0.0f, difference, eventData[Update::P_TIMESTEP].GetFloat()* 5.0f));
 }

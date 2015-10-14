@@ -29,7 +29,10 @@ InputMaster::InputMaster(Context* context, MasterControl* masterControl) : Objec
     keyBindings_[KEY_S] = keyBindings_[KEY_DOWN]  = golf::Key::down1;
     keyBindings_[KEY_A] = keyBindings_[KEY_LEFT]  = golf::Key::right1;
     keyBindings_[KEY_C] = keyBindings_[KEY_LSHIFT] = golf::Key::toggle_cell1;
-    keyBindings_[KEY_V] = keyBindings_[KEY_ALT]   = golf::Key::toggle_hangar1;
+    keyBindings_[KEY_V] = golf::Key::toggle_hangar1;
+    keyBindings_[KEY_1] = keyBindings_[KEY_CTRL]   = golf::Key::pattern_a1;
+    keyBindings_[KEY_2] = keyBindings_[KEY_ALT]   = golf::Key::pattern_b1;
+    keyBindings_[KEY_3] = keyBindings_[KEY_SPACE]   = golf::Key::pattern_c1;
 
     keyBindings_[KEY_KP_8]    = golf::Key::up2;
     keyBindings_[KEY_KP_6]    = golf::Key::right2;

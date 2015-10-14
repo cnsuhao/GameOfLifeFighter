@@ -21,7 +21,8 @@
 
 #include <Urho3D/Urho3D.h>
 
-#include "urho3dhelper.h"
+#include "luckey.h"
+#include "gameoflifefightergame.h"
 
 namespace Urho3D {
 class Drawable;

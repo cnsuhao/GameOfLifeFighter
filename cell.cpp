@@ -68,8 +68,8 @@ void Cell::HandleUpdate(StringHash eventType, VariantMap &eventData)
     if (fillNode_->IsEnabled()){
         fillNode_->Rotate(Quaternion(eventData[Update::P_TIMESTEP].GetFloat() * (randomizer_-0.23f) * 42.0f, Vector3::FORWARD));
         float toCycle = (3.0f+2.0f*randomizer_)*masterControl_->world_.scene_->GetElapsedTime() + randomizer_*2.0f;
-        float morphWeight1 = golf::Cycle(toCycle, 0.0f, 2.0f);
-        float morphWeight2 = golf::Cycle(toCycle*1.23f+randomizer_, 0.0f, 2.0f);
+        float morphWeight1 = LucKey::Cycle(toCycle, 0.0f, 2.0f);
+        float morphWeight2 = LucKey::Cycle(toCycle*1.23f+randomizer_, 0.0f, 2.0f);
         morphWeight1 = (morphWeight1 + fillModel_->GetMorphWeight(0))*0.5f;
         morphWeight1 = morphWeight1 > 1.0f ? 1.0f-(morphWeight1-1.0f) : morphWeight1;
         fillModel_->SetMorphWeight(0, morphWeight1);

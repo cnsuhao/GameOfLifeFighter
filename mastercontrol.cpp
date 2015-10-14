@@ -76,7 +76,7 @@ void MasterControl::Start()
     Node* musicNode = world_.scene_->CreateChild("Music");
     SoundSource* musicSource = musicNode->CreateComponent<SoundSource>();
     musicSource->SetSoundType(SOUND_MUSIC);
-    musicSource->Play(music);
+//    musicSource->Play(music);
 
 }
 
