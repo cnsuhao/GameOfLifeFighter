@@ -76,7 +76,7 @@ void MasterControl::Start()
     Node* musicNode = world_.scene_->CreateChild("Music");
     SoundSource* musicSource = musicNode->CreateComponent<SoundSource>();
     musicSource->SetSoundType(SOUND_MUSIC);
-//    musicSource->Play(music);
+    musicSource->Play(music);
 
 }
 
@@ -170,7 +170,7 @@ void MasterControl::CreateScene()
 //    renderer_->SetNumViewports(numViewports);
 //    // Set up the front camera viewport
 //    if (GetNumHumans()){
-//        for (int p = 0; p < human_.Size(); p++){
+//        for (int p = 0; p < human_.Size(); ++p){
 //            int playerIndex = static_cast<int>(p);
 //            int cameraIndex = 0;
 //            int viewportWidth = graphics_->GetWidth() / (1 + (GetNumHumans() > 1));
@@ -178,7 +178,7 @@ void MasterControl::CreateScene()
 //            if (human_[playerIndex]){
 //                SharedPtr<Viewport> player1Viewport(new Viewport(context_, world_.scene_, world_.cameras_[playerIndex]->camera_, IntRect(viewportWidth*(cameraIndex%2),viewportHeight*(cameraIndex>2), viewportWidth, viewportHeight)));
 //                renderer_->SetViewport(0, player1Viewport);
-//                cameraIndex++;
+//                ++cameraIndex;
 //            }
 //        }
 //    } else {
@@ -199,7 +199,7 @@ Color MasterControl::RandomColor()
 int MasterControl::GetNumHumans() const
 {
     int numHumans = 0;
-    for (int p = 0; p < human_.Size(); p++){
+    for (int p = 0; p < human_.Size(); ++p){
 //        if (human_[p]) ++numHumans;
     }
     return numHumans;

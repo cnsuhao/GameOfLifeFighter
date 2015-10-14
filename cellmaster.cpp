@@ -36,7 +36,7 @@ CellMaster::CellMaster(Context *context, MasterControl *masterControl):
     rootNode_ = masterControl_->world_.scene_->CreateChild("CellMaster");
     rootNode_->SetPosition(Vector3::ZERO);
 
-    for (int i = 0; i < width_; i++){
+    for (int i = 0; i < width_; ++i){
                 CellRing* newRing = new CellRing(context_, masterControl_, this, height_, i);
                 newRing->rootNode_->SetPosition(Vector3(0.0f, 0.0f, 10.0f));
                 newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/width_, 0.0f), TS_PARENT);
@@ -54,7 +54,7 @@ void CellMaster::AddCellToMaps(Cell* cell, IntVector2 coords)
 
 void CellMaster::Rotate(float angle)
 {
-    for (unsigned r = 0; r < rings_.Size(); r++){
+    for (unsigned r = 0; r < rings_.Size(); ++r){
         rings_[r]->SetTargetRotation(LucKey::Cycle(angle, 0.0f, 360.0f));
     }
 }
@@ -62,7 +62,7 @@ void CellMaster::Rotate(float angle)
 void CellMaster::UpdateCells()
 {
     Vector<SharedPtr<Cell> > cells{cellsById_.Values()};
-    for (unsigned c = 0; c < cells.Size(); c++){
+    for (unsigned c = 0; c < cells.Size(); ++c){
         IntVector2 coords = cells[c]->GetCoords();
         cells[c]->SetType(masterControl_->game_->GetCell(coords.x_, coords.y_));
     }

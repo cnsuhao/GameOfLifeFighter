@@ -107,9 +107,6 @@ void GOLFCam::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 
     //Take the frame time step, which is stored as a double
     double timeStep = eventData[P_TIMESTEP].GetFloat();
-//    Urho3D::Log::Write(1, String(CenterCoords().x_));
-//    Urho3D::Log::Write(1, String(CenterCoords().y_));
-//    rigidBody_->ApplyTorque(Vector3::UP*100.0f);
     rootNode_->SetRotation(Quaternion(Lerp(rootNode_->GetRotation().EulerAngles().y_, masterControl_->cellMaster_->ColumnToRotation(
                                           masterControl_->game_->GetPlayer(golf::PlayerIndex::player1).GetX()), timeStep*5.0f),
                                       Vector3::UP));
@@ -120,7 +117,7 @@ IntVector2 GOLFCam::CenterCoords()
     PODVector<RayQueryResult> results{};
     Ray camRay{rootNode_->GetPosition(), rootNode_->GetDirection()};
     if (masterControl_->OctreeRayCast(results, camRay, 16.0f)){
-        for (unsigned r = 0; r < results.Size(); r++) {
+        for (unsigned r = 0; r < results.Size(); ++r) {
             unsigned id = results[r].node_->GetID();
             return masterControl_->cellMaster_->GetCell(id)->GetCoords();
         }

@@ -30,7 +30,7 @@ CellRing::CellRing(Context *context, MasterControl *masterControl, CellMaster* c
     rootNode_ = cellMaster->rootNode_->CreateChild("CellRing");
     rootNode_->SetPosition(Vector3::FORWARD*10.0f);
 
-    for (int i = 0; i < circumference; i++){
+    for (int i = 0; i < circumference; ++i){
         IntVector2 cellCoords = IntVector2(ringNumber_, i);
         Cell* newCell = new Cell(context_, masterControl_, this, cellCoords);
         newCell->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(
