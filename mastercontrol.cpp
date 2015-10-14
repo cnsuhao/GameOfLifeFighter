@@ -46,7 +46,7 @@ MasterControl::MasterControl(Context *context):
 void MasterControl::Setup()
 {
     // Modify engine startup parameters.
-    //Set custom window title and icon.
+    // Set custom window title and icon.
     engineParameters_["WindowTitle"] = "G.O.L.F.";
     engineParameters_["LogName"] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"golf.log";
 //    engineParameters_["FullScreen"] = false;
@@ -149,7 +149,6 @@ void MasterControl::CreateScene()
     blueLight->SetLightType(LIGHT_DIRECTIONAL);
     blueLight->SetBrightness(1.0f);
     blueLight->SetColor(Color(0.1f, 0.5f, 1.0f));
-//    blueLight->SetCastShadows(true);
 
     Node* redLightNode = world_.scene_->CreateChild("Sun");
     redLightNode->SetPosition(Vector3(-10.0f, 2.0f, 0.0f));
@@ -158,7 +157,6 @@ void MasterControl::CreateScene()
     redLight->SetLightType(LIGHT_DIRECTIONAL);
     redLight->SetBrightness(1.0f);
     redLight->SetColor(Color(1.0f, 0.5f, 0.1f));
-//    redLight->SetCastShadows(true);
 
     cellMaster_ = new CellMaster(context_, this);
 

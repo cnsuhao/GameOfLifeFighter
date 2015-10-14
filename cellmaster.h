@@ -43,7 +43,7 @@ class CellMaster : public Object
 public:
     CellMaster(Context *context, MasterControl *masterControl);
     void AddCellToMaps(Cell *cell, IntVector2 coords);
-    void Rotate(float angle);
+    void SetTargetRoll(float angle);
     void UpdateCells();
     Cell *GetCell(unsigned id);
     float RowToRotation(int row);

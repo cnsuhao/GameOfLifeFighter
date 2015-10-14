@@ -21,14 +21,14 @@
 GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerIndex player):
     Object(context),
     player_{player},
-    targetCoords_{IntVector2{50, 30}}
+    targetRotation_{0.0f-static_cast<float>(player_)*180.0f}
 {
     masterControl_ = masterControl;
     SubscribeToEvent(E_SCENEUPDATE, HANDLER(GOLFCam, HandleSceneUpdate));
 
     float viewRange = 32.0f;
 
-    //Create the camera. Limit far clip distance to match the fog
+    //Create the camera
     rootNode_ = masterControl_->world_.scene_->CreateChild("CameraPivot");
     camNode_ = rootNode_->CreateChild("CameraNode");
     camera_ = camNode_->CreateComponent<Camera>();
@@ -36,6 +36,7 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     camera_->SetNearClip(23.0f);
     camera_->SetFov(23.0f);
 
+    //Create a zone with the fog end equal to the viewRange
     zone_ = rootNode_->CreateComponent<Zone>();
     zone_->SetBoundingBox(BoundingBox(Vector3(-100.0f, -50.0f, -100.0f), Vector3(100.0f, 50.0f, 100.0f)));
     zone_->SetFogColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
@@ -46,8 +47,6 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     camNode_->SetPosition(Vector3(42.0f, 0.0f, 0.0f));
     camNode_->LookAt(Vector3::ZERO);
     rigidBody_ = rootNode_->CreateComponent<RigidBody>();
-    //rigidBody_->SetAngularDamping(0.0f);
-    //rigidBody_->SetLinearDamping(0.0f);
     rigidBody_->SetMass(1.0f);
     rigidBody_->SetUseGravity(false);
 
@@ -59,16 +58,6 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     light->SetCastShadows(false);
 
     SetupViewport();
-}
-
-
-
-void GOLFCam::Start()
-{
-}
-
-void GOLFCam::Stop()
-{
 }
 
 void GOLFCam::SetupViewport()
@@ -101,15 +90,20 @@ Quaternion GOLFCam::GetRotation()
     return camNode_->GetRotation();
 }
 
+void GOLFCam::Rotate(float angle)
+{
+    rotation_ += angle;
+    rotation_ = LucKey::Cycle(rotation_, 0.0f, 360.0f);
+    rootNode_->RotateAround(Vector3::ZERO, Quaternion(angle, Vector3::UP), TS_WORLD);
+}
+
 void GOLFCam::HandleSceneUpdate(StringHash eventType, VariantMap &eventData)
 {
-    using namespace Update;
+    float difference = targetRotation_ - rotation_;
+    if (abs(difference - 360.0f) < abs(difference)) difference -= 360.0f;
+    if (abs(difference + 360.0f) < abs(difference)) difference += 360.0f;
 
-    //Take the frame time step, which is stored as a double
-    double timeStep = eventData[P_TIMESTEP].GetFloat();
-    rootNode_->SetRotation(Quaternion(Lerp(rootNode_->GetRotation().EulerAngles().y_, masterControl_->cellMaster_->ColumnToRotation(
-                                          masterControl_->game_->GetPlayer(golf::PlayerIndex::player1).GetX()), timeStep*5.0f),
-                                      Vector3::UP));
+    Rotate(Lerp(0.0f, difference, eventData[SceneUpdate::P_TIMESTEP].GetFloat()* 5.0f));
 }
 
 IntVector2 GOLFCam::CenterCoords()

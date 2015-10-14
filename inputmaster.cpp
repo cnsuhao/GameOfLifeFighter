@@ -48,13 +48,74 @@ InputMaster::InputMaster(Context* context, MasterControl* masterControl) : Objec
     SubscribeToEvent(E_UPDATE, HANDLER(InputMaster, HandleUpdate));
 }
 
+
 void InputMaster::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
+    //Read joystick input
+    ReadJoysticks();
+
     if (!pressedKeys_.empty()){
         golf::Game* game = masterControl_->game_;
         CellMaster* cellMaster = masterControl_->cellMaster_;
         game->PressKeys(pressedKeys_);
-        cellMaster->Rotate(cellMaster->RowToRotation(game->GetPlayer(golf::PlayerIndex::player1).GetY()));
+
+        cellMaster->SetTargetRoll(cellMaster->RowToRotation(game->GetPlayer(golf::PlayerIndex::player1).GetY()));
+        masterControl_->world_.cameras_[0]->SetTargetRotation(cellMaster->ColumnToRotation(game->GetPlayer(golf::PlayerIndex::player1).GetX()));
+    }
+}
+
+void InputMaster::ReadJoysticks()
+{
+    float deadZone = 0.23f;
+    JoystickState* joystickPlayer1 = input_->GetJoystickByIndex(0);
+    JoystickState* joystickPlayer2 = input_->GetJoystickByIndex(1);
+    if (joystickPlayer1){
+        float axis0 = -joystickPlayer1->GetAxisPosition(0);
+        if (axis0 > deadZone){
+            pressedKeys_.insert(golf::Key::right1);
+            pressedKeys_.erase(golf::Key::left1);
+        } else if (axis0 < -deadZone){
+            pressedKeys_.insert(golf::Key::left1);
+            pressedKeys_.erase(golf::Key::right1);
+        } else {
+            pressedKeys_.erase(golf::Key::right1);
+            pressedKeys_.erase(golf::Key::left1);
+        }
+        float axis1 = -joystickPlayer1->GetAxisPosition(1);
+        if (axis1 > deadZone){
+            pressedKeys_.insert(golf::Key::up1);
+            pressedKeys_.erase(golf::Key::down1);
+        } else if (axis1 < -deadZone){
+            pressedKeys_.insert(golf::Key::down1);
+            pressedKeys_.erase(golf::Key::up1);
+        } else {
+            pressedKeys_.erase(golf::Key::up1);
+            pressedKeys_.erase(golf::Key::down1);
+        }
+    }
+    if (joystickPlayer2){
+        float axis0 = -joystickPlayer2->GetAxisPosition(0);
+        if (axis0 > deadZone){
+            pressedKeys_.insert(golf::Key::right2);
+            pressedKeys_.erase(golf::Key::left2);
+        } else if (axis0 < -deadZone){
+            pressedKeys_.insert(golf::Key::left2);
+            pressedKeys_.erase(golf::Key::right2);
+        } else {
+            pressedKeys_.erase(golf::Key::right2);
+            pressedKeys_.erase(golf::Key::left2);
+        }
+        float axis1 = -joystickPlayer2->GetAxisPosition(1);
+        if (axis1 > deadZone){
+            pressedKeys_.insert(golf::Key::up2);
+            pressedKeys_.erase(golf::Key::down2);
+        } else if (axis1 < -deadZone){
+            pressedKeys_.insert(golf::Key::down2);
+            pressedKeys_.erase(golf::Key::up2);
+        } else {
+            pressedKeys_.erase(golf::Key::up2);
+            pressedKeys_.erase(golf::Key::down2);
+        }
     }
 }
 

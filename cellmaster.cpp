@@ -42,7 +42,7 @@ CellMaster::CellMaster(Context *context, MasterControl *masterControl):
                 newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/width_, 0.0f), TS_PARENT);
                 rings_.Push(newRing);
     }
-    Rotate(180.0f);
+    SetTargetRoll(180.0f);
 }
 
 void CellMaster::AddCellToMaps(Cell* cell, IntVector2 coords)
@@ -52,7 +52,7 @@ void CellMaster::AddCellToMaps(Cell* cell, IntVector2 coords)
     cellCoords_[coords] = id;
 }
 
-void CellMaster::Rotate(float angle)
+void CellMaster::SetTargetRoll(float angle)
 {
     for (unsigned r = 0; r < rings_.Size(); ++r){
         rings_[r]->SetTargetRotation(LucKey::Cycle(angle, 0.0f, 360.0f));

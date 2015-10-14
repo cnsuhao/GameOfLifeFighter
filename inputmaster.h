@@ -38,6 +38,7 @@ class InputMaster : public Object
     OBJECT(InputMaster);
 public:
     InputMaster(Context* context, MasterControl* masterControl);
+    void ReadJoysticks();
 private:
     MasterControl* masterControl_;
     Input* input_;

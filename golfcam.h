@@ -42,9 +42,6 @@ class GOLFCam : public Object
 public:
     GOLFCam(Context *context, MasterControl* masterControl, golf::PlayerIndex player);
 
-    virtual void Start();
-    virtual void Stop();
-
     SharedPtr<Camera> camera_;
     SharedPtr<Viewport> viewport_;
     SharedPtr<RenderPath> effectRenderPath_;
@@ -53,18 +50,22 @@ public:
 
     Vector3 GetWorldPosition();
     Quaternion GetRotation();
+
+    void SetTargetRotation(float angle) { targetRotation_ = LucKey::Cycle(angle, 0.0f, 360.0f);}
     IntVector2 CenterCoords();
 private:
     MasterControl* masterControl_;
-    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
-
     SharedPtr<Node> camNode_;
-
     golf::PlayerIndex player_;
     SharedPtr<RigidBody> rigidBody_;
     Zone* zone_;
-    IntVector2 targetCoords_;
+    float rotation_;
+    float targetRotation_;
+
+    void Rotate(float rotation);
+
     void SetupViewport();
+    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
 };
 
 #endif // GOLFCAM_H
