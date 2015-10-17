@@ -16,11 +16,9 @@ void golf::Grid::FlipHorizontal() noexcept
   const int height{GetHeight()};
   const int width{GetWidth()};
   const int maxx{width / 2};
-  for (int y=0; y!=height; ++y)
-  {
+  for (int y=0; y!=height; ++y) {
     auto& row = m_grid[y];
-    for (int x=0; x!=maxx; ++x)
-    {
+    for (int x=0; x!=maxx; ++x) {
       assert(x >= 0);
       assert(x < static_cast<int>(row.size()));
       assert(width - 1 - x >= 0);
@@ -34,8 +32,7 @@ void golf::Grid::FlipVertical() noexcept
 {
   const int height{GetHeight()};
   const int maxy{height / 2};
-  for (int y=0; y!=maxy; ++y)
-  {
+  for (int y=0; y!=maxy; ++y) {
     assert(y >= 0);
     assert(y < static_cast<int>(m_grid.size()));
     assert(height - 1 - y >= 0);
@@ -74,14 +71,12 @@ int golf::Grid::GetHeight() const noexcept
   return static_cast<int>(m_grid.size());
 }
 
-int golf::Grid::CountNeighbours(const int focal_x, const int focal_y)
+int golf::Grid::CountNeighbours(const int focal_x, const int focal_y) const noexcept
 {
   int n = 0;
-  for (int dy = -1; dy != 2; ++dy)
-  {
+  for (int dy = -1; dy != 2; ++dy) {
     const int y_co = (focal_y + dy + GetHeight()) % GetHeight();
-    for (int dx = -1; dx != 2; ++dx)
-    {
+    for (int dx = -1; dx != 2; ++dx) {
       if (dx == 0 && dy == 0) continue;
       const int x_co = (focal_x + dx + GetWidth()) % GetWidth();
       if (Get(x_co,y_co) == CellType::alive) ++n;
@@ -98,8 +93,6 @@ int golf::Grid::GetWidth() const
 
 void golf::Grid::Next()
 {
-  //Game Of Life here
-  //
   // Any live cell with fewer than two live neighbours dies
   // Any live cell with two or three live neighbours lives
   // Any live cell with more than three live neighbours dies
@@ -109,42 +102,31 @@ void golf::Grid::Next()
   const int height{GetHeight()};
 
   std::vector<std::vector<CellType>> v(height,std::vector<CellType>(width,CellType::empty));
-  for(int y = 0; y != height; ++y)
-  {
-    for(int x = 0; x != width; ++x)
-    {
+
+  for(int y = 0; y != height; ++y) {
+    for(int x = 0; x != width; ++x) {
       const CellType status = Get(x,y);
       const int n_neighbours = CountNeighbours(x,y);
-      if(status == CellType::alive)
-
-      {
-        if(n_neighbours < 2)
-        {
+      if (status == CellType::alive) {
+        if (n_neighbours < 2) {
           v[y][x] = CellType::empty;
         }
-        else if(n_neighbours == 2 || n_neighbours ==  3)
-        {
+        else if (n_neighbours == 2 || n_neighbours ==  3) {
           v[y][x] = CellType::alive;
         }
-        else if(n_neighbours > 3)
-        {
+        else if (n_neighbours > 3) {
           v[y][x] = CellType::empty;
         }
-        else
-        {
+        else {
           v[y][x] = status;
         }
       }
-
-      else
-      {
+      else {
         assert(status == CellType::empty);
-        if(n_neighbours == 3)
-        {
+        if (n_neighbours == 3) {
           v[y][x] = CellType::alive;
         }
-        else
-        {
+        else {
           v[y][x] = CellType::empty;
         }
       }
