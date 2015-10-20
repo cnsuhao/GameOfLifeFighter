@@ -13,3 +13,6 @@ cd Source
 cd ThirdParty
 cd Bullet
 make
+
+ln -s ./Urho3D/bin/Data
+ln -s ./Urho3D/bin/CoreData
