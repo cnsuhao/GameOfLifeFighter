@@ -19,6 +19,7 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <Urho3D/Urho3D.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Graphics/AnimatedModel.h>
 #include "mastercontrol.h"
