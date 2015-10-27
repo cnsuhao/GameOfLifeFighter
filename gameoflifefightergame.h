@@ -76,12 +76,6 @@ class Game
   ///Press all keys once
   void PressKeys(const std::vector<Key>& keys);
 
-  ///Press all keys once
-  ///Some keys are only to be pressed once, like building pattern
-  ///Prefer the other PressKeys
-  __attribute__ ((deprecated))
-  void PressKeys(std::set<Key>& keys);
-
   ///Set the content of a global grid cell
   ///When the player is building in a hangar, use Hangar::Set
   void Set(const int x, const int y, const CellType cell);
