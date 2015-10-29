@@ -24,16 +24,16 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     targetRotation_{0.0f-static_cast<float>(player_)*180.0f}
 {
     masterControl_ = masterControl;
-    SubscribeToEvent(E_SCENEUPDATE, HANDLER(GOLFCam, HandleSceneUpdate));
+    SubscribeToEvent(E_SCENEUPDATE, URHO3D_HANDLER(GOLFCam, HandleSceneUpdate));
 
-    float viewRange = 32.0f;
+    float viewRange = 37.0f;
 
     //Create the camera
     rootNode_ = masterControl_->world_.scene_->CreateChild("CameraPivot");
     camNode_ = rootNode_->CreateChild("CameraNode");
     camera_ = camNode_->CreateComponent<Camera>();
     camera_->SetFarClip(viewRange);
-    camera_->SetNearClip(23.0f);
+    camera_->SetNearClip(5.0f);
     camera_->SetFov(23.0f);
 
     //Create a zone with the fog end equal to the viewRange
@@ -41,7 +41,7 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     zone_->SetBoundingBox(BoundingBox(Vector3(-100.0f, -50.0f, -100.0f), Vector3(100.0f, 50.0f, 100.0f)));
     zone_->SetFogColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
     zone_->SetFogStart(30.0f);
-    zone_->SetFogEnd(viewRange);
+    zone_->SetFogEnd(viewRange-5.0f);
 
     rootNode_->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
     camNode_->SetPosition(Vector3(42.0f, 0.0f, 0.0f));

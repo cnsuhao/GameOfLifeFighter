@@ -19,6 +19,7 @@
 #ifndef CELLMASTER_H
 #define CELLMASTER_H
 
+#include <Urho3D/Urho3D.h>
 #include "mastercontrol.h"
 #include "cellmaster.h"
 #include "cellring.h"
@@ -39,7 +40,7 @@ class CellRing;
 class CellMaster : public Object
 {
     friend class CellRing;
-    OBJECT(CellMaster);
+    URHO3D_OBJECT(CellMaster, Object);
 public:
     CellMaster(Context *context, MasterControl *masterControl);
     void AddCellToMaps(Cell *cell, IntVector2 coords);

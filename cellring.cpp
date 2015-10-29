@@ -37,7 +37,7 @@ CellRing::CellRing(Context *context, MasterControl *masterControl, CellMaster* c
                                              360.0f*i/circumference, 0.0f, 0.0f), TS_WORLD);
         cellMaster->AddCellToMaps(newCell, cellCoords);
     }
-    SubscribeToEvent(E_UPDATE, HANDLER(CellRing, HandleUpdate));
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(CellRing, HandleUpdate));
 }
 
 void CellRing::Rotate(float angle)

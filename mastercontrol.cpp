@@ -28,7 +28,7 @@
 //}
 //}
 
-DEFINE_APPLICATION_MAIN(MasterControl);
+URHO3D_DEFINE_APPLICATION_MAIN(MasterControl);
 
 MasterControl::MasterControl(Context *context):
     Application(context),
@@ -83,9 +83,9 @@ void MasterControl::Start()
 void MasterControl::SubscribeToEvents()
 {
     //Subscribe HandleUpdate() function for processing update events
-    SubscribeToEvent(E_UPDATE, HANDLER(MasterControl, HandleUpdate));
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MasterControl, HandleUpdate));
     //Subscribe scene update event.
-    SubscribeToEvent(E_SCENEUPDATE, HANDLER(MasterControl, HandleSceneUpdate));
+    SubscribeToEvent(E_SCENEUPDATE, URHO3D_HANDLER(MasterControl, HandleSceneUpdate));
 }
 
 void MasterControl::Stop()
@@ -160,29 +160,29 @@ void MasterControl::CreateScene()
 
     cellMaster_ = new CellMaster(context_, this);
 
-    //Create camera
+    //Create camera(s)
     world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)] = new GOLFCam(context_, this, golf::PlayerIndex::player1);
-//    world_.cameras_[static_cast<int>(golf::PlayerIndex::player2)] = new GOLFCam(context_, this, golf::PlayerIndex::player2);
+    /*world_.cameras_[static_cast<int>(golf::PlayerIndex::player2)] = new GOLFCam(context_, this, golf::PlayerIndex::player2);
 
-//    int numViewports = Clamp(GetNumHumans(),1,4);
-//    renderer_->SetNumViewports(numViewports);
-//    // Set up the front camera viewport
-//    if (GetNumHumans()){
-//        for (int p = 0; p < human_.Size(); ++p){
-//            int playerIndex = static_cast<int>(p);
-//            int cameraIndex = 0;
-//            int viewportWidth = graphics_->GetWidth() / (1 + (GetNumHumans() > 1));
-//            int viewportHeight = graphics_->GetHeight() / (1 + (GetNumHumans() > 2));
-//            if (human_[playerIndex]){
-//                SharedPtr<Viewport> player1Viewport(new Viewport(context_, world_.scene_, world_.cameras_[playerIndex]->camera_, IntRect(viewportWidth*(cameraIndex%2),viewportHeight*(cameraIndex>2), viewportWidth, viewportHeight)));
-//                renderer_->SetViewport(0, player1Viewport);
-//                ++cameraIndex;
-//            }
-//        }
-//    } else {
-//        SharedPtr<Viewport> viewport(new Viewport(context_, world_.scene_, world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)]->camera_,IntRect(0,0, graphics_->GetWidth(), graphics_->GetHeight())));
-//        renderer_->SetViewport(0, viewport);
-//    }
+    int numViewports = Clamp(GetNumHumans(),1,4);
+    renderer_->SetNumViewports(numViewports);
+    // Set up the front camera viewport
+    if (GetNumHumans()){
+        for (int p = 0; p < human_.Size(); ++p){
+            int playerIndex = static_cast<int>(p);
+            int cameraIndex = 0;
+            int viewportWidth = graphics_->GetWidth() / (1 + (GetNumHumans() > 1));
+            int viewportHeight = graphics_->GetHeight() / (1 + (GetNumHumans() > 2));
+            if (human_[playerIndex]){
+                Viewport* player1Viewport{new Viewport(context_, world_.scene_, world_.cameras_[playerIndex]->camera_, IntRect(viewportWidth*(cameraIndex%2),viewportHeight*(cameraIndex>2), viewportWidth, viewportHeight))};
+                renderer_->SetViewport(0, player1Viewport);
+                ++cameraIndex;
+            }
+        }
+    } else {
+        SharedPtr<Viewport> viewport(new Viewport(context_, world_.scene_, world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)]->camera_,IntRect(0,0, graphics_->GetWidth(), graphics_->GetHeight())));
+        renderer_->SetViewport(0, viewport);
+    }*/
 }
 
 Color MasterControl::RandomColor()

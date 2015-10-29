@@ -19,6 +19,7 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <Urho3D/Urho3D.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Graphics/AnimatedModel.h>
 #include "mastercontrol.h"
@@ -40,7 +41,7 @@ class CellRing;
 
 class Cell : public Object
 {
-    OBJECT(Cell);
+    URHO3D_OBJECT(Cell, Object);
     friend class CellMaster;
     friend class CellRing;
 public:

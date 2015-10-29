@@ -45,11 +45,8 @@ Cell::Cell(Context *context, MasterControl *masterControl, CellRing* cellRing, I
     fillModel_ = fillNode_->CreateComponent<AnimatedModel>();
     fillModel_->SetModel(masterControl_->cache_->GetResource<Model>("Resources/Models/Life.mdl"));
     fillModel_->SetMaterial(masterControl_->cache_->GetResource<Material>("Resources/Materials/Life.xml"));
-    SubscribeToEvent(E_UPDATE, HANDLER(Cell, HandleUpdate));
 
-//    rootNode_->CreateComponent<RigidBody>();
-//    CollisionShape* collider = rootNode_->CreateComponent<CollisionShape>();
-//    collider->SetBox(Vector3(2.01f, 2.33f, 0.611f));
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Cell, HandleUpdate));
 }
 
 void Cell::HandleUpdate(StringHash eventType, VariantMap &eventData)

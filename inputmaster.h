@@ -35,7 +35,7 @@ enum class JoystickButton {SELECT, LEFTSTICK, RIGHTSTICK, START, DPAD_UP, DPAD_R
 
 class InputMaster : public Object
 {
-    OBJECT(InputMaster);
+    URHO3D_OBJECT(InputMaster, Object);
 public:
     InputMaster(Context* context, MasterControl* masterControl);
     void ReadJoysticks();

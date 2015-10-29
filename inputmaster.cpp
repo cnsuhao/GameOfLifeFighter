@@ -41,11 +41,11 @@ InputMaster::InputMaster(Context* context, MasterControl* masterControl) : Objec
     keyBindings_[KEY_RETURN]  = golf::Key::toggle_cell2;
     keyBindings_[KEY_RSHIFT]  = golf::Key::toggle_hangar2;
 
-    SubscribeToEvent(E_KEYDOWN, HANDLER(InputMaster, HandleKeyDown));
-    SubscribeToEvent(E_KEYUP, HANDLER(InputMaster, HandleKeyUp));
-    SubscribeToEvent(E_JOYSTICKBUTTONDOWN, HANDLER(InputMaster, HandleJoyButtonDown));
-    SubscribeToEvent(E_JOYSTICKBUTTONUP, HANDLER(InputMaster, HandleJoyButtonUp));
-    SubscribeToEvent(E_UPDATE, HANDLER(InputMaster, HandleUpdate));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(InputMaster, HandleKeyDown));
+    SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(InputMaster, HandleKeyUp));
+    SubscribeToEvent(E_JOYSTICKBUTTONDOWN, URHO3D_HANDLER(InputMaster, HandleJoyButtonDown));
+    SubscribeToEvent(E_JOYSTICKBUTTONUP, URHO3D_HANDLER(InputMaster, HandleJoyButtonUp));
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(InputMaster, HandleUpdate));
 }
 
 

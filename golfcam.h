@@ -19,6 +19,7 @@
 #ifndef GOLFCAM_H
 #define GOLFCAM_H
 
+#include <Urho3D/Urho3D.h>
 #include "mastercontrol.h"
 #include "cellmaster.h"
 
@@ -36,7 +37,7 @@ using namespace Urho3D;
 
 class GOLFCam : public Object
 {
-    OBJECT(GOLFCam);
+    URHO3D_OBJECT(GOLFCam, Object);
     friend class MasterControl;
     friend class InputMaster;
 public:

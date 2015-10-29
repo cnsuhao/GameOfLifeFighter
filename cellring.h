@@ -19,6 +19,7 @@
 #ifndef CELLRING_H
 #define CELLRING_H
 
+#include <Urho3D/Urho3D.h>
 #include "cellmaster.h"
 
 namespace Urho3D {
@@ -32,7 +33,7 @@ using namespace Urho3D;
 
 class CellRing : public Object
 {
-    OBJECT(CellRing);
+    URHO3D_OBJECT(CellRing, Object);
     friend class CellMaster;
     friend class InputMaster;
     friend class Cell;

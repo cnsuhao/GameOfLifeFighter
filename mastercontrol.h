@@ -69,7 +69,7 @@ StringHash const N_SLOT = StringHash("Slot");
 
 class MasterControl : public Application
 {
-    OBJECT(MasterControl);
+    URHO3D_OBJECT(MasterControl, Application);
     friend class InputMaster;
 public:
     MasterControl(Context* context);
