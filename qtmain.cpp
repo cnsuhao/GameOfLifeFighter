@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <cassert>
 #include "qtgameoflifefighterwidget.h"
 #include "gameoflifefightertrace.h"
 
