@@ -10,7 +10,6 @@
 #include "gameoflifefighterheart.h"
 #include "gameoflifefightercellstate.h"
 #include "gameoflifefightergamestate.h"
-#include "gameoflifefightergametype.h"
 
 namespace golf {
 
@@ -18,14 +17,15 @@ namespace golf {
 ///The most important member functions are:
 ///* PressKeys: process all key presses
 ///* Next: go to the next game state
-struct Game
+class Game
 {
+  public:
   using Hangars = std::vector<Hangar>;
   using Hearts = std::vector<Heart>;
   using Players = std::vector<Player>;
   using CellStateGrid = std::vector<std::vector<CellState>>;
 
-  Game(const GameType game_type = GameType::free_fight);
+  Game();
 
   bool CanBuild(const PlayerIndex player_index) const noexcept;
   bool CanBuildHere(const PlayerIndex player_index, const int x, const int y) const noexcept;
@@ -72,9 +72,9 @@ struct Game
   ///Is this coordinat a heart?
   bool IsHeart(const int x, const int y) const noexcept;
 
+
   ///Press all keys once
-  ///Some keys are only to be pressed once, like building pattern
-  void PressKeys(std::set<Key>& keys);
+  void PressKeys(const std::vector<Key>& keys);
 
   ///Set the content of a global grid cell
   ///When the player is building in a hangar, use Hangar::Set
@@ -85,18 +85,17 @@ struct Game
 
   private:
   GameState m_game_state;
-  GameType m_game_type;
   Grid m_grid;
   Hangars m_hangars;
-  Hearts m_hearts;
+  const Hearts m_hearts;
   Players m_players;
 
   ///Let a player try to close a hangar
   void CloseHangar(const PlayerIndex player_index);
 
-  static Hangars CreateInitialHangars(const GameType game_type);
-  static Hearts CreateInitialHearts(const GameType game_type);
-  static Players CreateInitialPlayers(const GameType game_type);
+  static Hangars CreateInitialHangars();
+  static Hearts CreateInitialHearts();
+  static Players CreateInitialPlayers();
 
   ///Let a player try to open a hangar
   void OpenHangar(const PlayerIndex player_index);

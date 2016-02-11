@@ -6,12 +6,13 @@
 
 namespace golf {
 
-struct Grid
+class Grid
 {
+  public:
   Grid(const int width, const int height);
-
-  int CountNeighbours(const int x, const int y);
+  int CountNeighbours(const int x, const int y) const noexcept;
   void FlipHorizontal() noexcept;
+  void FlipVertical() noexcept;
   CellType Get(const int x, const int y) const;
   int GetHeight() const noexcept;
   int GetWidth() const;

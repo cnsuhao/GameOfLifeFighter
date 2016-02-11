@@ -8,6 +8,8 @@
 
 #include "gameoflifefightercelltype.h"
 #include "gameoflifefightercellstate.h"
+#include "gameoflifefighterplayerindex.h"
+#include "sfmlgameoflifefighterresourceholder.h"
 
 namespace golf {
 
@@ -21,15 +23,12 @@ struct SfmlSpritesImpl
   SfmlSpritesImpl(const SfmlSpritesImpl&) = delete;
   SfmlSpritesImpl& operator=(const SfmlSpritesImpl&) = delete;
 
-  sf::Sprite& Get(const CellState& state) noexcept;
-
-  sf::Sprite& Get(
-    const int selected_by,   //0: no-one, 1: player1, 2: player2
-    const int hangar_of,     //0: no-one, 1: player1, 2: player2
-    const int heart_of,      //0: no-one, 1: player1, 2: player2
-    const bool is_building,  //Has the player built something on this square?
-    const CellType cell_type 
-  );
+  sf::Texture& Get(const CellType& cell_type) noexcept;
+  sf::Texture& Get(const HangarOf& hangar_of) noexcept;
+  sf::Texture& Get(const HeartOf& heart_of) noexcept;
+  sf::Texture& Get(const IsBuilding& is_building) noexcept;
+  sf::Texture& Get(const PlayerIndex& player_index) noexcept;
+  //sf::Texture& Get(const SelectedBy& selected_by) noexcept;
 
   int GetHeight() const noexcept { return 6; }
   int GetWidth() const noexcept { return 6; }
@@ -37,14 +36,12 @@ struct SfmlSpritesImpl
   #ifndef NDEBUG
   static void Test() noexcept;
   #endif
-
-  std::map<CellState,sf::Sprite> m_sprites;
-  std::map<CellState,sf::Sprite> m_textures;
-  sf::Texture m_texture_alive;
-  sf::Texture m_texture_empty;
-  sf::Texture m_texture_hangar_blue;
-  sf::Texture m_texture_hangar_red;
-
+  ResourceHolder<sf::Texture,CellType> m_cell_type_textures;
+  ResourceHolder<sf::Texture,HangarOf> m_hangar_of_textures;
+  ResourceHolder<sf::Texture,HeartOf> m_heart_of_textures;
+  ResourceHolder<sf::Texture,IsBuilding> m_is_building_textures;
+  ResourceHolder<sf::Texture,PlayerIndex> m_player_index_textures;
+  //ResourceHolder<sf::Texture,SelectedBy> m_selected_by_textures;
   friend class SfmlSprites;
 };
 

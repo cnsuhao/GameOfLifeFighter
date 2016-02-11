@@ -3,7 +3,15 @@
 #include <cassert>
 #include <stdexcept>
 
-golf::CellType golf::GetOther(const CellType c)
+std::vector<golf::CellType> golf::GetAllCellTypes() noexcept
+{
+  std::vector<CellType> v;
+  v.push_back(CellType::empty);
+  v.push_back(CellType::alive);
+  return v;
+}
+
+golf::CellType golf::GetOther(const CellType c) noexcept
 {
   switch (c)
   {

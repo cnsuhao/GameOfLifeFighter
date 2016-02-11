@@ -28,14 +28,14 @@
 //}
 //}
 
-DEFINE_APPLICATION_MAIN(MasterControl);
+URHO3D_DEFINE_APPLICATION_MAIN(MasterControl);
 
 MasterControl::MasterControl(Context *context):
     Application(context),
     cache_{GetSubsystem<ResourceCache>()},
     renderer_{GetSubsystem<Renderer>()},
-    paused_(false),
-    stepInterval_{0.666f},
+    paused_{false},
+    stepInterval_{0.23f},
     sinceStep_{stepInterval_}
 {
     human_[static_cast<int>(golf::PlayerIndex::player1)] = true;
@@ -46,10 +46,10 @@ MasterControl::MasterControl(Context *context):
 void MasterControl::Setup()
 {
     // Modify engine startup parameters.
-    //Set custom window title and icon.
+    // Set custom window title.
     engineParameters_["WindowTitle"] = "G.O.L.F.";
     engineParameters_["LogName"] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"golf.log";
-    engineParameters_["FullScreen"] = true;
+//    engineParameters_["FullScreen"] = false;
 //    engineParameters_["Headless"] = false;
 //    engineParameters_["WindowWidth"] = 960;
 //    engineParameters_["WindowHeight"] = 600;
@@ -58,6 +58,7 @@ void MasterControl::Start()
 {
     new InputMaster(context_, this);
     graphics_ = GetSubsystem<Graphics>();
+    game_ = new golf::Game();
 
     // Get default style
     defaultStyle_ = cache_->GetResource<XMLFile>("UI/DefaultStyle.xml");
@@ -77,15 +78,14 @@ void MasterControl::Start()
     musicSource->SetSoundType(SOUND_MUSIC);
     musicSource->Play(music);
 
-    game_ = new golf::Game();
 }
 
 void MasterControl::SubscribeToEvents()
 {
     //Subscribe HandleUpdate() function for processing update events
-    SubscribeToEvent(E_UPDATE, HANDLER(MasterControl, HandleUpdate));
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MasterControl, HandleUpdate));
     //Subscribe scene update event.
-    SubscribeToEvent(E_SCENEUPDATE, HANDLER(MasterControl, HandleSceneUpdate));
+    SubscribeToEvent(E_SCENEUPDATE, URHO3D_HANDLER(MasterControl, HandleSceneUpdate));
 }
 
 void MasterControl::Stop()
@@ -137,8 +137,8 @@ void MasterControl::CreateScene()
 
     //Create octree, use default volume (-1000, -1000, -1000) to (1000,1000,1000)
     world_.scene_->CreateComponent<Octree>();
-    PhysicsWorld* physicsWorld = world_.scene_->CreateComponent<PhysicsWorld>();
-    physicsWorld->SetGravity(Vector3::ZERO);
+    world_.physics_ = world_.scene_->CreateComponent<PhysicsWorld>();
+//    world_.physics_->SetEnabled(false);
     world_.scene_->CreateComponent<DebugRenderer>();
 
     //Create static lights
@@ -149,7 +149,6 @@ void MasterControl::CreateScene()
     blueLight->SetLightType(LIGHT_DIRECTIONAL);
     blueLight->SetBrightness(1.0f);
     blueLight->SetColor(Color(0.1f, 0.5f, 1.0f));
-//    blueLight->SetCastShadows(true);
 
     Node* redLightNode = world_.scene_->CreateChild("Sun");
     redLightNode->SetPosition(Vector3(-10.0f, 2.0f, 0.0f));
@@ -158,33 +157,32 @@ void MasterControl::CreateScene()
     redLight->SetLightType(LIGHT_DIRECTIONAL);
     redLight->SetBrightness(1.0f);
     redLight->SetColor(Color(1.0f, 0.5f, 0.1f));
-//    redLight->SetCastShadows(true);
 
     cellMaster_ = new CellMaster(context_, this);
 
-    //Create camera
+    //Create camera(s)
     world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)] = new GOLFCam(context_, this, golf::PlayerIndex::player1);
-//    world_.cameras_[static_cast<int>(golf::PlayerIndex::player2)] = new GOLFCam(context_, this, golf::PlayerIndex::player2);
+    /*world_.cameras_[static_cast<int>(golf::PlayerIndex::player2)] = new GOLFCam(context_, this, golf::PlayerIndex::player2);
 
-//    int numViewports = Clamp(GetNumHumans(),1,4);
-//    renderer_->SetNumViewports(numViewports);
-//    // Set up the front camera viewport
-//    if (GetNumHumans()){
-//        for (int p = 0; p < human_.Size(); p++){
-//            int playerIndex = static_cast<int>(p);
-//            int cameraIndex = 0;
-//            int viewportWidth = graphics_->GetWidth() / (1 + (GetNumHumans() > 1));
-//            int viewportHeight = graphics_->GetHeight() / (1 + (GetNumHumans() > 2));
-//            if (human_[playerIndex]){
-//                SharedPtr<Viewport> player1Viewport(new Viewport(context_, world_.scene_, world_.cameras_[playerIndex]->camera_, IntRect(viewportWidth*(cameraIndex%2),viewportHeight*(cameraIndex>2), viewportWidth, viewportHeight)));
-//                renderer_->SetViewport(0, player1Viewport);
-//                cameraIndex++;
-//            }
-//        }
-//    } else {
-//        SharedPtr<Viewport> viewport(new Viewport(context_, world_.scene_, world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)]->camera_,IntRect(0,0, graphics_->GetWidth(), graphics_->GetHeight())));
-//        renderer_->SetViewport(0, viewport);
-//    }
+    int numViewports = Clamp(GetNumHumans(),1,4);
+    renderer_->SetNumViewports(numViewports);
+    // Set up the front camera viewport
+    if (GetNumHumans()){
+        for (int p = 0; p < human_.Size(); ++p){
+            int playerIndex = static_cast<int>(p);
+            int cameraIndex = 0;
+            int viewportWidth = graphics_->GetWidth() / (1 + (GetNumHumans() > 1));
+            int viewportHeight = graphics_->GetHeight() / (1 + (GetNumHumans() > 2));
+            if (human_[playerIndex]){
+                Viewport* player1Viewport{new Viewport(context_, world_.scene_, world_.cameras_[playerIndex]->camera_, IntRect(viewportWidth*(cameraIndex%2),viewportHeight*(cameraIndex>2), viewportWidth, viewportHeight))};
+                renderer_->SetViewport(0, player1Viewport);
+                ++cameraIndex;
+            }
+        }
+    } else {
+        SharedPtr<Viewport> viewport(new Viewport(context_, world_.scene_, world_.cameras_[static_cast<int>(golf::PlayerIndex::player1)]->camera_,IntRect(0,0, graphics_->GetWidth(), graphics_->GetHeight())));
+        renderer_->SetViewport(0, viewport);
+    }*/
 }
 
 Color MasterControl::RandomColor()
@@ -199,8 +197,8 @@ Color MasterControl::RandomColor()
 int MasterControl::GetNumHumans() const
 {
     int numHumans = 0;
-    for (int p = 0; p < human_.Size(); p++){
-        if (human_[p]) numHumans++;
+    for (int p = 0; p < human_.Size(); ++p){
+//        if (human_[p]) ++numHumans;
     }
     return numHumans;
 }
@@ -219,4 +217,20 @@ void MasterControl::HandleSceneUpdate(StringHash eventType, VariantMap &eventDat
 }
 void MasterControl::HandlePostRenderUpdate(StringHash eventType, VariantMap &eventData)
 {
+}
+
+bool MasterControl::OctreeRayCast(PODVector<RayQueryResult> &hitResults, Ray ray, float distance)
+{
+    RayOctreeQuery query(hitResults, ray, RAY_TRIANGLE, distance, DRAWABLE_GEOMETRY);
+    world_.octree_->Raycast(query);
+    if (hitResults.Size()) return true;
+    else return false;
+}
+
+float MasterControl::MinAngle(float lhs, float rhs)
+{
+    float angle = lhs - rhs;
+    if (angle > 180.0f) angle -= 360.0f;
+    else if (angle < -180.0f) angle += 360.0f;
+    return angle;
 }

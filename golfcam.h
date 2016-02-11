@@ -19,8 +19,9 @@
 #ifndef GOLFCAM_H
 #define GOLFCAM_H
 
-#include "urho3dhelper.h"
+#include <Urho3D/Urho3D.h>
 #include "mastercontrol.h"
+#include "cellmaster.h"
 
 namespace Urho3D {
 class Drawable;
@@ -36,14 +37,11 @@ using namespace Urho3D;
 
 class GOLFCam : public Object
 {
-    OBJECT(GOLFCam);
+    URHO3D_OBJECT(GOLFCam, Object);
     friend class MasterControl;
     friend class InputMaster;
 public:
     GOLFCam(Context *context, MasterControl* masterControl, golf::PlayerIndex player);
-
-    virtual void Start();
-    virtual void Stop();
 
     SharedPtr<Camera> camera_;
     SharedPtr<Viewport> viewport_;
@@ -53,22 +51,22 @@ public:
 
     Vector3 GetWorldPosition();
     Quaternion GetRotation();
+
+    void SetTargetRotation(float angle) { targetRotation_ = LucKey::Cycle(angle, 0.0f, 360.0f);}
+    IntVector2 CenterCoords();
 private:
     MasterControl* masterControl_;
-    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
-
     SharedPtr<Node> camNode_;
-
     golf::PlayerIndex player_;
     SharedPtr<RigidBody> rigidBody_;
     Zone* zone_;
-    double yaw_;
-    double pitch_;
-    //double roll_ = 0.0;
-    double yawDelta_;
-    double pitchDelta_;
-    double forceMultiplier;
+    float rotation_;
+    float targetRotation_;
+
+    void Rotate(float rotation);
+
     void SetupViewport();
+    void HandleSceneUpdate(StringHash eventType, VariantMap &eventData);
 };
 
 #endif // GOLFCAM_H

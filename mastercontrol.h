@@ -21,7 +21,8 @@
 
 #include <Urho3D/Urho3D.h>
 
-#include "urho3dhelper.h"
+#include "luckey.h"
+#include "gameoflifefightergame.h"
 
 namespace Urho3D {
 class Drawable;
@@ -40,6 +41,8 @@ typedef struct GameWorld
 {
     HashMap<int, GOLFCam*> cameras_;
     SharedPtr<Scene> scene_;
+    SharedPtr<PhysicsWorld> physics_;
+    SharedPtr<Octree> octree_;
     SharedPtr<Node> backgroundNode_;
     SharedPtr<Node> voidNode_;
     struct {
@@ -66,7 +69,7 @@ StringHash const N_SLOT = StringHash("Slot");
 
 class MasterControl : public Application
 {
-    OBJECT(MasterControl);
+    URHO3D_OBJECT(MasterControl, Application);
     friend class InputMaster;
 public:
     MasterControl(Context* context);
@@ -88,6 +91,9 @@ public:
     Color RandomColor();
     float GetStepProgress() { return sinceStep_/stepInterval_; }
     int GetNumHumans() const;
+
+    bool OctreeRayCast(PODVector<RayQueryResult> &hitResults, Ray ray, float distance);
+    float MinAngle(float lhs, float rhs);
 private:
     float stepInterval_;
     float sinceStep_;
@@ -108,7 +114,6 @@ private:
 
     void CreatePlatform(const Vector3 pos);
     void UpdateCursor(double timeStep);
-    bool CursorRayCast(double maxDistance, PODVector<RayQueryResult> &hitResults);
 
     bool paused_;
 };

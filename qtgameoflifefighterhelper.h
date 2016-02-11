@@ -1,7 +1,10 @@
 #ifndef QTGAMEOFLIFEFIGHTERHELPER_H
 #define QTGAMEOFLIFEFIGHTERHELPER_H
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include <QImage>
+#pragma GCC diagnostic pop
 
 namespace golf {
 

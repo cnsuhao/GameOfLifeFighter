@@ -19,6 +19,46 @@
 #ifndef INPUTMASTER_H
 #define INPUTMASTER_H
 
+#include <Urho3D/Urho3D.h>
+#include "mastercontrol.h"
+
+namespace Urho3D {
+class Drawable;
+class Node;
+class Scene;
+class Sprite;
+}
+
+using namespace Urho3D;
+
+enum class JoystickButton {SELECT, LEFTSTICK, RIGHTSTICK, START, DPAD_UP, DPAD_RIGHT, DPAD_DOWN, DPAD_LEFT, L2, R2, L1, R1, TRIANGLE, CIRCLE, CROSS, SQUARE};
+
+class InputMaster : public Object
+{
+    URHO3D_OBJECT(InputMaster, Object);
+public:
+    InputMaster(Context* context, MasterControl* masterControl);
+    void ReadJoysticks();
+private:
+    MasterControl* masterControl_;
+    Input* input_;
+
+    HashMap<int, golf::Key> keyBindings_;
+    HashMap<int, golf::Key> buttonBindings_;
+    std::set<golf::Key> pressedKeys_;
+
+    void HandleUpdate(StringHash eventType, VariantMap &eventData);
+    void HandleKeyDown(StringHash eventType, VariantMap &eventData);
+    void HandleKeyUp(StringHash eventType, VariantMap &eventData);
+    void HandleJoyButtonDown(StringHash eventType, VariantMap &eventData);
+    void HandleJoyButtonUp(StringHash eventType, VariantMap &eventData);
+};
+
+#endif // INPUTMASTER_H
+
+/*#ifndef INPUTMASTER_H
+#define INPUTMASTER_H
+
 #include "urho3dhelper.h"
 #include "mastercontrol.h"
 
@@ -50,3 +90,4 @@ private:
 };
 
 #endif // INPUTMASTER_H
+*/

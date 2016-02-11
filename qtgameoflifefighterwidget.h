@@ -3,8 +3,13 @@
 
 #include <set>
 #include <map>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include <QWidget>
 #include <QPixmap>
+#pragma GCC diagnostic pop
+
 #include "gameoflifefightergame.h"
 
 namespace Ui {
@@ -37,13 +42,15 @@ private:
   Ui::QtGameOfLifeFighterWidget *ui;
   Game m_game;
   std::map<int,Key> m_key_map;
-  std::set<Key> m_keys;
+  std::vector<Key> m_keys;
   QPixmap m_pixmap;
 
   ///The number of ticks the game is running
   int m_tick;
 
+  void AddKey(const Key key);
   static std::map<int,Key> CreateInitialKeyMap() noexcept;
+  void RemoveKey(const Key key);
 
   #ifndef NDEBUG
   void Test() noexcept;

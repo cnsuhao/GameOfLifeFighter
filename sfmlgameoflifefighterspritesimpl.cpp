@@ -11,217 +11,69 @@
 #include "gameoflifefightercellstate.h"
 
 golf::SfmlSpritesImpl::SfmlSpritesImpl()
-  : m_sprites{},
-    m_texture_alive{},
-    m_texture_empty{},
-    m_texture_hangar_blue{},
-    m_texture_hangar_red{}
+  :
+    m_cell_type_textures{},
+    m_hangar_of_textures{},
+    m_heart_of_textures{},
+    m_is_building_textures{},
+    m_player_index_textures{}
+    //m_selected_by_textures{}
 {
   #ifndef NDEBUG
   Test();
   #endif
+  m_cell_type_textures.Load(CellType::empty,"../GameOfLifeFighter/Resources/Sprites/Empty.png");
+  m_cell_type_textures.Load(CellType::alive,"../GameOfLifeFighter/Resources/Sprites/Alive.png");
 
-  //Create textures
-  const std::string alive_file{"../GameOfLifeFighter/Resources/Sprites/Alive.png"};
-  const std::string empty_file{"../GameOfLifeFighter/Resources/Sprites/Empty.png"};
-  const std::string hangar_blue_file{"../GameOfLifeFighter/Resources/Sprites/HangarBlue.png"};
-  const std::string hangar_red_file{"../GameOfLifeFighter/Resources/Sprites/HangarRed.png"};
+  m_hangar_of_textures.Load(HangarOf::none,"../GameOfLifeFighter/Resources/Sprites/Transparent.png");
+  m_hangar_of_textures.Load(HangarOf::player1,"../GameOfLifeFighter/Resources/Sprites/HangarBlue.png");
+  m_hangar_of_textures.Load(HangarOf::player2,"../GameOfLifeFighter/Resources/Sprites/HangarRed.png");
 
-  assert(Helper().IsRegularFile(alive_file));
-  assert(Helper().IsRegularFile(empty_file));
-  assert(Helper().IsRegularFile(hangar_blue_file));
-  assert(Helper().IsRegularFile(hangar_red_file));
+  m_heart_of_textures.Load(HeartOf::none,"../GameOfLifeFighter/Resources/Sprites/Transparent.png");
+  m_heart_of_textures.Load(HeartOf::player1,"../GameOfLifeFighter/Resources/Sprites/HeartBlue.png");
+  m_heart_of_textures.Load(HeartOf::player2,"../GameOfLifeFighter/Resources/Sprites/HeartRed.png");
 
-  m_texture_alive.loadFromFile(alive_file,sf::IntRect(0,0,6,6));
-  m_texture_empty.loadFromFile(empty_file,sf::IntRect(0,0,6,6));
-  m_texture_hangar_blue.loadFromFile(hangar_blue_file,sf::IntRect(0,0,6,6));
-  m_texture_hangar_red.loadFromFile(hangar_red_file,sf::IntRect(0,0,6,6));
+  m_is_building_textures.Load(IsBuilding::none,"../GameOfLifeFighter/Resources/Sprites/Transparent.png");
+  m_is_building_textures.Load(IsBuilding::player1,"../GameOfLifeFighter/Resources/Sprites/HeartBlue.png");
+  m_is_building_textures.Load(IsBuilding::player2,"../GameOfLifeFighter/Resources/Sprites/HeartRed.png");
 
-  //Create textures
-  for (const auto cell_state: GetAllCellStates())
-  {
-    sf::Texture texture;
+  m_player_index_textures.Load(PlayerIndex::player1,"../GameOfLifeFighter/Resources/Sprites/CursorBlue.png");
+  m_player_index_textures.Load(PlayerIndex::player2,"../GameOfLifeFighter/Resources/Sprites/CursorRed.png");
 
-    const sf::Texture& cell_type_texture =
-      ( cell_state.GetCellType() == CellType::empty ? m_texture_empty : m_texture_alive);
-
-    texture.
-    //Add hangar color
-    if (cell_state.GetHangarOf() == 1)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_red;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(*sprite.getTexture(),sf::RenderStates());
-    }
-    else if (cell_state.GetHangarOf() == 2)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_blue;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(sprite,sf::RenderStates::Default);
-    }
-
-
-    //const int hash{cell_state.GetHash()};
-    //sprite.setColor(sf::Color(255-hash,255-hash,255-hash,255));
-    m_textures.insert(std::make_pair(cell_state,texture));
-  }
-
-
-  //Create sprites
-  for (const auto cell_state: GetAllCellStates())
-  {
-    //All cells are either empty or alive
-    const sf::Texture& cell_type_texture =
-      ( cell_state.GetCellType() == CellType::empty ? m_texture_empty : m_texture_alive);
-    sf::Sprite sprite(cell_type_texture);
-
-    //Add hangar color
-    if (cell_state.GetHangarOf() == 1)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_red;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(*sprite.getTexture(),sf::RenderStates());
-    }
-    else if (cell_state.GetHangarOf() == 2)
-    {
-      const sf::Texture& hangar_texture = m_texture_hangar_blue;
-      sf::Sprite hangar_sprite(hangar_texture);
-      hangar_sprite.draw(sprite,sf::RenderStates::Default);
-    }
-
-
-    //const int hash{cell_state.GetHash()};
-    //sprite.setColor(sf::Color(255-hash,255-hash,255-hash,255));
-    m_sprites.insert(std::make_pair(cell_state,sprite));
-  }
+  //m_selected_by_textures.Load(SelectedBy::none,"../GameOfLifeFighter/Resources/Sprites/Transparent.png");
+  //m_selected_by_textures.Load(SelectedBy::player1,"../GameOfLifeFighter/Resources/Sprites/SelectedByBlue.png");
+  //m_selected_by_textures.Load(SelectedBy::player2,"../GameOfLifeFighter/Resources/Sprites/SelectedByRed.png");
 }
 
-sf::Sprite& golf::SfmlSpritesImpl::Get(const CellState& state) noexcept
+sf::Texture& golf::SfmlSpritesImpl::Get(const CellType& cell_type) noexcept
 {
-  assert(m_sprites.count(state) == 1);
-  return m_sprites[state];
+  return m_cell_type_textures.Get(cell_type);
 }
 
-/*
-QImage golf::SfmlSprite::Create(
-  const int selected_by,   //0: no-one, 1: player1, 2: player2
-  const int hangar_of,     //0: no-one, 1: player1, 2: player2
-  const int heart_of,      //0: no-one, 1: player1, 2: player2
-  const bool is_building,  //Has the player built something on this square?
-  const CellType cell_type
-) const
+sf::Texture& golf::SfmlSpritesImpl::Get(const HangarOf& hangar_of) noexcept
 {
-  const int width{GetWidth()};
-  const int height{GetHeight()};
-  QImage image(width,height,QImage::Format_ARGB32);
-  assert(height == 6);
-  assert(width  == 6);
-
-  //Is alive
-  {
-    QColor qtcolor = Qt::black;
-    if (cell_type == CellType::alive)
-    {
-      qtcolor = Qt::white;
-      switch (heart_of)
-      {
-        case 0: break;
-        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
-        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
-      }
-    }
-    else
-    {
-      qtcolor = Qt::black;
-      switch (heart_of)
-      {
-        case 0: break;
-        case 1: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player1),qtcolor); break;
-        case 2: qtcolor = QtHelper().Blend(ToColor(PlayerIndex::player2),qtcolor); break;
-      }
-    }
-    for (int y=1;y!=6; ++y)
-    {
-      for (int x=1;x!=6; ++x)
-      {
-        image.setPixel(x,y,qtcolor.rgb());
-      }
-    }
-  }
-
-
-  //Draw mono-color selection border
-  {
-    QColor qtcolor = Qt::black;
-    switch (hangar_of)
-    {
-      case 0: qtcolor = Qt::black; break;
-      case 1:
-        qtcolor = QtHelper().Blend(qRgb(0,0,0),ToColor(PlayerIndex::player1));
-        qtcolor = QtHelper().Blend(qRgb(0,0,0),qtcolor);
-      break;
-      //case 1: qtcolor = ToColor(PlayerIndex::player1); break;
-      case 2:
-        qtcolor = QtHelper().Blend(qRgb(0,0,128),ToColor(PlayerIndex::player2));
-        qtcolor = QtHelper().Blend(qRgb(0,0,128),qtcolor);
-        break;
-      //case 2: qtcolor = ToColor(PlayerIndex::player2); break; //Blue is always less bright
-    }
-    for (int x=0; x!=width; ++x)
-    {
-      image.setPixel(x,0,qtcolor.rgb());
-      //image.setPixel(x,height - 1,qtcolor.rgb());
-    }
-    for (int y=0; y!=height; ++y)
-    {
-      image.setPixel(0,y,qtcolor.rgb());
-      //image.setPixel(width - 1,y,qtcolor.rgb());
-    }
-  }
-
-  //Draw player
-  if (selected_by != 0)
-  {
-    QColor qtcolor = Qt::black;
-    switch (selected_by)
-    {
-      case 1: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player1)); break;
-      case 2: qtcolor = QtHelper().Blend(Qt::white,ToColor(PlayerIndex::player2)); break;
-      default: assert(!"Should not get here");
-    }
-    image.setPixel((width / 2)-0,(height / 2)-0,qtcolor.rgb());
-    image.setPixel((width / 2)-0,(height / 2)-1,qtcolor.rgb());
-    image.setPixel((width / 2)-1,(height / 2)-0,qtcolor.rgb());
-    image.setPixel((width / 2)-1,(height / 2)-1,qtcolor.rgb());
-  }
-
-  //Draw mono-color of building
-  if (is_building)
-  {
-    QColor qtcolor = Qt::white;
-    switch (hangar_of)
-    {
-      case 0: qtcolor = Qt::darkGray; break;
-      case 1: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player1)); break;
-      //case 1: qtcolor = ToColor(PlayerIndex::player1); break;
-      case 2: qtcolor = QtHelper().Blend(qtcolor,ToColor(PlayerIndex::player2)); break;
-      //case 2: qtcolor = ToColor(PlayerIndex::player2); break;
-    }
-    const int offset = 0;
-    for (int x=offset; x!=width-1-offset; ++x)
-    {
-      image.setPixel(x,offset,qtcolor.rgb());
-      image.setPixel(x,height-1-offset,qtcolor.rgb());
-    }
-    for (int y=offset; y!=height-1-offset; ++y)
-    {
-      image.setPixel(offset,y,qtcolor.rgb());
-      image.setPixel(width-offset-1,y,qtcolor.rgb());
-    }
-  }
-  return image;
+  return m_hangar_of_textures.Get(hangar_of);
 }
-*/
+
+sf::Texture& golf::SfmlSpritesImpl::Get(const HeartOf& heart_of) noexcept
+{
+  return m_heart_of_textures.Get(heart_of);
+}
+
+sf::Texture& golf::SfmlSpritesImpl::Get(const IsBuilding& is_building) noexcept
+{
+  return m_is_building_textures.Get(is_building);
+}
+
+sf::Texture& golf::SfmlSpritesImpl::Get(const PlayerIndex& player_index) noexcept
+{
+  return m_player_index_textures.Get(player_index);
+}
+
+//sf::Texture& golf::SfmlSpritesImpl::Get(const SelectedBy& selected_by) noexcept
+//{
+//  return m_selected_by_textures.Get(selected_by);
+//}
 
 #ifndef NDEBUG
 void golf::SfmlSpritesImpl::Test() noexcept
@@ -237,11 +89,36 @@ void golf::SfmlSpritesImpl::Test() noexcept
   //Create one pixmap with all pictures
   {
     SfmlSpritesImpl s;
-    for (const auto cell_state: GetAllCellStates())
+    for (const auto cell_type: GetAllCellTypes())
     {
-      assert(s.Get(cell_state).getTexture());
+      assert(s.Get(cell_type).getSize().x == 6);
+      assert(s.Get(cell_type).getSize().y == 6);
     }
-
+    for (const auto hangar_of: GetAllHangarOfs())
+    {
+      assert(s.Get(hangar_of).getSize().x == 6);
+      assert(s.Get(hangar_of).getSize().y == 6);
+    }
+    for (const auto heart_of: GetAllHeartOfs())
+    {
+      assert(s.Get(heart_of).getSize().x == 6);
+      assert(s.Get(heart_of).getSize().y == 6);
+    }
+    //for (const auto selected_by: GetAllSelectedBys())
+    //{
+    //  assert(s.Get(selected_by).getSize().x == 6);
+    //  assert(s.Get(selected_by).getSize().y == 6);
+    //}
+    for (const auto player_index: GetAllPlayerIndices())
+    {
+      assert(s.Get(player_index).getSize().x == 6);
+      assert(s.Get(player_index).getSize().y == 6);
+    }
+    for (const auto is_building: GetAllIsBuildings())
+    {
+      assert(s.Get(is_building).getSize().x == 6);
+      assert(s.Get(is_building).getSize().y == 6);
+    }
   }
 }
 #endif

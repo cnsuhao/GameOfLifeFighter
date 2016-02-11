@@ -3,14 +3,12 @@
 #include <cassert>
 
 golf::CellState::CellState(
-    const int selected_by,
-    const int hangar_of,
-    const int heart_of,
-    const bool is_building,
+    const HangarOf hangar_of,
+    const HeartOf heart_of,
+    const IsBuilding is_building,
     const CellType cell_type
-) : m_selected_by{selected_by},
-    m_hangar_of{hangar_of},
-    m_hash{CalculateHash(selected_by,hangar_of,heart_of,is_building,cell_type)},
+) : m_hangar_of{hangar_of},
+    m_hash{CalculateHash(hangar_of,heart_of,is_building,cell_type)},
     m_heart_of{heart_of},
     m_is_building{is_building},
     m_cell_type{cell_type}
@@ -18,77 +16,80 @@ golf::CellState::CellState(
   #ifndef NDEBUG
   Test();
   #endif
-
-  assert(selected_by >= 0 && selected_by <= 2 && "0: no-one, 1: player1, 2: player2");
-  assert(hangar_of >= 0 && hangar_of <= 2 && "0: no-one, 1: player1, 2: player2");
-  assert(heart_of >= 0 && heart_of <= 2 && "0: no-one, 1: player1, 2: player2");
-
 }
 
 int golf::CellState::CalculateHash(
-  const int selected_by,   //0: no-one, 1: player1, 2: player2
-  const int hangar_of,     //0: no-one, 1: player1, 2: player2
-  const int heart_of,      //0: no-one, 1: player1, 2: player2
-  const bool is_building,  //Has the player built something on this square?
+  const HangarOf hangar_of,     //0: no-one, 1: player1, 2: player2
+  const HeartOf heart_of,      //0: no-one, 1: player1, 2: player2
+  const IsBuilding is_building,  //Has the player built something on this square?
   const CellType cell_type
 ) noexcept
 {
   int hash = 0;
   hash += (cell_type == CellType::alive ? 1 : 0);
-  hash += (is_building      ?   2 : 0);
-  hash += (heart_of == 1    ?   4 : 0);
-  hash += (heart_of == 2    ?   8 : 0);
-  hash += (hangar_of == 1   ?  16 : 0);
-  hash += (hangar_of == 2   ?  32 : 0);
-  hash += (selected_by == 1 ?  64 : 0);
-  hash += (selected_by == 2 ? 128 : 0);
+  hash += (is_building == IsBuilding::player1 ? 2 : 0);
+  hash += (is_building == IsBuilding::player2 ? 4 : 0);
+  hash += (heart_of == HeartOf::player1 ? 8 : 0);
+  hash += (heart_of == HeartOf::player2 ? 16 : 0);
+  hash += (hangar_of == HangarOf::player1 ? 32 : 0);
+  hash += (hangar_of == HangarOf::player2 ? 64 : 0);
   return hash;
 }
-
-void golf::CellState::SetSelectedBy(const int selected_by)
-{
-  assert(selected_by >= 0 && selected_by <= 2 && "0: no-one, 1: player1, 2: player2");
-  m_selected_by = selected_by;
-}
-
-void golf::CellState::SetHangarOf(const int hangar_of)
-{
-  assert(hangar_of >= 0 && hangar_of <= 2 && "0: no-one, 1: player1, 2: player2");
-  m_hangar_of = hangar_of;
-
-}
-
-void golf::CellState::SetHeartOf(const int heart_of)
-{
-  assert(heart_of >= 0 && heart_of <= 2 && "0: no-one, 1: player1, 2: player2");
-  m_heart_of = heart_of;
-}
-
 
 std::vector<golf::CellState> golf::GetAllCellStates()
 {
   //Check if all pictures are different
   std::vector<CellState> v;
-  for (int selected_by = 0; selected_by <= 2; ++selected_by)
+  for (const HangarOf hangar_of: GetAllHangarOfs())
   {
-    for (int hangar_of = 0; hangar_of <= 2; ++hangar_of)
+    for (const HeartOf heart_of: GetAllHeartOfs())
     {
-      for (int heart_of = 0; heart_of <= 2; ++heart_of)
+      for (const IsBuilding is_building: GetAllIsBuildings() )
       {
-        for (bool is_building: { true, false} )
+        for (const CellType cell_type: GetAllCellTypes())
         {
-          for (CellType cell_type: { CellType::empty, CellType::alive} )
-          {
-            v.push_back(CellState(selected_by,hangar_of,heart_of,is_building,cell_type));
-          }
+          v.push_back(CellState(hangar_of,heart_of,is_building,cell_type));
         }
       }
     }
   }
-
   return v;
 }
 
+void golf::CellState::SetHangarOf(const HangarOf hangar_of) noexcept
+{
+  m_hangar_of = hangar_of;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
+
+void golf::CellState::SetHeartOf(const HeartOf heart_of) noexcept
+{
+  m_heart_of = heart_of;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
+
+void golf::CellState::SetIsBuilding(const IsBuilding is_building) noexcept
+{
+  m_is_building = is_building;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
+
+void golf::CellState::SetIsBuilding(const PlayerIndex is_building) noexcept
+{
+  switch (is_building)
+  {
+    case PlayerIndex::player1: SetIsBuilding(IsBuilding::player1); break;
+    case PlayerIndex::player2: SetIsBuilding(IsBuilding::player2); break;
+  }
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
+
+
+void golf::CellState::SetCellType(const CellType cell_type) noexcept
+{
+  m_cell_type = cell_type;
+  m_hash = CalculateHash(m_hangar_of,m_heart_of,m_is_building,m_cell_type);
+}
 
 #ifndef NDEBUG
 void golf::CellState::Test() noexcept

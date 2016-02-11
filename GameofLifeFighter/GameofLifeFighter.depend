@@ -1,9 +1,0 @@
-# depslib dependency file v1.0
-1431367184 source:/home/freek/Documents/Cpp_Files/GameOfLifeFighter/grid.cpp
-	"grid.h"
-	<cassert>
-	<cstdlib>
-
-1431367184 /home/freek/Documents/Cpp_Files/GameOfLifeFighter/grid.h
-	<vector>
-

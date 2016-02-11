@@ -19,9 +19,8 @@
 #ifndef CELLRING_H
 #define CELLRING_H
 
+#include <Urho3D/Urho3D.h>
 #include "cellmaster.h"
-
-#include "urho3dhelper.h"
 
 namespace Urho3D {
 class Drawable;
@@ -34,7 +33,7 @@ using namespace Urho3D;
 
 class CellRing : public Object
 {
-    OBJECT(CellRing);
+    URHO3D_OBJECT(CellRing, Object);
     friend class CellMaster;
     friend class InputMaster;
     friend class Cell;
@@ -44,7 +43,11 @@ private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
     int ringNumber_;
+    float rotation_;
+    float targetRotation_;
     void Rotate(float rotation);
+    void SetTargetRotation(float angle);
+    void HandleUpdate(StringHash eventType, VariantMap &eventData);
 };
 
 #endif // CELLRING_H

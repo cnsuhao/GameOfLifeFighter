@@ -22,22 +22,41 @@
 CellRing::CellRing(Context *context, MasterControl *masterControl, CellMaster* cellMaster, int circumference, int ringNumber):
     Object(context),
     masterControl_{masterControl},
-    ringNumber_{ringNumber}
+    ringNumber_{ringNumber},
+    rotation_{0.0f}
 {
     masterControl_ = masterControl;
 
     rootNode_ = cellMaster->rootNode_->CreateChild("CellRing");
     rootNode_->SetPosition(Vector3::FORWARD*10.0f);
 
-    for (int i = 0; i < circumference; i++){
-        Cell* newCell = new Cell(context_, masterControl_, this);
+    for (int i = 0; i < circumference; ++i){
+        IntVector2 cellCoords = IntVector2(ringNumber_, i);
+        Cell* newCell = new Cell(context_, masterControl_, this, cellCoords);
         newCell->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(
                                              360.0f*i/circumference, 0.0f, 0.0f), TS_WORLD);
-        cellMaster->AddCellToMap(IntVector2(ringNumber_, i), newCell);
+        cellMaster->AddCellToMaps(newCell, cellCoords);
     }
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(CellRing, HandleUpdate));
 }
 
 void CellRing::Rotate(float angle)
 {
+    rotation_ += angle;
+    rotation_ = LucKey::Cycle(rotation_, 0.0f, 360.0f);
     rootNode_->Rotate(Quaternion(angle, Vector3::LEFT), TS_LOCAL);
+}
+
+void CellRing::SetTargetRotation(float angle)
+{
+    targetRotation_ = LucKey::Cycle(angle, 0.0f, 360.0f);
+}
+
+void CellRing::HandleUpdate(StringHash eventType, VariantMap &eventData)
+{
+    float difference = targetRotation_ - rotation_;
+    if (abs(difference - 360.0f) < abs(difference)) difference -= 360.0f;
+    if (abs(difference + 360.0f) < abs(difference)) difference += 360.0f;
+
+    Rotate(Lerp(0.0f, difference, eventData[Update::P_TIMESTEP].GetFloat()* 5.0f));
 }

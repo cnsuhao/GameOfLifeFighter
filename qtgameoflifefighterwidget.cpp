@@ -1,13 +1,18 @@
 #include "qtgameoflifefighterwidget.h"
 
 #include <cassert>
+#include <chrono>
 #include <iostream>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include <QImage>
 #include <QPainter>
 #include <QPixmap>
 #include <QTimer>
 #include <QKeyEvent>
 #include <QDesktopWidget>
+#pragma GCC diagnostic pop
 
 #include <SFML/Graphics.hpp>
 
@@ -17,7 +22,11 @@
 #include "gameoflifefightertrace.h"
 #include "gameoflifefightertrace.h"
 #include "gameoflifefighterplayerindex.h"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include "ui_qtgameoflifefighterwidget.h"
+#pragma GCC diagnostic pop
 
 golf::QtGameOfLifeFighterWidget::QtGameOfLifeFighterWidget(
   const int width,
@@ -64,6 +73,15 @@ golf::QtGameOfLifeFighterWidget::~QtGameOfLifeFighterWidget()
   delete ui;
 }
 
+void golf::QtGameOfLifeFighterWidget::AddKey(const Key key)
+{
+  if (std::count(std::begin(m_keys),std::end(m_keys),key) == 0)
+  {
+    m_keys.push_back(key);
+  }
+  assert(std::count(std::begin(m_keys),std::end(m_keys),key) == 1);
+}
+
 std::map<int,golf::Key> golf::QtGameOfLifeFighterWidget::CreateInitialKeyMap() noexcept
 {
   std::map<int,Key> m;
@@ -98,21 +116,28 @@ void golf::QtGameOfLifeFighterWidget::keyPressEvent(QKeyEvent * e)
 {
   const auto iter = m_key_map.find(e->key());
   if (iter == std::end(m_key_map)) return;
-  m_keys.insert( (*iter).second );
+  AddKey((*iter).second);
 }
 
 void golf::QtGameOfLifeFighterWidget::keyReleaseEvent(QKeyEvent * e)
 {
   const auto iter = m_key_map.find(e->key());
   if (iter == std::end(m_key_map)) return;
-  m_keys.erase( (*iter).second );
+  RemoveKey((*iter).second);
 }
 
 void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
 {
   sf::Joystick::update();
+  const int key_activate{0};
+  const int key_build{2};
+  const int key_glider{3};
+  const int key_spaceship{1};
+  const int key_grower{4};
+
   if (sf::Joystick::isConnected(0))
   {
+<<<<<<< HEAD
     //const int n_buttons = sf::Joystick::getButtonCount(0);
 
     const bool pressed0{sf::Joystick::isButtonPressed(0,0)};
@@ -180,18 +205,99 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
       const double dy{sf::Joystick::getAxisPosition(1, sf::Joystick::Y)};
       if (dy < -50.0) { m_keys.insert(Key::up2  );  }
       if (dy >  50.0) { m_keys.insert(Key::down2);  }
+=======
+    //First move, then build
+    RemoveKey(Key::up2);
+    RemoveKey(Key::right2);
+    RemoveKey(Key::down2);
+    RemoveKey(Key::left2);
+    if (sf::Joystick::hasAxis(0, sf::Joystick::X))
+    {
+      const double dx{sf::Joystick::getAxisPosition(0, sf::Joystick::X)};
+      if (dx < -50.0) { AddKey(Key::left2 ); }
+      if (dx >  50.0) { AddKey(Key::right2); }
     }
+    if (sf::Joystick::hasAxis(0, sf::Joystick::Y))
+    {
+      const double dy{sf::Joystick::getAxisPosition(0, sf::Joystick::Y)};
+      if (dy < -50.0) { AddKey(Key::up2  );  }
+      if (dy >  50.0) { AddKey(Key::down2);  }
+    }
+
+    const bool pressed0{sf::Joystick::isButtonPressed(0,key_activate)};
+    if (pressed0) { AddKey(Key::toggle_hangar2); }
+    const bool pressed1{sf::Joystick::isButtonPressed(0,key_build)};
+    if ( pressed1) { AddKey(Key::toggle_cell2); }
+    if (!pressed1) { RemoveKey(Key::toggle_cell2); }
+    const bool pressed2{sf::Joystick::isButtonPressed(0,key_glider)};
+    if ( pressed2) { AddKey(Key::pattern_a2); }
+    const bool pressed3{sf::Joystick::isButtonPressed(0,key_spaceship)};
+    if ( pressed3) { AddKey(Key::pattern_b2); }
+    const bool pressed4{sf::Joystick::isButtonPressed(0,key_grower)};
+    if ( pressed4) { AddKey(Key::pattern_c2); }
+  }
+
+  if (sf::Joystick::isConnected(1))
+  {
+    //First move, then build
+    RemoveKey(Key::up1);
+    RemoveKey(Key::right1);
+    RemoveKey(Key::down1);
+    RemoveKey(Key::left1);
+    if (sf::Joystick::hasAxis(1, sf::Joystick::X))
+    {
+      const double dx{sf::Joystick::getAxisPosition(1, sf::Joystick::X)};
+      if (dx < -50.0) { AddKey(Key::left1 ); }
+      if (dx >  50.0) { AddKey(Key::right1); }
+    }
+    if (sf::Joystick::hasAxis(1, sf::Joystick::Y))
+    {
+      const double dy{sf::Joystick::getAxisPosition(1, sf::Joystick::Y)};
+      if (dy < -50.0) { AddKey(Key::up1  );  }
+      if (dy >  50.0) { AddKey(Key::down1);  }
+>>>>>>> 2ad012b79c0089df8248475c457f0154f7e480a6
+    }
+
+    const bool pressed0{sf::Joystick::isButtonPressed(1,key_activate)};
+    if (pressed0) { AddKey(Key::toggle_hangar1); }
+    const bool pressed1{sf::Joystick::isButtonPressed(1,key_build)};
+    if ( pressed1) { AddKey(Key::toggle_cell1); }
+    if (!pressed1) { RemoveKey(Key::toggle_cell1); }
+    const bool pressed2{sf::Joystick::isButtonPressed(1,key_glider)};
+    if ( pressed2) { AddKey(Key::pattern_a1); }
+    const bool pressed3{sf::Joystick::isButtonPressed(1,key_spaceship)};
+    if ( pressed3) { AddKey(Key::pattern_b1); }
+    const bool pressed4{sf::Joystick::isButtonPressed(1,key_grower)};
+    if ( pressed4) { AddKey(Key::pattern_c1); }
   }
 }
 
 void golf::QtGameOfLifeFighterWidget::OnTimer()
 {
   ++m_tick;
-  if (m_tick % 3 == 0)
+  if (m_tick % 4 == 0)
   {
     m_game.Next();
+
+    //Game over? Then close the game after 5000 msecs
+    if (m_game.GetGameState() != GameState::playing)
+    {
+      QTimer::singleShot(5000,this,SLOT(close()));
+    }
   }
   m_game.PressKeys(m_keys);
+
+  //Keys manipulation
+  RemoveKey(Key::toggle_hangar1);
+  RemoveKey(Key::toggle_hangar2);
+  RemoveKey(Key::pattern_a1);
+  RemoveKey(Key::pattern_a2);
+  RemoveKey(Key::pattern_b1);
+  RemoveKey(Key::pattern_b2);
+  RemoveKey(Key::pattern_c1);
+  RemoveKey(Key::pattern_c2);
+
+
   const int grid_rows{m_game.GetHeight()};
   const int grid_cols{m_game.GetWidth()};
   QImage image(
@@ -215,6 +321,19 @@ void golf::QtGameOfLifeFighterWidget::OnTimer()
 
     }
   }
+  QtHelper().DrawImage(
+    image,
+    QtSprite().Create(PlayerIndex::player1),
+    2 + (m_game.GetPlayer(PlayerIndex::player1).GetX() * QtSprite().GetWidth()),
+    2 + (m_game.GetPlayer(PlayerIndex::player1).GetY() * QtSprite().GetHeight())
+  );
+  QtHelper().DrawImage(
+    image,
+    QtSprite().Create(PlayerIndex::player2),
+    2 + (m_game.GetPlayer(PlayerIndex::player2).GetX() * QtSprite().GetWidth()),
+    2 + (m_game.GetPlayer(PlayerIndex::player2).GetY() * QtSprite().GetHeight())
+  );
+
   m_pixmap = QPixmap::fromImage(image);
   update(); //Essential
 }
@@ -226,6 +345,17 @@ void golf::QtGameOfLifeFighterWidget::paintEvent(QPaintEvent *)
     rect(),
     m_pixmap
   );
+}
+
+void golf::QtGameOfLifeFighterWidget::RemoveKey(const Key key)
+{
+  assert(std::count(std::begin(m_keys),std::end(m_keys),key) <= 1);
+  const auto new_end = std::remove(
+    std::begin(m_keys),
+    std::end(m_keys),
+    key
+  );
+  m_keys.erase(new_end,std::end(m_keys));
 }
 
 QKeyEvent CreateDel() { return QKeyEvent(QEvent::KeyPress,Qt::Key_Delete,Qt::NoModifier); }

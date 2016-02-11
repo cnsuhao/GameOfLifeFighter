@@ -19,11 +19,11 @@
 #ifndef CELLMASTER_H
 #define CELLMASTER_H
 
+#include <Urho3D/Urho3D.h>
 #include "mastercontrol.h"
 #include "cellmaster.h"
 #include "cellring.h"
 #include "cell.h"
-#include "helper.h"
 
 namespace Urho3D {
 class Drawable;
@@ -40,18 +40,24 @@ class CellRing;
 class CellMaster : public Object
 {
     friend class CellRing;
-    OBJECT(CellMaster);
+    URHO3D_OBJECT(CellMaster, Object);
 public:
     CellMaster(Context *context, MasterControl *masterControl);
-    void AddCellToMap(IntVector2 coords, Cell *cell);
-    void Rotate(float angle);
+    void AddCellToMaps(Cell *cell, IntVector2 coords);
+    void SetTargetRoll(float angle);
     void UpdateCells();
+    Cell *GetCell(unsigned id);
+    float RowToRotation(int row);
+    float ColumnToRotation(int row);
 private:
     MasterControl* masterControl_;
     SharedPtr<Node> rootNode_;
 
+    int width_;
+    int height_;
     Vector<CellRing*> rings_;
-    HashMap<IntVector2, SharedPtr<Cell> > cellMap_;
+    HashMap<IntVector2, unsigned > cellCoords_;
+    HashMap<unsigned, SharedPtr<Cell> > cellsById_;
 };
 
 #endif // CELLMASTER_H

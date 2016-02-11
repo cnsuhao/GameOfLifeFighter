@@ -25,8 +25,8 @@ SOURCES += \
     cell.cpp \
     cellmaster.cpp \
     cellring.cpp \
-    helper.cpp \
-    urho3dhelper.cpp
+    urho3dhelper.cpp \
+    luckey.cpp
 
 HEADERS += \
     mastercontrol.h \
@@ -35,5 +35,5 @@ HEADERS += \
     cell.h \
     cellmaster.h \
     cellring.h \
-    urho3dhelper.h
-    helper.h
+    urho3dhelper.h \
+    luckey.h

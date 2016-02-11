@@ -4,48 +4,51 @@
 #include <vector>
 
 #include "gameoflifefightercelltype.h"
+#include "gameoflifefighterisbuilding.h"
+#include "gameoflifefighterplayerindex.h"
+#include "gameoflifefighterhangarof.h"
+#include "gameoflifefighterheartof.h"
+
 
 namespace golf {
 
 
-struct CellState
+class CellState
 {
+  public:
+  //Remove if the cursor is present (which was confusingly called 'IsSelected')
   CellState(
-    const int selected_by,   //0: no-one, 1: player1, 2: player2
-    const int hangar_of,     //0: no-one, 1: player1, 2: player2
-    const int heart_of,      //0: no-one, 1: player1, 2: player2
-    const bool is_building,  //Has the player built something on this square?
+    const HangarOf hangar_of,
+    const HeartOf heart_of,
+    const IsBuilding is_building,
     const CellType cell_type
   );
 
   ///Get the hashed value of the CellState, which is unique for each CellState
   int GetHash() const noexcept { return m_hash; }
 
-  int GetSelectedBy() const noexcept { return m_selected_by; }
-  int GetHangarOf() const noexcept { return m_hangar_of; }
-  int GetHeartOf() const noexcept { return m_heart_of; }
-  bool GetIsBuilding() const noexcept { return m_is_building; }
+  HangarOf GetHangarOf() const noexcept { return m_hangar_of; }
+  HeartOf GetHeartOf() const noexcept { return m_heart_of; }
+  IsBuilding GetIsBuilding() const noexcept { return m_is_building; }
   CellType GetCellType() const noexcept { return m_cell_type; }
 
-  void SetSelectedBy(const int selected_by);
-  void SetHangarOf(const int hangar_of);
-  void SetHeartOf(const int heart_of);
-  void SetIsBuilding(const bool is_building) noexcept { m_is_building = is_building; }
-  void SetCellType(const CellType cell_type) noexcept { m_cell_type = cell_type; }
+  void SetHangarOf(const HangarOf hangar_of) noexcept;
+  void SetHeartOf(const HeartOf heart_of) noexcept;
+  void SetIsBuilding(const IsBuilding is_building) noexcept;
+  void SetIsBuilding(const PlayerIndex is_building) noexcept;
+  void SetCellType(const CellType cell_type) noexcept;
 
   private:
-  int m_selected_by;
-  int m_hangar_of;
+  HangarOf m_hangar_of;
   int m_hash;
-  int m_heart_of;
-  bool m_is_building;
+  HeartOf m_heart_of;
+  IsBuilding m_is_building;
   CellType m_cell_type;
 
   static int CalculateHash(
-    const int selected_by,   //0: no-one, 1: player1, 2: player2
-    const int hangar_of,     //0: no-one, 1: player1, 2: player2
-    const int heart_of,      //0: no-one, 1: player1, 2: player2
-    const bool is_building,  //Has the player built something on this square?
+    const HangarOf hangar_of,     //0: no-one, 1: player1, 2: player2
+    const HeartOf heart_of,      //0: no-one, 1: player1, 2: player2
+    const IsBuilding is_building,  //Has the player built something on this square?
     const CellType cell_type
   ) noexcept;
 

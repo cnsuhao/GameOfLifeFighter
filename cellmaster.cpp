@@ -23,42 +23,63 @@
 namespace Urho3D {
 template <> unsigned MakeHash(const IntVector2& value)
   {
-    return golf::IntVector2ToHash(value);
+    return LucKey::IntVector2ToHash(value);
   }
 }
 
 CellMaster::CellMaster(Context *context, MasterControl *masterControl):
     Object(context),
-    masterControl_{masterControl}
+    masterControl_{masterControl},
+    width_{200},
+    height_{60}
 {
     rootNode_ = masterControl_->world_.scene_->CreateChild("CellMaster");
     rootNode_->SetPosition(Vector3::ZERO);
 
-    int circumference = 200;
-    for (int i = 0; i < circumference; i++){
-                CellRing* newRing = new CellRing(context_, masterControl_, this, 60, i);
+    for (int i = 0; i < width_; ++i){
+                CellRing* newRing = new CellRing(context_, masterControl_, this, height_, i);
                 newRing->rootNode_->SetPosition(Vector3(0.0f, 0.0f, 10.0f));
-                newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/circumference, 0.0f), TS_PARENT);
+                newRing->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(0.0f, 360.0f*i/width_, 0.0f), TS_PARENT);
                 rings_.Push(newRing);
     }
+    SetTargetRoll(180.0f);
 }
 
-void CellMaster::AddCellToMap(IntVector2 coords, Cell* cell)
+void CellMaster::AddCellToMaps(Cell* cell, IntVector2 coords)
 {
-    cellMap_[coords] = SharedPtr<Cell>(cell);
+    unsigned id = cell->GetID();
+    cellsById_[id] = SharedPtr<Cell>(cell);
+    cellCoords_[coords] = id;
 }
 
-void CellMaster::Rotate(float angle)
+void CellMaster::SetTargetRoll(float angle)
 {
-    for (unsigned r = 0; r < rings_.Size(); r++)
-        rings_[r]->Rotate(angle);
+    for (unsigned r = 0; r < rings_.Size(); ++r){
+        rings_[r]->SetTargetRotation(LucKey::Cycle(angle, 0.0f, 360.0f));
+    }
 }
 
 void CellMaster::UpdateCells()
 {
-    Vector<IntVector2> cellKeys = cellMap_.Keys();
-    for (unsigned c = 0; c < cellKeys.Size(); c++){
-        IntVector2 coords = cellKeys.At(c);
-        cellMap_[coords]->SetType(masterControl_->game_->GetCell(coords.x_, coords.y_));
+    Vector<SharedPtr<Cell> > cells{cellsById_.Values()};
+    for (unsigned c = 0; c < cells.Size(); ++c){
+        IntVector2 coords = cells[c]->GetCoords();
+        cells[c]->SetType(masterControl_->game_->GetCell(coords.x_, coords.y_));
     }
+}
+
+Cell* CellMaster::GetCell(unsigned id)
+{
+    return cellsById_[id].Get();
+}
+
+float CellMaster::RowToRotation(int row)
+{
+    float normalizedRow = static_cast<float>(row) / static_cast<float>(height_);
+    return normalizedRow * 360.0f;
+}
+float CellMaster::ColumnToRotation(int row)
+{
+    float normalizedColumn = static_cast<float>(row) / static_cast<float>(width_);
+    return normalizedColumn * 360.0f - 90.0f;
 }
