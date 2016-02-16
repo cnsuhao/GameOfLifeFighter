@@ -26,15 +26,18 @@ CellRing::CellRing(Context *context, MasterControl *masterControl, CellMaster* c
     rotation_{0.0f}
 {
     masterControl_ = masterControl;
-
+    assert(masterControl_);
     rootNode_ = cellMaster->rootNode_->CreateChild("CellRing");
+    assert(rootNode_);
     rootNode_->SetPosition(Vector3::FORWARD*10.0f);
 
     for (int i = 0; i < circumference; ++i){
         IntVector2 cellCoords = IntVector2(ringNumber_, i);
         Cell* newCell = new Cell(context_, masterControl_, this, cellCoords);
+        assert(newCell);
         newCell->rootNode_->RotateAround(rootNode_->GetPosition(), Quaternion(
                                              360.0f*i/circumference, 0.0f, 0.0f), TS_WORLD);
+        assert(cellMaster);
         cellMaster->AddCellToMaps(newCell, cellCoords);
     }
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(CellRing, HandleUpdate));

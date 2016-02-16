@@ -33,11 +33,12 @@ URHO3D_DEFINE_APPLICATION_MAIN(MasterControl);
 MasterControl::MasterControl(Context *context):
     Application(context),
     cache_{GetSubsystem<ResourceCache>()},
-    renderer_{GetSubsystem<Renderer>()},
     paused_{false},
     stepInterval_{0.23f},
     sinceStep_{stepInterval_}
 {
+    assert(cache_);
+
     human_[static_cast<int>(golf::PlayerIndex::player1)] = true;
     human_[static_cast<int>(golf::PlayerIndex::player2)] = true;
 }
@@ -113,8 +114,9 @@ void MasterControl::CreateConsoleAndDebugHud()
 void MasterControl::CreateUI()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
+    assert(cache);
     UI* ui = GetSubsystem<UI>();
-
+    assert(ui);
     //Create a Cursor UI element because we want to be able to hide and show it at will. When hidden, the mouse cursor will control the camera
     world_.cursor_.uiCursor_ = new Cursor(context_);
     world_.cursor_.uiCursor_->SetVisible(true);
@@ -125,6 +127,7 @@ void MasterControl::CreateUI()
 
     //Construct new Text object, set string to display and font to use
     Text* instructionText = ui->GetRoot()->CreateChild<Text>();
+    assert(instructionText);
     instructionText->SetText("Game Of Life Fighter");
     instructionText->SetHorizontalAlignment(HA_CENTER);
     instructionText->SetVerticalAlignment(VA_CENTER);
@@ -134,6 +137,7 @@ void MasterControl::CreateUI()
 void MasterControl::CreateScene()
 {
     world_.scene_ = new Scene(context_);
+    assert(world_.scene_);
 
     //Create octree, use default volume (-1000, -1000, -1000) to (1000,1000,1000)
     world_.scene_->CreateComponent<Octree>();
@@ -151,9 +155,11 @@ void MasterControl::CreateScene()
     blueLight->SetColor(Color(0.1f, 0.5f, 1.0f));
 
     Node* redLightNode = world_.scene_->CreateChild("Sun");
+    assert(redLightNode);
     redLightNode->SetPosition(Vector3(-10.0f, 2.0f, 0.0f));
     redLightNode->LookAt(Vector3::ZERO);
     Light* redLight = redLightNode->CreateComponent<Light>();
+    assert(redLight);
     redLight->SetLightType(LIGHT_DIRECTIONAL);
     redLight->SetBrightness(1.0f);
     redLight->SetColor(Color(1.0f, 0.5f, 0.1f));

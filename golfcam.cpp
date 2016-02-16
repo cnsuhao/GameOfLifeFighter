@@ -29,15 +29,19 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     float viewRange = 37.0f;
 
     //Create the camera
+    assert(masterControl_);
     rootNode_ = masterControl_->world_.scene_->CreateChild("CameraPivot");
+    assert(rootNode_);
     camNode_ = rootNode_->CreateChild("CameraNode");
     camera_ = camNode_->CreateComponent<Camera>();
+    assert(camera_);
     camera_->SetFarClip(viewRange);
     camera_->SetNearClip(5.0f);
     camera_->SetFov(23.0f);
 
     //Create a zone with the fog end equal to the viewRange
     zone_ = rootNode_->CreateComponent<Zone>();
+    assert(zone_);
     zone_->SetBoundingBox(BoundingBox(Vector3(-100.0f, -50.0f, -100.0f), Vector3(100.0f, 50.0f, 100.0f)));
     zone_->SetFogColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
     zone_->SetFogStart(30.0f);
@@ -47,10 +51,12 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
     camNode_->SetPosition(Vector3(42.0f, 0.0f, 0.0f));
     camNode_->LookAt(Vector3::ZERO);
     rigidBody_ = rootNode_->CreateComponent<RigidBody>();
+    assert(rigidBody_);
     rigidBody_->SetMass(1.0f);
     rigidBody_->SetUseGravity(false);
 
     Light* light = camNode_->CreateChild("LightNode")->CreateComponent<Light>();
+    assert(light);
     light->SetColor(Color(1.0f, 1.0f, 1.0f));
     light->SetBrightness(0.2f);
     light->SetLightType(LIGHT_POINT);
@@ -63,21 +69,23 @@ GOLFCam::GOLFCam(Context *context, MasterControl *masterControl, golf::PlayerInd
 void GOLFCam::SetupViewport()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
+    assert(cache);
     Renderer* renderer = GetSubsystem<Renderer>();
+    assert(renderer);
 
     //Set up a viewport to the Renderer subsystem so that the 3D scene can be seen
     SharedPtr<Viewport> viewport(new Viewport(context_, masterControl_->world_.scene_, camera_));
     viewport_ = viewport;
 
     //Add anti-asliasing and bloom
-    effectRenderPath_ = viewport_->GetRenderPath()->Clone();
-    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
-    effectRenderPath_->SetEnabled("FXAA3", true);
-    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/Bloom.xml"));
-    effectRenderPath_->SetShaderParameter("BloomThreshold", 0.42f);
-    effectRenderPath_->SetShaderParameter("BloomMix", Vector2(1.0f, 1.23f));
-    effectRenderPath_->SetEnabled("Bloom", true);
-    viewport_->SetRenderPath(effectRenderPath_);
+//    effectRenderPath_ = viewport_->GetRenderPath()->Clone();
+//    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/FXAA3.xml"));
+//    effectRenderPath_->SetEnabled("FXAA3", true);
+//    effectRenderPath_->Append(cache->GetResource<XMLFile>("PostProcess/Bloom.xml"));
+//    effectRenderPath_->SetShaderParameter("BloomThreshold", 0.42f);
+//    effectRenderPath_->SetShaderParameter("BloomMix", Vector2(1.0f, 1.23f));
+//    effectRenderPath_->SetEnabled("Bloom", true);
+//    viewport_->SetRenderPath(effectRenderPath_);
     renderer->SetViewport(0, viewport);
 }
 

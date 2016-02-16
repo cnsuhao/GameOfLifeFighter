@@ -56,9 +56,14 @@ void InputMaster::HandleUpdate(StringHash eventType, VariantMap &eventData)
 
     if (!pressedKeys_.empty()){
         golf::Game* game = masterControl_->game_;
+        assert(game);
         CellMaster* cellMaster = masterControl_->cellMaster_;
-        game->PressKeys(pressedKeys_);
+        assert(cellMaster);
+        std::vector<golf::Key> pressedKeys{};
+        for (auto k : pressedKeys_) pressedKeys.push_back(k);
+        game->PressKeys(pressedKeys);
 
+        assert(masterControl_);
         cellMaster->SetTargetRoll(cellMaster->RowToRotation(game->GetPlayer(golf::PlayerIndex::player1).GetY()));
         masterControl_->world_.cameras_[0]->SetTargetRotation(cellMaster->ColumnToRotation(game->GetPlayer(golf::PlayerIndex::player1).GetX()));
     }
@@ -67,6 +72,7 @@ void InputMaster::HandleUpdate(StringHash eventType, VariantMap &eventData)
 void InputMaster::ReadJoysticks()
 {
     float deadZone = 0.23f;
+    assert(input_);
     JoystickState* joystickPlayer1 = input_->GetJoystickByIndex(0);
     JoystickState* joystickPlayer2 = input_->GetJoystickByIndex(1);
     if (joystickPlayer1){

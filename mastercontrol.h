@@ -78,7 +78,6 @@ public:
     SharedPtr<ResourceCache> cache_;
     SharedPtr<Graphics> graphics_;
     SharedPtr<CellMaster> cellMaster_;
-    Renderer* renderer_;
 
     virtual void Setup();
     virtual void Start();
