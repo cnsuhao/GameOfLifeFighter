@@ -20,7 +20,7 @@ addons:
 #  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
 
 script: 
- - ./Urho3D.sh
+ - ./Urho3d.sh
  - qmake GameOfLifeFighter2d.pro
  - make
  - qmake GameOfLifeFighter3D.pro
