@@ -1,0 +1,36 @@
+#sudo: true
+sudo: false # for now
+language: cpp
+
+compiler:
+  - gcc
+
+addons:
+  apt:
+    packages:
+    - libboost-all-dev
+
+#before_install:
+# - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+# - sudo pip install codecov # From https://github.com/travis-ci/travis-ci/issues/1705
+# - sudo apt-get update -qq
+
+#install:
+#  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+#  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
+
+script: 
+ - ./Urho3D.sh
+ - qmake GameOfLifeFighter2d.pro
+ - make
+ - qmake GameOfLifeFighter3D.pro
+ - make
+ - qmake GameOfLifeFighterQt.pro
+ - make
+ - qmake GameOfLifeFighterSfml.pro
+ - make
+
+#after_success:
+#  - codecov
+
+
