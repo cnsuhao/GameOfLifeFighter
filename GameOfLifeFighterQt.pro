@@ -1,40 +1,13 @@
-
-win32 {
-  # Windows only
-  message("Desktop application, built for Windows")
-  greaterThan(QT_MAJOR_VERSION, 4): QT += svg sql printsupport #webkit
-  QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra -Weffc++
-}
-
-macx {
-  # Mac only
-  message("Desktop application, built for Mac")
-  QMAKE_CXXFLAGS = -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
-  CONFIG +=c++11
-}
-
-unix:!macx {
-  # Linux only
-  message("Desktop application, built for Linux")
-  greaterThan(QT_MAJOR_VERSION, 4) {
-    message("Qt5")
-    QT += svg sql printsupport
-  } else {
-    message("Qt4")
-  }
-  QMAKE_CXXFLAGS += -std=c++1y -Wall -Wextra -Weffc++
-}
-
-cross_compile {
-  # Crosscompile only
-  message("Desktop application, built for cross-compiling from Linux to Windows")
-  QMAKE_CXXFLAGS += -std=c++1y -Wall -Wextra -Weffc++
-}
-
 QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
 TEMPLATE = app
+
+# C++11 for Travis
+CONFIG += c++11
+QMAKE_CXX = g++-4.8
+QMAKE_LINK = g++-4.8
+QMAKE_CC = gcc-4.8
+QMAKE_CXXFLAGS += -Wall -Wextra -Weffc++ -Werror -std=c++11
 
 CONFIG(debug, debug|release) {
   message(Debug mode)

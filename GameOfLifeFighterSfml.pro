@@ -1,7 +1,13 @@
-QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra -Weffc++
 QT       -= core gui
-
 TEMPLATE = app
+
+
+# C++11 for Travis
+CONFIG += c++11
+QMAKE_CXX = g++-4.8
+QMAKE_LINK = g++-4.8
+QMAKE_CC = gcc-4.8
+QMAKE_CXXFLAGS += -Wall -Wextra -Weffc++ -Werror -std=c++11
 
 CONFIG(debug, debug|release) {
   message(Debug mode)
