@@ -18,7 +18,7 @@ before_install:
   # Urho3D libs
   - sudo apt-get install libx11-dev libxrandr-dev libasound2-dev libgl1-mesa-dev
   # SFML libs
-  - sudo apt-get install libsfml2.3-dbg libsfml-system2.3v5 libsfml-audio2.3v5 libsfml-graphics2.3v5 libsfml-window2.3v5
+  - sudo apt-get install libsfml-dev
   # Code coverage
   - sudo pip install codecov # From https://github.com/travis-ci/travis-ci/issues/1705
   - sudo apt-get update -qq
