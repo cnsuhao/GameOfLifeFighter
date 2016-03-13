@@ -15,21 +15,20 @@ addons:
     - libboost1.55-all-dev
 
 before_install:
+  # Urho3D libs
   - sudo apt-get install libx11-dev libxrandr-dev libasound2-dev libgl1-mesa-dev
-  # - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  # SFML libs
+  - sudo apt-get install libsfml2.3-dbg libsfml-system2.3v5 libsfml-audio2.3v5 libsfml-graphics2.3v5 libsfml-window2.3v5
+  # Code coverage
   - sudo pip install codecov # From https://github.com/travis-ci/travis-ci/issues/1705
   - sudo apt-get update -qq
-
-#install: #Just use packages
-#  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-#  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
 
 script: 
  - ./Urho3d.sh
  - qmake GameOfLifeFighter2d.pro
  - make
- - qmake GameOfLifeFighter3D.pro
- - make
+ #- qmake GameOfLifeFighter3D.pro
+ #- make
  - qmake GameOfLifeFighterQt.pro
  - make
  - qmake GameOfLifeFighterSfml.pro

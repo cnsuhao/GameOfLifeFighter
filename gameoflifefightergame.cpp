@@ -4,10 +4,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <stdexcept>
-<<<<<<< HEAD
-=======
 
->>>>>>> 2ad012b79c0089df8248475c457f0154f7e480a6
 #include "gameoflifefighterhangar.h"
 #include "gameoflifefightertrace.h"
 
