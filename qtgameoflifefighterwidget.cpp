@@ -137,7 +137,7 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
 
   if (sf::Joystick::isConnected(0))
   {
-<<<<<<< HEAD
+    #ifdef ACCEPT_HEAD
     //const int n_buttons = sf::Joystick::getButtonCount(0);
 
     const bool pressed0{sf::Joystick::isButtonPressed(0,0)};
@@ -205,7 +205,7 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
       const double dy{sf::Joystick::getAxisPosition(1, sf::Joystick::Y)};
       if (dy < -50.0) { m_keys.insert(Key::up2  );  }
       if (dy >  50.0) { m_keys.insert(Key::down2);  }
-=======
+    #else //ACCEPT_HEAD
     //First move, then build
     RemoveKey(Key::up2);
     RemoveKey(Key::right2);
@@ -255,7 +255,7 @@ void golf::QtGameOfLifeFighterWidget::OnJoystickCheck()
       const double dy{sf::Joystick::getAxisPosition(1, sf::Joystick::Y)};
       if (dy < -50.0) { AddKey(Key::up1  );  }
       if (dy >  50.0) { AddKey(Key::down1);  }
->>>>>>> 2ad012b79c0089df8248475c457f0154f7e480a6
+      #endif // ACCEPT_HEAD
     }
 
     const bool pressed0{sf::Joystick::isButtonPressed(1,key_activate)};

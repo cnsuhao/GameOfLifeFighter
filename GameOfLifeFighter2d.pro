@@ -18,6 +18,8 @@ CONFIG(release, debug|release) {
   DEFINES += NDEBUG NTRACE_BILDERBIKKEL
 }
 
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+
 
 SOURCES += qtmain.cpp \
     qtgameoflifefighterwidget.cpp \

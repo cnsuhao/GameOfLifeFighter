@@ -3,12 +3,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
 #include <QApplication>
-<<<<<<< HEAD
 #include <cassert>
-=======
 #pragma GCC diagnostic pop
-
->>>>>>> 2ad012b79c0089df8248475c457f0154f7e480a6
 #include "qtgameoflifefighterwidget.h"
 #include "gameoflifefightertrace.h"
 
