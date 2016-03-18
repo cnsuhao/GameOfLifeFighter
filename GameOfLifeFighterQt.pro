@@ -7,7 +7,9 @@ CONFIG += c++11
 QMAKE_CXX = g++-4.8
 QMAKE_LINK = g++-4.8
 QMAKE_CC = gcc-4.8
-QMAKE_CXXFLAGS += -Wall -Wextra -Weffc++ -Werror -std=c++11
+
+# Urho3D and Qt do not go well with -Weffc++
+QMAKE_CXXFLAGS += -Wall -Wextra -Werror -std=c++11
 
 CONFIG(debug, debug|release) {
   message(Debug mode)
