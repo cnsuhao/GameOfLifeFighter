@@ -26,8 +26,6 @@ install:
 
 script: 
  - ./Urho3d.sh
- - qmake GameOfLifeFighter2d.pro
- - make
  #- qmake GameOfLifeFighter3D.pro
  #- make
  - qmake GameOfLifeFighterQt.pro
