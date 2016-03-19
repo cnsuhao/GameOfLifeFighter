@@ -1,6 +1,8 @@
 # [:four_leaf_clover:] (http://www.luckeyproductions.nl/) Game Of Life Fighter
 
-Game Of Life Fighter is an action game based on Conway's Game Of Life, programmed in C++ using the Qt and Urho3D libraries.
+[![Build Status](https://travis-ci.org/LucKeyProductions/GameOfLifeFighter.svg?branch=master)](https://travis-ci.org/LucKeyProductions/GameOfLifeFighter)
+
+Game Of Life Fighter is an action game based on Conway's Game Of Life, programmed in C++ using the Qt, SFML, and Urho3D libraries.
 
 Goal is to destroy the other player his/her base its heart. 
 
