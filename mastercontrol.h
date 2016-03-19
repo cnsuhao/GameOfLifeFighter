@@ -20,9 +20,12 @@
 #define MASTERCONTROL_H
 
 #include <Urho3D/Urho3D.h>
+#include <Urho3D/Core/Object.h>
+#include <Urho3D/Engine/Application.h>
 
 #include "luckey.h"
 #include "gameoflifefightergame.h"
+//#include "mastercontrol.h"
 
 namespace Urho3D {
 class Drawable;

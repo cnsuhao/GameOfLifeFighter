@@ -3,8 +3,9 @@ LIBS += ../GameOfLifeFighter/Urho3D/lib/libUrho3D.a \
     -ldl \
     -lGL
 
-DEFINES += URHO3D_COMPILE_QT
-
+#QMAKE_CXX = g++-5
+#QMAKE_LINK = g++-5
+#QMAKE_CC = gcc-5
 QMAKE_CXXFLAGS += -std=c++11
 
 INCLUDEPATH += \
