@@ -1,3 +1,6 @@
+#include <sstream>
+#include <stdexcept>
+
 ///Adapted from https://github.com/SFML/SFML-Game-Development-Book
 template <typename Resource, typename Identifier>
 void ResourceHolder<Resource, Identifier>::Load(Identifier id, const std::string& filename)
@@ -43,9 +46,17 @@ const Resource& ResourceHolder<Resource, Identifier>::Get(Identifier id) const
 }
 
 template <typename Resource, typename Identifier>
-void ResourceHolder<Resource, Identifier>::InsertResource(Identifier id, std::unique_ptr<Resource> resource)
+void ResourceHolder<Resource, Identifier>::InsertResource(
+  Identifier id,
+  std::unique_ptr<Resource> resource
+)
 {
   // Insert and check success
   auto inserted = mResourceMap.insert(std::make_pair(id, std::move(resource)));
-  assert(inserted.second);
+  if (!inserted.second)
+  {
+    std::stringstream msg;
+    msg << __func__ << ": could not insert resource";
+    throw std::logic_error(msg.str());
+  }
 }

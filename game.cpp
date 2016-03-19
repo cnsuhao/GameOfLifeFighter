@@ -12,10 +12,12 @@ Game::Game(const int width, const int height)
   #endif
 }
 
-std::vector<Hangar> Game::CreateInitialHangars(const int width, const int height)
+std::vector<Hangar> Game::CreateInitialHangars(
+  const int /* width */,
+  const int /* height */)
 {
-  assert(width > 0);
-  assert(height > 0);
+  //assert(width > 0);
+  //assert(height > 0);
   std::vector<Hangar> v;
   return v;
 }

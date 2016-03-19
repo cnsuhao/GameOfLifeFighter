@@ -70,44 +70,6 @@ int Grid::GetWidth() const
   return static_cast<int>(m_grid[0].size());
 }
 
-void Grid::Create_glider()
-{
-int hight = GetHeight();
-int width = GetWidth();
-assert(hight > 20);
-assert(width > 20);
-m_grid[9][7] = 1;
-m_grid[9][8] = 1;
-m_grid[9][9] = 1;
-m_grid[8][9] = 1;
-m_grid[7][8] = 1;
-}
-
-void Grid::Create_block()
-{
-int hight = GetHeight();
-int width = GetWidth();
-assert(hight > 20);
-assert(width > 20);
-
-m_grid[9][9] = 1;
-m_grid[8][8] = 1;
-m_grid[9][8] = 1;
-m_grid[8][9] = 1;
-}
-
-void Grid::Create_blinker()
-{
-int hight = GetHeight();
-int width = GetWidth();
-assert(hight > 20);
-assert(width > 20);
-
-m_grid[9][9] = 1;
-m_grid[9][8] = 1;
-m_grid[9][7] = 1;
-}
-
 void Grid::Next()
 {
   //Game Of Life here
@@ -116,55 +78,51 @@ void Grid::Next()
   // Any live cell with two or three live neighbours lives
   // Any live cell with more than three live neighbours dies
   // Any dead cell with exactly three live neighbours becomes a live cell
-
-  //STUB:
-
   std::vector<std::vector<int>> grid_temp(m_grid.size(),std::vector<int>(m_grid[0].size(),0));
 
   for(int i = 0; i < static_cast<int>(m_grid[0].size()); ++i)
-    {
+  {
     for(int j = 0; j < static_cast<int>(m_grid.size()); ++j)
+    {
+      const int temp_status = m_grid[j][i];
+      const int temp_neighbours = Return_active_neighbours(i,j);
+      if(temp_status == 1)
+      {
+        if(temp_neighbours < 2)
         {
-            int temp_status = m_grid[j][i];
-            int temp_neighbours = Return_active_neighbours(i,j);
-            if(temp_status == 1)
-            {
-                if(temp_neighbours < 2)
-                    {
-                    grid_temp[j][i] = 0;
-                    }
-                else if(temp_neighbours == 2 || temp_neighbours ==  3)
-                    {
-                    grid_temp[j][i] = 1;
-                    }
-                else if(temp_neighbours > 3)
-                    {
-                    grid_temp[j][i] = 0;
-                    }
-                 else
-                    {
-                    grid_temp[j][i] = m_grid[j][i];
-                    }
-            }
-
-            else
-            {
-                assert(temp_status == 0);
-                if(temp_neighbours == 3)
-                {
-                grid_temp[j][i] = 1;
-                }
-                else
-                {
-                grid_temp[j][i] = 0;
-                }
-            }
+          grid_temp[j][i] = 0;
         }
+        else if(temp_neighbours == 2 || temp_neighbours ==  3)
+        {
+          grid_temp[j][i] = 1;
+        }
+        else if(temp_neighbours > 3)
+        {
+          grid_temp[j][i] = 0;
+        }
+        else
+        {
+          grid_temp[j][i] = m_grid[j][i];
+        }
+      }
+      else
+      {
+        assert(temp_status == 0);
+        if(temp_neighbours == 3)
+        {
+          grid_temp[j][i] = 1;
+        }
+        else
+        {
+          grid_temp[j][i] = 0;
+        }
+      }
     }
-
-m_grid = grid_temp;
+  }
+  m_grid = grid_temp;
 }
 
+#ifndef NDEBUG
 void Grid::Test() noexcept
 {
   {
@@ -216,17 +174,5 @@ void Grid::Test() noexcept
     g.Set(12,12,0);
     assert(g.Return_active_neighbours(11,11) == 4);
   }
-  //Add a blink
-  /*
-  {
-    Grid g(40,40);
-    g.Set(11,11,1);
-    g.Set(12,11,1);
-    g.Set(13,11,1);
-    g.Next();
-    assert(g.Get(12,11) == 1);
-    assert(g.Get(12,12) == 1);
-    assert(g.Get(12,13) == 1);
-  }
-  */
 }
+#endif
