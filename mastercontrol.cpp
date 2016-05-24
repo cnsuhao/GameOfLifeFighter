@@ -50,6 +50,8 @@ void MasterControl::Setup()
     // Set custom window title.
     engineParameters_["WindowTitle"] = "G.O.L.F.";
     engineParameters_["LogName"] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs")+"golf.log";
+    engineParameters_["WindowIcon"] = "icon.png";
+    engineParameters_["ResourcePaths"] = "Data;CoreData;Resources";
 //    engineParameters_["FullScreen"] = false;
 //    engineParameters_["Headless"] = false;
 //    engineParameters_["WindowWidth"] = 960;
