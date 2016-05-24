@@ -13,8 +13,8 @@ addons:
     - libboost1.55-all-dev
 
 before_install:
-  - sudo add-apt-repository -yes ppa:ubuntu-toolchain-r/test
-  - sudo apt-add-repository -yes ppa:sonkun/sfml-development
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-add-repository -y ppa:sonkun/sfml-development
   - sudo apt-get update -qq
 
 install: 
