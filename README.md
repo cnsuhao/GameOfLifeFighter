@@ -55,3 +55,8 @@ Player 2:
  * `M`: Pre-fab pattern 1
  * `,` (comma): Pre-fab pattern 2
  * `.` (period, dot): Pre-fab pattern 3
+
+## External links
+
+ * [LucKeyProductions' games](http://www.luckeyproductions.nl)
+ * [Richel Bilderbeek's games](https://github.com/richelbilderbeek/Games)
