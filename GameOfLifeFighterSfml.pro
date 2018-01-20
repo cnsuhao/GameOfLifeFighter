@@ -1,12 +1,9 @@
 QT       -= core gui
 TEMPLATE = app
 
-
 # C++11 for Travis
 CONFIG += c++11
-QMAKE_CXX = g++-5
-QMAKE_LINK = g++-5
-QMAKE_CC = gcc-5
+QMAKE_CXXFLAGS += -std=c++11
 
 # Urho3D and Qt do not go well with -Weffc++
 QMAKE_CXXFLAGS += -Wall -Wextra -Werror -std=c++11
@@ -17,9 +14,10 @@ CONFIG(debug, debug|release) {
 
 CONFIG(release, debug|release) {
   message(Release mode)
-  DEFINES += NDEBUG NTRACE_BILDERBIKKEL
+  DEFINES += NDEBUG
 }
 
+# SFML
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 include(GameOfLifeFighterConsole.pri)
