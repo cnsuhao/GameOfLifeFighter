@@ -1,6 +1,6 @@
-sudo: require
 language: cpp
 compiler: gcc
+dist: trusty
 
 addons:
   apt:
