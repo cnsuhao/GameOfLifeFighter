@@ -9,7 +9,6 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - gcc-5
-    - g++-5
     - libboost1.55-all-dev
 
 before_install:
@@ -21,6 +20,7 @@ install:
   - sudo apt-get install libx11-dev libxrandr-dev libasound2-dev libgl1-mesa-dev
   - sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev
   # Link g++ to ++-5
+  - sudo apt-get install g++-5
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
 #  - sudo pip install codecov # From https://github.com/travis-ci/travis-ci/issues/1705
 
