@@ -274,7 +274,8 @@ const golf::Player& golf::Game::GetPlayer(const PlayerIndex player_index) const 
       return m_players[1];
     default:
       assert(!"golf::Game::GetPlayer: Unimplemented PlayerIndex");
-      throw std::logic_error("golf::Game::GetPlayer: Unimplemented PlayerIndex");
+      //throw std::logic_error("golf::Game::GetPlayer: Unimplemented PlayerIndex");
+      return m_players[0];
   }
 }
 

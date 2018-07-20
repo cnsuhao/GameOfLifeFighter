@@ -157,6 +157,7 @@ void golf::Hangar::ToggleStasis(Grid& global_grid) noexcept
     case HangarState::closed: Open(global_grid); break;
     default:
       assert(!"golf::Hangar::Toggle: unimplemented HangarState");
-      throw std::logic_error("golf::Hangar::Toggle: unimplemented HangarState");
+      Close(global_grid); break;
+      //throw std::logic_error("golf::Hangar::Toggle: unimplemented HangarState");
   }
 }

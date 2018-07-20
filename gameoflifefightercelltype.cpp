@@ -19,6 +19,7 @@ golf::CellType golf::GetOther(const CellType c) noexcept
     case CellType::empty: return CellType::alive;
     default:
       assert(!"golf::GetOther: unimplemented CellType");
-      throw std::logic_error("golf::GetOther: unimplemented CellType");
+      return CellType::alive;
+      //    ssssssssssssssssswthrow std::logic_error("golf::GetOther: unimplemented CellType");
   }
 }
